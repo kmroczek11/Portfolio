@@ -1,0 +1,56 @@
+@import "./variables";
+
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+
+  .first-part {
+    display: inline;
+    position: absolute;
+    top: 30vh;
+    left: 10vw;
+    font-family: $font_family;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 72px;
+    color: $black;
+  }
+
+  .second-part {
+    position: absolute;
+    bottom: 30vh;
+    right: 10vw;
+    font-family: $font_family;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 72px;
+    color: $orange;
+  }
+
+  .desktop-icon {
+    position: absolute;
+    top: 10vh;
+    left: 10vw;
+  }
+
+  .mobile-icon {
+    position: absolute;
+    bottom: 10vh;
+    left: 20vw;
+  }
+
+  .tablet-icon {
+    position: absolute;
+    top: 10vh;
+    right: 20vw;
+  }
+
+  .desktop-icon,
+  .mobile-icon,
+  .tablet-icon {
+    font-size: 10em;
+    color: $orange;
+  }
+}

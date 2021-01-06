@@ -1,0 +1,14 @@
+@import "./variables";
+
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    $white 0%,
+    rgba(103, 93, 93, 0.73) 100%
+  );
+  overflow: hidden;
+}

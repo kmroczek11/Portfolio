@@ -1,0 +1,66 @@
+@font-face {
+  font-family: Oswald;
+  src: url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
+}
+
+.home-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: relative;
+}
+
+.home-container .first-part {
+  display: inline;
+  position: absolute;
+  top: 30vh;
+  left: 10vw;
+  font-family: "Oswald", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 72px;
+  color: #000;
+}
+
+.home-container .second-part {
+  position: absolute;
+  bottom: 30vh;
+  right: 10vw;
+  font-family: "Oswald", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 72px;
+  color: #ff4d17;
+}
+
+.home-container .desktop-icon {
+  position: absolute;
+  top: 10vh;
+  left: 10vw;
+}
+
+.home-container .mobile-icon {
+  position: absolute;
+  bottom: 10vh;
+  left: 20vw;
+}
+
+.home-container .tablet-icon {
+  position: absolute;
+  top: 10vh;
+  right: 20vw;
+}
+
+.home-container .desktop-icon,
+.home-container .mobile-icon,
+.home-container .tablet-icon {
+  font-size: 10em;
+  color: #ff4d17;
+}
+/*# sourceMappingURL=home.css.map */
