@@ -28,29 +28,4 @@
     font-size: 72px;
     color: $orange;
   }
-
-  .desktop-icon {
-    position: absolute;
-    top: 10vh;
-    left: 10vw;
-  }
-
-  .mobile-icon {
-    position: absolute;
-    bottom: 10vh;
-    left: 20vw;
-  }
-
-  .tablet-icon {
-    position: absolute;
-    top: 10vh;
-    right: 20vw;
-  }
-
-  .desktop-icon,
-  .mobile-icon,
-  .tablet-icon {
-    font-size: 10em;
-    color: $orange;
-  }
 }

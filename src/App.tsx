@@ -1,6 +1,6 @@
 import React from 'react';
-import "./styles/app.css"
-import Navbar from './Navbar'
+import "./styles/app.css";
+import Navbar from './Navbar';
 import Home from './Home';
 
 const navbar_items: Array<NavbarItem> = [

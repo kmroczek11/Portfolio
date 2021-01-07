@@ -1,7 +1,7 @@
 import React from 'react';
-import "./styles/navbar.css"
-import { NavbarItem } from "./App"
-import { motion } from "framer-motion"
+import "./styles/navbar.css";
+import { NavbarItem } from "./App";
+import { motion } from "framer-motion";
 
 const icon = {
     hidden: {
