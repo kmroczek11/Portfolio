@@ -2,6 +2,7 @@ import React from 'react';
 import "./styles/app.css";
 import Navbar from './Navbar';
 import Home from './Home';
+import { useThree } from './useThree';
 
 const navbar_items: Array<NavbarItem> = [
   { id: 1, name: 'O MNIE' },
@@ -15,11 +16,11 @@ export interface NavbarItem {
   name: string
 }
 
-const App: React.FC = () => {
+const App = (): JSX.Element => {
+  useThree();
+
   return (
     <>
-      <Navbar items={navbar_items} />
-      <Home/>
     </>
   )
 }

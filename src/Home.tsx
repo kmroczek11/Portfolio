@@ -3,7 +3,7 @@ import "./styles/home.css";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 
-const Home: React.FC = () => {
+const Home = (): JSX.Element => {
     return (
         <div className="home-container">
             <p className="first-part">DEWELOPER, KTÓREGO</p>

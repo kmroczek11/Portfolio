@@ -20,7 +20,7 @@ interface NavProps {
     items: Array<NavbarItem>
 }
 
-const Navbar: React.FC<NavProps> = ({ items }) => {
+const Navbar = ({ items }): JSX.Element => {
     return (
         <div className="navbar-container">
             <div className="logo-container">
