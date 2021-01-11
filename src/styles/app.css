@@ -4,7 +4,9 @@
 }
 
 body {
+  background: radial-gradient(50% 50% at 50% 50%, #f2f2f2 0%, rgba(103, 93, 93, 0.73) 100%);
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 /*# sourceMappingURL=app.css.map */
