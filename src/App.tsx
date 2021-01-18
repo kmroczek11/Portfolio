@@ -20,17 +20,7 @@ const App = (): JSX.Element => {
   return (
     <>
       <Navbar items={navbar_items} />
-      <Suspense fallback={
-        <Loader
-          type='Puff'
-          color='#00BFFF'
-          height={100}
-          width={100}
-          timeout={3000} //3 secs
-        />
-      }>
-        <Home />
-      </Suspense>
+      <Home />
     </>
   )
 }
