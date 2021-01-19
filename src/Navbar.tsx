@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import './styles/navbar.css';
 import { NavbarItem } from './App';
 import { motion } from 'framer-motion';
+import { AppContext } from './context';
 
 const icon = {
     hidden: {
@@ -21,6 +22,8 @@ interface NavProps {
 }
 
 const Navbar = ({ items }: NavProps): JSX.Element => {
+    const { state, dispatch } = useContext(AppContext);
+
     return (
         <div className='navbar-container'>
             <div className='logo-container'>
@@ -45,7 +48,7 @@ const Navbar = ({ items }: NavProps): JSX.Element => {
 
             <ul>
                 {
-                    items.map((item: NavbarItem, index: number) => <li key={index}><a>{item.name}</a></li>)
+                    items.map((item: NavbarItem, index: number) => <li key={index} onClick={() => {}}><a>{item.name}</a></li>)
                 }
             </ul>
         </div>
