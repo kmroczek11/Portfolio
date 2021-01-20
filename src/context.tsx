@@ -5,7 +5,8 @@ import { sceneReducer, SceneActions } from './reducers';
 type SceneType = {
     canvas: HTMLCanvasElement;
     camera: Camera;
-    children: Array<MutableRefObject<any>>
+    children: Array<MutableRefObject<any>>;
+    currentElement: string;
 }
 
 type InitialStateType = {
@@ -13,7 +14,7 @@ type InitialStateType = {
 }
 
 const initialState = {
-    scene: { canvas: null, camera: null, children: [] }
+    scene: { canvas: null, camera: null, children: [], currentElement: 'HOME' }
 }
 
 const AppContext = createContext<{

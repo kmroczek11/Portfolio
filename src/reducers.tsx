@@ -16,18 +16,21 @@ export enum Types {
     SetCanvas = 'SET_CANVAS',
     SetCamera = 'SET_CAMERA',
     AddChild = 'ADD_CHILD',
+    SetCurrentElement = 'SET_CURRENT_ELEMENT',
 }
 
 type SceneType = {
     canvas: HTMLCanvasElement;
     camera: Camera;
-    children: Array<MutableRefObject<any>>
+    children: Array<MutableRefObject<any>>;
+    currentElement: string;
 }
 
 type ScenePayload = {
     [Types.SetCanvas]: HTMLCanvasElement;
     [Types.SetCamera]: Camera;
     [Types.AddChild]: MutableRefObject<any>;
+    [Types.SetCurrentElement]: string;
 }
 
 export type SceneActions = ActionMap<ScenePayload>[keyof ActionMap<ScenePayload>];
@@ -40,6 +43,8 @@ export const sceneReducer = (state: SceneType, action: SceneActions) => {
             return { ...state, camera: action.payload };
         case Types.AddChild:
             return { ...state, children: [...state.children, action.payload] };
+        case Types.SetCurrentElement:
+            return { ...state, currentElement: action.payload };
         default:
             return state;
     }

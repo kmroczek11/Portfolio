@@ -47,6 +47,11 @@
       font-size: 36px;
       line-height: 53px;
       color: $white;
+
+      &:hover {
+        color: $black;
+        cursor: pointer;
+      }
     }
   }
 }

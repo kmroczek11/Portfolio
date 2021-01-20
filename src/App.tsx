@@ -1,14 +1,13 @@
-import React, { Suspense, useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import './styles/app.css';
 import Navbar from './Navbar';
-import Home from './Home';
-import Loader from 'react-loader-spinner'
 import { AppContext } from './context';
 import { Types } from './reducers';
-import { Canvas, extend, ReactThreeFiber, useFrame } from 'react-three-fiber';
+import { Canvas, extend, ReactThreeFiber } from 'react-three-fiber';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 import FPSStats from "react-fps-stats";
+import Scene from './Scene';
 extend({ OrbitControls, TransformControls })
 
 declare global {
@@ -34,29 +33,6 @@ export interface NavbarItem {
 
 const App = (): JSX.Element => {
   const { state, dispatch } = useContext(AppContext);
-  const [activeItem, setActiveItem] = useState<string>('HOME');
-
-//   useFrame(() => {
-//     const { position } = state.scene.camera;
-//     const direction = new Vector3();
-//     const speed = 0.01;
-//     var targetVector = new Vector3(0, 0, 0);
-//     direction.subVectors(targetVector, position);
-//     const vector = direction.multiplyScalar(speed);
-
-//     photo.current.position.x += vector.x;
-//     photo.current.position.y += vector.y;
-//     photo.current.position.z += vector.z;
-// })
-
-  const changeCameraPosition = (elementName: string) => {
-    switch (elementName) {
-      case 'O MNIE':
-        break;
-      default:
-        break;
-    }
-  }
 
   return (
     <>
@@ -73,7 +49,7 @@ const App = (): JSX.Element => {
           })
         }}
       >
-        <Home />
+        <Scene />
         {state.scene.camera && state.scene.canvas && <orbitControls args={[state.scene.camera, state.scene.canvas]} />}
       </Canvas>
       <FPSStats />
