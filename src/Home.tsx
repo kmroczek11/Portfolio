@@ -71,13 +71,13 @@ const Objects = (): JSX.Element => {
 
     return (
         <>
-            <mesh position={[-4, 2, 0]} scale={[0.1, 0.1, 0.1]}>
+            <mesh position={[-4, 1, 0]}>
                 <primitive object={monitor} />
             </mesh>
-            <mesh position={[-4, -1, 0]} rotation={[0, 90, 0]}>
+            <mesh position={[-4, -0.2, 0]}>
                 <primitive object={phone} />
             </mesh>
-            <mesh position={[4, 2, 0]} scale={[0.01, 0.01, 0.01]} rotation={[0, 20, 0]}>
+            <mesh position={[4, 1, 0]}>
                 <primitive object={tablet} />
             </mesh>
         </>
@@ -111,13 +111,9 @@ const Home = (): JSX.Element => {
     return (
         <>
             <directionalLight position={[0, 1, 1]} intensity={1} color={'#fff'} />
-            <Suspense fallback={
-                null
-            }>
-                <Photo />
-                <Circle />
-                <Texts />
-            </Suspense>
+            <Photo />
+            <Circle />
+            <Texts />
         </>
     )
 }

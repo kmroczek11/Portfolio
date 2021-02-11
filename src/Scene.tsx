@@ -1,22 +1,22 @@
-import React, { useContext } from 'react';
+import React, { Suspense, useContext } from 'react';
 import Home from './Home';
 import { useFrame } from 'react-three-fiber'
 import { AppContext } from './context';
 import { moveElement } from './functions';
 import { Vector3 } from 'three/src/math/Vector3';
+import Lifetime from './Lifetime';
 
 const Scene = (): JSX.Element => {
     const { state, dispatch } = useContext(AppContext);
 
     useFrame(() => {
-        console.log(state.scene.camera);
         switch (state.scene.currentElement) {
             case 'HOME':
-                state.scene.camera && moveElement(state.scene.camera, state.scene.camera.position, new Vector3(0, 10, 0));
+                state.scene.camera && moveElement(state.scene.camera, state.scene.camera.position, new Vector3(0, 0, 5));
                 break;
             case 'O MNIE':
-                console.log('o mnie');
-                state.scene.camera && moveElement(state.scene.camera, state.scene.camera.position, new Vector3(0, 0, -5));
+                state.scene.camera && moveElement(state.scene.camera, state.scene.camera.position, new Vector3(0, 0, -7));
+                break;
             default:
                 break;
         }
@@ -24,7 +24,12 @@ const Scene = (): JSX.Element => {
 
     return (
         <>
-            <Home />
+            <Suspense fallback={
+                null
+            }>
+                <Home />
+                <Lifetime />
+            </Suspense>
         </>
     )
 }

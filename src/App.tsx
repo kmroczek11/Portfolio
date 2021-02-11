@@ -39,6 +39,7 @@ const App = (): JSX.Element => {
       <Navbar items={navbar_items} />
       <Canvas style={{ width: '100vw', height: '100vh' }}
         onCreated={({ camera, gl: { domElement } }) => {
+          // camera.position.set(0, 0, -10);
           dispatch({
             type: Types.SetCanvas,
             payload: domElement,
@@ -49,7 +50,9 @@ const App = (): JSX.Element => {
           })
         }}
       >
-        <Scene />
+        <AppContext.Provider value={{ state, dispatch }}>
+          <Scene />
+        </AppContext.Provider>
         {state.scene.camera && state.scene.canvas && <orbitControls args={[state.scene.camera, state.scene.canvas]} />}
       </Canvas>
       <FPSStats />

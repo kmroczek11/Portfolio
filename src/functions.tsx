@@ -1,4 +1,5 @@
 import { Vector3 } from 'three/src/math/Vector3';
+import { Clock } from 'three';
 
 export const moveElement = (element: any, position: Vector3, targetVector: Vector3) => {
     const direction = new Vector3();

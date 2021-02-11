@@ -24,6 +24,10 @@
           align-items: center;
 }
 
+.navbar-container .logo-container:hover {
+  cursor: pointer;
+}
+
 .navbar-container .logo-container .logo {
   width: 10vw;
   height: 10vh;
