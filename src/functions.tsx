@@ -1,18 +1,16 @@
 import { Vector3 } from 'three/src/math/Vector3';
-import { Clock } from 'three';
 
-export const moveElement = (element: any, position: Vector3, targetVector: Vector3) => {
+export const moveElement = (obj: any, position: Vector3, targetVector: Vector3, speed: number) => {
     const direction = new Vector3();
-    const speed = 0.01;
     direction.subVectors(targetVector, position);
     const vector = direction.multiplyScalar(speed);
 
-    element.position.x += vector.x;
-    element.position.y += vector.y;
-    element.position.z += vector.z;
+    obj.position.x += vector.x;
+    obj.position.y += vector.y;
+    obj.position.z += vector.z;
 }
 
-export const rotateAroundPoint = (obj, point, axis, theta, pointIsWorld) => {
+export const rotateAroundPoint = (obj: any, point: Vector3, axis: Vector3, theta: number, pointIsWorld: boolean) => {
     pointIsWorld = (pointIsWorld === undefined) ? false : pointIsWorld;
 
     if (pointIsWorld) {

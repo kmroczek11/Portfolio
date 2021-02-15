@@ -25,7 +25,7 @@ const Texts = (): JSX.Element => {
         [0, 1].forEach((e) => {
             var targetVector;
             e == 0 ? targetVector = new Vector3(-6, 0, 0) : targetVector = new Vector3(2, -1, 0);
-            moveElement(texts.current[e], texts.current[e].position, targetVector);
+            moveElement(texts.current[e], texts.current[e].position, targetVector, 0.01);
         })
     })
 
@@ -90,7 +90,7 @@ const Photo = (): JSX.Element => {
     const direction = new Vector3();
 
     useFrame(() => {
-        moveElement(photo.current, photo.current.position, new Vector3(0, 0, 0));
+        moveElement(photo.current, photo.current.position, new Vector3(0, 0, 0), 0.01);
     })
 
     return (
@@ -107,7 +107,9 @@ const Photo = (): JSX.Element => {
     )
 }
 
-const Home = (): JSX.Element => {
+const Home = React.memo(() => {
+    console.log('home rendered');
+
     return (
         <>
             <directionalLight position={[0, 1, 1]} intensity={1} color={'#fff'} />
@@ -116,6 +118,6 @@ const Home = (): JSX.Element => {
             <Texts />
         </>
     )
-}
+})
 
 export default Home;

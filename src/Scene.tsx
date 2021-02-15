@@ -1,21 +1,27 @@
-import React, { Suspense, useContext } from 'react';
+import React, { Suspense, useContext, useMemo } from 'react';
 import Home from './Home';
 import { useFrame } from 'react-three-fiber'
 import { AppContext } from './context';
 import { moveElement } from './functions';
 import { Vector3 } from 'three/src/math/Vector3';
-import Lifetime from './Lifetime';
+import Education from './Education';
+import Projects from './Projects';
 
 const Scene = (): JSX.Element => {
-    const { state, dispatch } = useContext(AppContext);
+    console.log('scene rendered');
+    const { state } = useContext(AppContext);
+    const { camera, currentElement } = state.scene;
 
     useFrame(() => {
-        switch (state.scene.currentElement) {
+        switch (currentElement) {
             case 'HOME':
-                state.scene.camera && moveElement(state.scene.camera, state.scene.camera.position, new Vector3(0, 0, 5));
+                camera && moveElement(camera, camera.position, new Vector3(0, 0, 5), 0.01);
                 break;
-            case 'O MNIE':
-                state.scene.camera && moveElement(state.scene.camera, state.scene.camera.position, new Vector3(0, 0, -7));
+            case 'EDUKACJA':
+                camera && moveElement(camera, camera.position, new Vector3(0, 0, -10), 0.01);
+                break;
+            case 'PROJEKTY':
+                camera && moveElement(camera, camera.position, new Vector3(10, 0, -10), 0.01);
                 break;
             default:
                 break;
@@ -28,7 +34,8 @@ const Scene = (): JSX.Element => {
                 null
             }>
                 <Home />
-                <Lifetime />
+                <Education />
+                <Projects />
             </Suspense>
         </>
     )

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import './styles/app.css';
 import Navbar from './Navbar';
 import { AppContext } from './context';
-import { Types } from './reducers';
+import { Types } from './context/reducers';
 import { Canvas, extend, ReactThreeFiber } from 'react-three-fiber';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
@@ -19,16 +19,14 @@ declare global {
 }
 
 const navbar_items: Array<NavbarItem> = [
-  { id: 0, name: 'O MNIE', element: null },
-  { id: 1, name: 'ŻYCIORYS', element: null },
-  { id: 2, name: 'PROJEKTY', element: null },
-  { id: 3, name: 'KONTAKT', element: null },
+  { id: 0, name: 'EDUKACJA' },
+  { id: 1, name: 'PROJEKTY' },
+  { id: 2, name: 'KONTAKT' },
 ]
 
 export interface NavbarItem {
   id: number,
   name: string,
-  element: JSX.Element,
 }
 
 const App = (): JSX.Element => {
@@ -53,7 +51,7 @@ const App = (): JSX.Element => {
         <AppContext.Provider value={{ state, dispatch }}>
           <Scene />
         </AppContext.Provider>
-        {state.scene.camera && state.scene.canvas && <orbitControls args={[state.scene.camera, state.scene.canvas]} />}
+        {/* {state.scene.camera && state.scene.canvas && <orbitControls args={[state.scene.camera, state.scene.canvas]} />} */}
       </Canvas>
       <FPSStats />
     </>

@@ -6,7 +6,7 @@ import { AppContext } from './context';
 import { useFrame } from 'react-three-fiber';
 import { moveElement } from './functions';
 import { Vector3 } from 'three/src/math/Vector3';
-import { Types } from './reducers';
+import { Types } from './context/reducers';
 
 const icon = {
     hidden: {
@@ -26,6 +26,7 @@ interface NavProps {
 }
 
 const Navbar = ({ items }: NavProps): JSX.Element => {
+    console.log('navbar rendered');
     const { state, dispatch } = useContext(AppContext);
 
     const onClick = (element: string) => {
