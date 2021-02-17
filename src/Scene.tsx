@@ -6,6 +6,7 @@ import { moveElement } from './functions';
 import { Vector3 } from 'three/src/math/Vector3';
 import Education from './Education';
 import Projects from './Projects';
+import Contact from './Contact';
 
 const Scene = (): JSX.Element => {
     console.log('scene rendered');
@@ -23,6 +24,9 @@ const Scene = (): JSX.Element => {
             case 'PROJEKTY':
                 camera && moveElement(camera, camera.position, new Vector3(10, 0, -10), 0.01);
                 break;
+            case 'KONTAKT':
+                camera && moveElement(camera, camera.position, new Vector3(10, 0, 5), 0.01);
+                break;
             default:
                 break;
         }
@@ -33,9 +37,11 @@ const Scene = (): JSX.Element => {
             <Suspense fallback={
                 null
             }>
+                <directionalLight position={[0, 1, 1]} intensity={1} color={'#fff'} />
                 <Home />
                 <Education />
                 <Projects />
+                <Contact />
             </Suspense>
         </>
     )

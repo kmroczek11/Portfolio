@@ -1,86 +1,67 @@
 import React, { useState, useRef } from 'react';
 import { useFrame, useLoader } from 'react-three-fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-import Oswald from './Oswald.json';
-import { FontLoader } from 'three/src/loaders/FontLoader';
+import { RoundedBox, Text } from '@react-three/drei';
+import { MeshStandardMaterial } from 'three';
 
-const Texts = (): JSX.Element => {
-    const font = new FontLoader().parse(Oswald);
-    const texts = useRef([]);
-
-    const headerOptions = {
-        font,
-        size: 0.15,
-        height: 0.5
-    };
-
-    const descOptions = {
-        font,
-        size: 0.1,
-        height: 0
-    };
-
-    return (
-        <>
-            <mesh position={[-3.6, 0, -13]} ref={el => texts.current[0] = el}>
-                <textGeometry args={['GIMNAZJUM W RZEZAWIE', headerOptions]} />
-                <meshStandardMaterial color={'#ff4d17'} />
-            </mesh>
-            <mesh position={[-4.2, -0.4, -13]} ref={el => texts.current[1] = el}>
-                <textGeometry args={['TUTAJ STAWIAŁEM SWOJE PIERWSZE KROKI\nPISAŁEM PROSTE STRONY I PROGRAMY\nSWOJĄ PRZYSZŁOŚĆ WIĄZAŁEM Z INFORMATYKĄ', descOptions]} />
-                <meshStandardMaterial />
-            </mesh>
-            <mesh position={[-0.7, 0, -13]} ref={el => texts.current[2] = el}>
-                <textGeometry args={['TECHNIKUM ŁĄCZNOŚCI\nNR 14 W KRAKOWIE', headerOptions]} />
-                <meshStandardMaterial color={'#ff4d17'} />
-            </mesh>
-            <mesh position={[-1, -0.8, -13]} ref={el => texts.current[3] = el}>
-                <textGeometry args={['TUTAJ POZNAŁEM BARDZIEJ ZAAWANSOWANE\nTECHNIKI PROGRAMOWANIA\nPOZNAŁEM PIERWSZE FRAMEWORKI\nSTWORZYŁEM WIELE ROZMAITYCH PROJEKTÓW', descOptions]} />
-                <meshStandardMaterial />
-            </mesh>
-            <mesh position={[2.2, 0, -13]} ref={el => texts.current[4] = el}>
-                <textGeometry args={['POLITECHNIKA\nKRAKOWSKA', headerOptions]} />
-                <meshStandardMaterial color={'#ff4d17'} />
-            </mesh>
-            <mesh position={[2.4, -0.8, -13]} ref={el => texts.current[5] = el}>
-                <textGeometry args={['JESTEM NA PIERWSZYM ROKU\nNIESTACJONARNYCH STUDIÓW\nINFORMATYCZNYCH', descOptions]} />
-                <meshStandardMaterial />
-            </mesh>
-        </>
-    )
+interface InstitutionItem {
+    id: number,
+    name: string,
+    objSrc: string,
+    desc: string,
+    scale: number,
+    x: number,
+    y: number,
 }
 
-const Objects = (): JSX.Element => {
-    const school = useLoader(OBJLoader, 'models/school.obj');
-    const college = useLoader(OBJLoader, 'models/college.obj');
-    const uni = useLoader(OBJLoader, 'models/uni.obj');
+const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): JSX.Element => {
+    const obj = useLoader(OBJLoader, objSrc);
 
     useFrame(() => {
-        school.rotation.y += 0.01;
-        college.rotation.y += 0.01;
-        uni.rotation.y += 0.01;
+        obj.rotation.y += 0.01;
     })
 
     return (
-        <>
-            <mesh position={[-3, 1, -13]} scale={[0.1, 0.1, 0.1]}>
-                <primitive object={school} />
+        <group position={[x, y, -13]}>
+            <mesh scale={[scale, scale, scale]}>
+                <primitive object={obj} />
             </mesh>
-            <mesh position={[0, 1, -13]} scale={[0.2, 0.2, 0.2]}>
-                <primitive object={college} />
-            </mesh>
-            <mesh position={[3, 1, -13]} scale={[0.2, 0.2, 0.2]}>
-                <primitive object={uni} />
-            </mesh>
-        </>
+            <Text
+                color='#fff'
+                font='fonts/Oswald.ttf'
+                fontSize={0.3}
+                textAlign='center'
+                anchorY={0.5}
+            >
+                {name}
+            </Text>
+            <Text
+                color='#ff0000'
+                font='fonts/Oswald.ttf'
+                fontSize={0.15}
+                textAlign='center'
+                anchorY={1.5}
+            >
+                {desc}
+            </Text>
+        </group>
     )
 }
 
 const Education = React.memo(() => {
+    const [institutionItems, setInstitutionItems] = useState<Array<InstitutionItem>>(
+        [
+            { id: 0, name: 'GIMNAZJUM\nW RZEZAWIE', objSrc: 'models/school.obj', desc: 'TUTAJ STAWIAŁEM SWOJE PIERWSZE KROKI\nPISAŁEM PROSTE STRONY I PROGRAMY\nSWOJĄ PRZYSZŁOŚĆ WIĄZAŁEM Z INFORMATYKĄ', scale: 0.1, x: -3, y: 1 },
+            { id: 1, name: 'TECHNIKUM ŁĄCZNOŚCI\nNR 14 W KRAKOWIE', objSrc: 'models/college.obj', desc: 'TUTAJ POZNAŁEM BARDZIEJ ZAAWANSOWANE\nTECHNIKI PROGRAMOWANIA\nPOZNAŁEM PIERWSZE FRAMEWORKI\nSTWORZYŁEM WIELE ROZMAITYCH PROJEKTÓW', scale: 0.2, x: 0, y: 1 },
+            { id: 2, name: 'POLITECHNIKA\nKRAKOWSKA', objSrc: 'models/uni.obj', desc: 'JESTEM NA PIERWSZYM ROKU\nNIESTACJONARNYCH STUDIÓW\nINFORMATYCZNYCH', scale: 0.2, x: 3, y: 1 },
+        ]
+    );
+
     return (
         <>
-            <Objects />
-            <Texts />
+            {
+                institutionItems.map((e: InstitutionItem, i: number) => <Institution key={i} {...e} />)
+            }
         </>
     )
 })

@@ -2,43 +2,44 @@ import React, { useEffect, useRef, useState, Suspense, forwardRef } from 'react'
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useFrame, useLoader } from 'react-three-fiber'
-import Oswald from './Oswald.json';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
-import { FontLoader } from 'three/src/loaders/FontLoader';
-import Loader from 'react-loader-spinner'
-import * as TWEEN from 'three-tween';
 import { Vector3 } from 'three/src/math/Vector3';
 import { moveElement, rotateAroundPoint } from './functions';
+import { Text } from '@react-three/drei';
+import { MeshStandardMaterial } from 'three';
 
 const Texts = (): JSX.Element => {
-    const font = new FontLoader().parse(Oswald);
     const texts = useRef([]);
-
-    const textOptions = {
-        font,
-        size: 0.5,
-        height: 1
-    };
 
     useFrame(() => {
         [0, 1].forEach((e) => {
             var targetVector;
-            e == 0 ? targetVector = new Vector3(-6, 0, 0) : targetVector = new Vector3(2, -1, 0);
+            e == 0 ? targetVector = new Vector3(-2, 0, 0.5) : targetVector = new Vector3(2, -1, 0.5);
             moveElement(texts.current[e], texts.current[e].position, targetVector, 0.01);
         })
     })
 
     return (
         <>
-            <mesh ref={el => texts.current[0] = el}>
-                <textGeometry args={['DEWELOPER, KTÓREGO', textOptions]} />
-                <meshStandardMaterial />
-            </mesh>
-            <mesh ref={el => texts.current[1] = el}>
-                <textGeometry args={['POTRZEBUJESZ', textOptions]} />
-                <meshStandardMaterial color={'#ff4d17'} />
-            </mesh>
+            <Text
+                ref={el => texts.current[0] = el}
+                color='#fff'
+                font='fonts/Oswald.ttf'
+                fontSize={1}
+                textAlign='center'
+            >
+                DEWELOPER, KTÓREGO
+            </Text>
+            <Text
+                ref={el => texts.current[1] = el}
+                color='#ff0000'
+                font='fonts/Oswald.ttf'
+                fontSize={1}
+                textAlign='center'
+            >
+                POTRZEBUJESZ
+            </Text>
         </>
     )
 }
@@ -49,7 +50,7 @@ const Circle = (): JSX.Element => {
     return (
         <mesh
             ref={circle}
-            position={[0, 0, -1]}
+            position={[0, 0, -0.5]}
             receiveShadow
         >
             <circleGeometry args={[3.5, 100]} />
@@ -74,7 +75,7 @@ const Objects = (): JSX.Element => {
             <mesh position={[-4, 1, 0]}>
                 <primitive object={monitor} />
             </mesh>
-            <mesh position={[-4, -0.2, 0]}>
+            <mesh position={[-4, -0.5, 0]}>
                 <primitive object={phone} />
             </mesh>
             <mesh position={[4, 1, 0]}>
@@ -87,7 +88,6 @@ const Objects = (): JSX.Element => {
 const Photo = (): JSX.Element => {
     const photoTexture = useLoader(TextureLoader, 'images/photo.png');
     const photo = useRef(null);
-    const direction = new Vector3();
 
     useFrame(() => {
         moveElement(photo.current, photo.current.position, new Vector3(0, 0, 0), 0.01);
@@ -97,7 +97,6 @@ const Photo = (): JSX.Element => {
         <>
             <mesh
                 ref={photo}
-                position={[0, 0, -2]}
             >
                 <planeGeometry args={[8, 8]} />
                 <meshStandardMaterial transparent map={photoTexture} />
@@ -112,7 +111,6 @@ const Home = React.memo(() => {
 
     return (
         <>
-            <directionalLight position={[0, 1, 1]} intensity={1} color={'#fff'} />
             <Photo />
             <Circle />
             <Texts />

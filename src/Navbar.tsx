@@ -39,7 +39,7 @@ const Navbar = ({ items }: NavProps): JSX.Element => {
     return (
         <div className='navbar-container'>
             <div className='logo-container' onClick={() => onClick('HOME')}>
-                <motion.svg
+                {/* <motion.svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 200 100'
                     className='logo'
@@ -54,7 +54,7 @@ const Navbar = ({ items }: NavProps): JSX.Element => {
                             fill: { duration: 2, ease: [1, 0, 0.8, 1] }
                         }}
                     />
-                </motion.svg>
+                </motion.svg> */}
                 <p className='full-name'>KAMIL MROCZEK</p>
             </div>
 

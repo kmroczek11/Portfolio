@@ -1,0 +1,91 @@
+@font-face {
+  font-family: Oswald;
+  src: url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
+}
+
+.contact-form {
+  width: 30vw;
+  height: 70vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  font-family: "Oswald", sans-serif;
+}
+
+.contact-form div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 0 40%;
+          flex: 1 0 40%;
+  margin: 0.5vw;
+  background: #000;
+  border-radius: 20px;
+}
+
+.contact-form div span {
+  margin: 1vw;
+  font-size: 3em;
+  color: #fff;
+}
+
+.contact-form div input {
+  width: 10vw;
+  height: 5vh;
+  border-radius: 20px;
+  font-size: 1vw;
+}
+
+.contact-form div textarea {
+  width: 25vw;
+  height: 10vh;
+  border-radius: 20px;
+  font-size: 1vw;
+}
+
+.contact-form div .error {
+  color: #ff0000;
+  margin: 0;
+  font-size: 1vw;
+}
+
+.contact-form .break {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-preferred-size: 100%;
+      flex-basis: 100%;
+  height: 0;
+}
+
+.contact-form button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border-radius: 20px;
+  font-size: 1.5vw;
+  border: 0;
+  padding: 0.5vw;
+}
+
+.contact-form button:hover {
+  background: #ff0000;
+  cursor: pointer;
+}
+/*# sourceMappingURL=contact.css.map */
