@@ -2,11 +2,28 @@ import React, { Suspense, useContext, useMemo } from 'react';
 import Home from './Home';
 import { useFrame } from 'react-three-fiber'
 import { AppContext } from './context';
-import { moveElement } from './functions';
+import { moveObject } from './functions';
 import { Vector3 } from 'three/src/math/Vector3';
 import Education from './Education';
 import Projects from './Projects';
 import Contact from './Contact';
+import { Text, useProgress } from '@react-three/drei';
+
+const Loader = (): JSX.Element => {
+    const { active, progress, errors, item, loaded, total } = useProgress();
+    console.log(progress);
+
+    return <Text
+        position-z={1}
+        color='#ff0000'
+        font='fonts/Oswald.ttf'
+        fontSize={2}
+        textAlign='center'
+    >
+        Poczekaj chwilkę...{'\n'}
+        Załadowano {progress}%
+  </Text>
+}
 
 const Scene = (): JSX.Element => {
     console.log('scene rendered');
@@ -16,16 +33,16 @@ const Scene = (): JSX.Element => {
     useFrame(() => {
         switch (currentElement) {
             case 'HOME':
-                camera && moveElement(camera, camera.position, new Vector3(0, 0, 5), 0.01);
+                camera && moveObject(camera, camera.position, new Vector3(0, 0, 5), 0.01);
                 break;
             case 'EDUKACJA':
-                camera && moveElement(camera, camera.position, new Vector3(0, 0, -10), 0.01);
+                camera && moveObject(camera, camera.position, new Vector3(0, 0, -10), 0.01);
                 break;
             case 'PROJEKTY':
-                camera && moveElement(camera, camera.position, new Vector3(10, 0, -10), 0.01);
+                camera && moveObject(camera, camera.position, new Vector3(10, 0, -10), 0.01);
                 break;
             case 'KONTAKT':
-                camera && moveElement(camera, camera.position, new Vector3(10, 0, 5), 0.01);
+                camera && moveObject(camera, camera.position, new Vector3(10, 0, 5), 0.01);
                 break;
             default:
                 break;
@@ -34,9 +51,7 @@ const Scene = (): JSX.Element => {
 
     return (
         <>
-            <Suspense fallback={
-                null
-            }>
+            <Suspense fallback={<Loader />}>
                 <directionalLight position={[0, 1, 1]} intensity={1} color={'#fff'} />
                 <Home />
                 <Education />

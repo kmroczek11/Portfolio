@@ -1,6 +1,6 @@
 import { Vector3 } from 'three/src/math/Vector3';
 
-export const moveElement = (obj: any, position: Vector3, targetVector: Vector3, speed: number) => {
+export const moveObject = (obj: any, position: Vector3, targetVector: Vector3, speed: number) => {
     const direction = new Vector3();
     direction.subVectors(targetVector, position);
     const vector = direction.multiplyScalar(speed);

@@ -5,7 +5,7 @@ import { useFrame, useLoader } from 'react-three-fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { Vector3 } from 'three/src/math/Vector3';
-import { moveElement, rotateAroundPoint } from './functions';
+import { moveObject, rotateAroundPoint } from './functions';
 import { Text } from '@react-three/drei';
 import { MeshStandardMaterial } from 'three';
 
@@ -16,7 +16,7 @@ const Texts = (): JSX.Element => {
         [0, 1].forEach((e) => {
             var targetVector;
             e == 0 ? targetVector = new Vector3(-2, 0, 0.5) : targetVector = new Vector3(2, -1, 0.5);
-            moveElement(texts.current[e], texts.current[e].position, targetVector, 0.01);
+            moveObject(texts.current[e], texts.current[e].position, targetVector, 0.01);
         })
     })
 
@@ -90,7 +90,7 @@ const Photo = (): JSX.Element => {
     const photo = useRef(null);
 
     useFrame(() => {
-        moveElement(photo.current, photo.current.position, new Vector3(0, 0, 0), 0.01);
+        moveObject(photo.current, photo.current.position, new Vector3(0, 0, 0), 0.01);
     })
 
     return (

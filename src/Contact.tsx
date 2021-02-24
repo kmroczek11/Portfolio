@@ -3,24 +3,7 @@ import './styles/contact.css';
 import { Html } from '@react-three/drei';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
-// const Button = (): JSX.Element => {
-//     return (
-//     )
-// }
-
 const ContactForm = (): JSX.Element => {
-    const [name, setName] = useState<string>();
-    const [email, setEmail] = useState<string>();
-    const [phone, setPhone] = useState<string>();
-    const [link, setLink] = useState<string>();
-    const [message, setMessage] = useState<string>();
-
-    const nameChange = (event) => { setName(event.target.value); }
-    const emailChange = (event) => { setEmail(event.target.value); }
-    const phoneChange = (event) => { setPhone(event.target.value); }
-    const linkChange = (event) => { setLink(event.target.value); }
-    const messageChange = (event) => { setMessage(event.target.value); }
-
     return (
         <Html position={[10, 0, 0]} center>
             <Formik

@@ -8,6 +8,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
 import FPSStats from "react-fps-stats";
 import Scene from './Scene';
+import { useContextBridge } from '@react-three/drei';
 extend({ OrbitControls, TransformControls })
 
 declare global {
@@ -31,11 +32,14 @@ export interface NavbarItem {
 
 const App = (): JSX.Element => {
   const { state, dispatch } = useContext(AppContext);
+  const ContextBridge = useContextBridge(AppContext);
 
   return (
     <>
       <Navbar items={navbar_items} />
-      <Canvas style={{ width: '100vw', height: '100vh' }}
+      <Canvas
+        colorManagement={false}
+        style={{ width: '100vw', height: '100vh' }}
         onCreated={({ camera, gl: { domElement } }) => {
           // camera.position.set(0, 0, -10);
           dispatch({
@@ -48,9 +52,9 @@ const App = (): JSX.Element => {
           })
         }}
       >
-        <AppContext.Provider value={{ state, dispatch }}>
+        <ContextBridge>
           <Scene />
-        </AppContext.Provider>
+        </ContextBridge>
         {/* {state.scene.camera && state.scene.canvas && <orbitControls args={[state.scene.camera, state.scene.canvas]} />} */}
       </Canvas>
       <FPSStats />
