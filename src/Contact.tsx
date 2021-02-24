@@ -45,7 +45,7 @@ const ContactForm = (): JSX.Element => {
                         </div>
                         <div className='message'>
                             <span className='material-icons'>message</span>
-                            <Field type='text' name='message' placeholder='Wiadomość' as='textarea'/>
+                            <Field type='text' name='message' placeholder='Wiadomość' as='textarea' />
                         </div>
                         <div className='break' />
                         <button type='submit' disabled={isSubmitting}>Wyślij</button>
@@ -56,12 +56,12 @@ const ContactForm = (): JSX.Element => {
     )
 }
 
-const Contact = React.memo(() => {
+const Contact = (): JSX.Element => {
     console.log('contact rendered');
 
     return (
         <ContactForm />
     )
-})
+}
 
 export default Contact;
