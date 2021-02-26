@@ -1,10 +1,11 @@
 import React, { Suspense, useContext, useRef, useState, useEffect } from 'react';
 import { useFrame, useLoader } from 'react-three-fiber'
 import { AppContext } from './context';
-import { moveObject } from './functions';
+import { tweenObject } from './functions';
 import { Vector3 } from 'three/src/math/Vector3';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { Text } from '@react-three/drei';
+import TWEEN from '@tweenjs/tween.js';
 
 interface ProjectItem {
     id: number,
@@ -35,21 +36,35 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, x, y, active, onActive }:
     const technologies = useRef(null);
     const description = useRef(null);
     const texture = useLoader(TextureLoader, imageSrc);
+    const options = {
+        duration: 5000,
+        easing: TWEEN.Easing.Quadratic.InOut,
+        update: (d: Vector3) => {
+            // console.log(`Updating: ${d}`);
+        },
+        callback: () => {
+            // console.log('Completed');
+        }
+    }
 
     useEffect(() => {
         document.body.style.cursor = hovered ? 'pointer' : 'auto'
     }, [hovered])
 
     useFrame(() => {
+        TWEEN.update();
+    })
+
+    useFrame(() => {
         if (active) {
-            project && moveObject(project.current, project.current.position, new Vector3(10, 0.3, -11.5), 0.1);
-            technologies && moveObject(technologies.current, technologies.current.position, new Vector3(10, -0.65, -11.5), 0.1);
-            description && moveObject(description.current, description.current.position, new Vector3(11.2, 0.3, -11.6), 0.1);
+            project && tweenObject(project.current.position, new Vector3(10, 0.3, -11.5), options);
+            technologies && tweenObject(technologies.current.position, new Vector3(10, -0.65, -11.5), options);
+            description && tweenObject(description.current.position, new Vector3(11.2, 0.3, -11.6), options);
         }
         if (!active) {
-            project && moveObject(project.current, project.current.position, new Vector3(x, y, -13), 0.1);
-            technologies && moveObject(technologies.current, technologies.current.position, new Vector3(x, y - 0.55, -13), 0.1);
-            description && moveObject(description.current, description.current.position, new Vector3(x, y - 0.1, -13.1), 0.1);
+            project && tweenObject(project.current.position, new Vector3(x, y, -13), options);
+            technologies && tweenObject(technologies.current.position, new Vector3(x, y - 0.55, -13), options);
+            description && tweenObject(description.current.position, new Vector3(x, y - 0.1, -13.1), options);
         }
     })
 

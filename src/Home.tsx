@@ -5,20 +5,30 @@ import { useFrame, useLoader } from 'react-three-fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { Vector3 } from 'three/src/math/Vector3';
-import { moveObject, rotateAroundPoint } from './functions';
+import { tweenObject, rotateAroundPoint } from './functions';
 import { Text } from '@react-three/drei';
-import { MeshStandardMaterial } from 'three';
+import { Euler, MeshStandardMaterial } from 'three';
+import TWEEN from '@tweenjs/tween.js';
 
 const Texts = (): JSX.Element => {
     const texts = useRef([]);
 
-    useFrame(() => {
+    useEffect(() => {
         [0, 1].forEach((e) => {
             var targetVector;
             e == 0 ? targetVector = new Vector3(-2, 0, 0.5) : targetVector = new Vector3(2, -1, 0.5);
-            moveObject(texts.current[e], texts.current[e].position, targetVector, 0.01);
+            tweenObject(texts.current[e].position, targetVector, {
+                duration: 5000,
+                easing: TWEEN.Easing.Quadratic.InOut,
+                update: (d: Vector3) => {
+                    // console.log(`Updating: ${d}`);
+                },
+                callback: () => {
+                    // console.log('Completed');
+                }
+            })
         })
-    })
+    }, [])
 
     return (
         <>
@@ -64,10 +74,13 @@ const Objects = (): JSX.Element => {
     const phone = useLoader(OBJLoader, 'models/phone.obj');
     const tablet = useLoader(OBJLoader, 'models/tablet.obj');
 
+    const degToRad = (degrees: number) => degrees * (Math.PI / 180);
+
     useFrame(() => {
-        rotateAroundPoint(monitor, new Vector3(0, 0, 0), new Vector3(0, 1, 0), 1 * Math.PI / 180, true)
-        rotateAroundPoint(phone, new Vector3(0, 0, 0), new Vector3(0, 1, 0), 1 * Math.PI / 180, true)
-        rotateAroundPoint(tablet, new Vector3(0, 0, 0), new Vector3(0, 1, 0), 1 * Math.PI / 180, true)
+        rotateAroundPoint(monitor, new Vector3(0, 0, 0), new Vector3(0, 1, 0), 1 * Math.PI / 180, true);
+        rotateAroundPoint(phone, new Vector3(0, 0, 0), new Vector3(0, 1, 0), 1 * Math.PI / 180, true);
+        rotateAroundPoint(tablet, new Vector3(0, 0, 0), new Vector3(0, 1, 0), 1 * Math.PI / 180, true);
+        TWEEN.update();
     })
 
     return (
@@ -89,9 +102,18 @@ const Photo = (): JSX.Element => {
     const photoTexture = useLoader(TextureLoader, 'images/photo.png');
     const photo = useRef(null);
 
-    useFrame(() => {
-        moveObject(photo.current, photo.current.position, new Vector3(0, 0, 0), 0.01);
-    })
+    useEffect(() => {
+        tweenObject(photo.current.position, new Vector3(0, 0, 0), {
+            duration: 5000,
+            easing: TWEEN.Easing.Quadratic.InOut,
+            update: (d: Vector3) => {
+                // console.log(`Updating: ${d}`);
+            },
+            callback: () => {
+                // console.log('Completed');
+            }
+        })
+    }, [])
 
     return (
         <>
