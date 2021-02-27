@@ -11,7 +11,7 @@
     &:hover {
       cursor: pointer;
     }
-    
+
     .logo {
       width: 10vw;
       height: 10vh;
@@ -25,7 +25,7 @@
       font-family: $font_family;
       font-style: normal;
       font-weight: 400;
-      font-size: 36px;
+      font-size: 3vw;
       color: $white;
     }
   }
@@ -47,8 +47,7 @@
       font-family: $font_family;
       font-style: normal;
       font-weight: 400;
-      font-size: 36px;
-      line-height: 53px;
+      font-size: 2vw;
       color: $white;
 
       &:hover {

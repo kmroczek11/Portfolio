@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import './styles/app.css';
-import Navbar from './Navbar';
 import { AppContext } from './context';
 import { Types } from './context/reducers';
 import { Canvas, extend, ReactThreeFiber } from 'react-three-fiber';
@@ -19,24 +18,12 @@ declare global {
   }
 }
 
-const navbar_items: Array<NavbarItem> = [
-  { id: 0, name: 'EDUKACJA' },
-  { id: 1, name: 'PROJEKTY' },
-  { id: 2, name: 'KONTAKT' },
-]
-
-export interface NavbarItem {
-  id: number,
-  name: string,
-}
-
 const App = (): JSX.Element => {
   const { state, dispatch } = useContext(AppContext);
   const ContextBridge = useContextBridge(AppContext);
 
   return (
     <>
-      <Navbar items={navbar_items} />
       <Canvas
         colorManagement={false}
         style={{ width: '100vw', height: '100vh' }}

@@ -14,7 +14,7 @@ const Texts = (): JSX.Element => {
 
     useFrame(() => {
         [0, 1].forEach((e) => {
-            var targetVector;
+            var targetVector: Vector3;
             e == 0 ? targetVector = new Vector3(-2, 0, 0.5) : targetVector = new Vector3(2, -1, 0.5);
             moveObject(texts.current[e], texts.current[e].position, targetVector, 0.01);
         })

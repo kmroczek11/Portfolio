@@ -41,7 +41,7 @@
   font-family: "Oswald", sans-serif;
   font-style: normal;
   font-weight: 400;
-  font-size: 36px;
+  font-size: 3vw;
   color: #fff;
 }
 
@@ -68,8 +68,7 @@
   font-family: "Oswald", sans-serif;
   font-style: normal;
   font-weight: 400;
-  font-size: 36px;
-  line-height: 53px;
+  font-size: 2vw;
   color: #fff;
 }
 
