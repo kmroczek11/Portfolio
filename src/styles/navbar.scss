@@ -1,45 +1,40 @@
 @import "./variables";
 
-.navbar-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.full-name {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25vw;
+  margin: 2vw;
+  font-family: $font_family;
+  font-weight: 400;
+  font-size: 3vw;
+  color: $white;
+  text-decoration: none;
+  z-index: 1;
 
-  .logo-container {
-    display: flex;
-    align-items: center;
-    &:hover {
-      cursor: pointer;
-    }
-
-    .logo {
-      width: 10vw;
-      height: 10vh;
-      stroke: $orange;
-      stroke-width: 15;
-      stroke-linejoin: miter;
-      stroke-linecap: square;
-    }
-
-    .full-name {
-      font-family: $font_family;
-      font-style: normal;
-      font-weight: 400;
-      font-size: 3vw;
-      color: $white;
-    }
+  &:hover {
+    cursor: pointer;
   }
+}
 
-  ul {
-    display: flex;
-    flex-direction: row;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+ul {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: row;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 
-    li a {
+  li {
+    z-index: 1;
+
+    a {
       display: block;
+      margin: 2vw;
       color: $white;
       text-align: center;
       padding: 0 30px 0 30px;
@@ -51,7 +46,7 @@
       color: $white;
 
       &:hover {
-        color: $black;
+        color: $red;
         cursor: pointer;
       }
     }

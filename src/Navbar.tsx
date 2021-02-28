@@ -1,19 +1,27 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import './styles/navbar.css';
-import { NavbarItem } from './Scene';
+import { NavbarItem } from './App';
+import { motion } from 'framer-motion';
 import { AppContext } from './context';
 import { Types } from './context/reducers';
-import { Html } from '@react-three/drei';
-import { Shader, WebGLRenderer } from 'three';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+import Education from './Education';
+import Projects from './Projects';
+import Home from './Home';
+import Contact from './Contact';
 
 interface NavProps {
     items: Array<NavbarItem>
 }
 
-const Navbar = React.memo(({ items }: NavProps) => {
+const Navbar = ({ items }: NavProps): JSX.Element => {
     console.log('navbar rendered');
     const { state, dispatch } = useContext(AppContext);
-    const { camera } = state.scene;
 
     const onClick = (element: string) => {
         dispatch({
@@ -23,24 +31,19 @@ const Navbar = React.memo(({ items }: NavProps) => {
     }
 
     return (
-        <mesh position-y={3} renderOrder={999}>
-            <meshStandardMaterial depthTest={false} />
-            <Html fullscreen className='navbar-container'>
-                <div className='logo-container' onClick={() => onClick('HOME')}>
-                    <p className='full-name'>KAMIL MROCZEK</p>
-                </div>
-                <ul>
-                    {
-                        items.map((item: NavbarItem, index: number) =>
-                            <li key={index} onClick={() => onClick(item.name)}>
-                                <a>{item.name}</a>
-                            </li>
-                        )
-                    }
-                </ul>
-            </Html>
-        </mesh>
+        <Router>
+            <Link className='full-name' to={'/'} onClick={() => onClick('HOME')} >KAMIL MROCZEK</ Link>
+            <ul>
+                {
+                    items.map((item: NavbarItem, index: number) =>
+                        <li key={index} onClick={() => onClick(item.name)}>
+                            <Link to={item.link}>{item.name}</Link>
+                        </li>
+                    )
+                }
+            </ul>
+        </Router >
     )
-})
+}
 
 export default Navbar;

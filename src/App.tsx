@@ -2,20 +2,21 @@ import React, { useContext } from 'react';
 import './styles/app.css';
 import { AppContext } from './context';
 import { Types } from './context/reducers';
-import { Canvas, extend, ReactThreeFiber } from 'react-three-fiber';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls'
-import FPSStats from "react-fps-stats";
+import { Canvas } from 'react-three-fiber';
+import Navbar from './Navbar';
 import Scene from './Scene';
-import { useContextBridge } from '@react-three/drei';
-extend({ OrbitControls, TransformControls })
+import { Stats, useContextBridge } from '@react-three/drei';
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      orbitControls: ReactThreeFiber.Object3DNode<OrbitControls, typeof OrbitControls>
-    }
-  }
+const navbar_items: Array<NavbarItem> = [
+  { id: 0, name: 'EDUKACJA', link: '/education' },
+  { id: 1, name: 'PROJEKTY', link: '/projects' },
+  { id: 2, name: 'KONTAKT', link: '/contact' },
+]
+
+export interface NavbarItem {
+  id: number,
+  name: string,
+  link: string,
 }
 
 const App = (): JSX.Element => {
@@ -24,6 +25,7 @@ const App = (): JSX.Element => {
 
   return (
     <>
+      <Navbar items={navbar_items} />
       <Canvas
         colorManagement={false}
         style={{ width: '100vw', height: '100vh' }}
@@ -42,9 +44,8 @@ const App = (): JSX.Element => {
         <ContextBridge>
           <Scene />
         </ContextBridge>
-        {/* {state.scene.camera && state.scene.canvas && <orbitControls args={[state.scene.camera, state.scene.canvas]} />} */}
       </Canvas>
-      <FPSStats />
+      <Stats showPanel={0} />
     </>
   )
 }

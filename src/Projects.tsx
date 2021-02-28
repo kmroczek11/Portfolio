@@ -5,9 +5,18 @@ import { moveObject } from './functions';
 import { Vector3 } from 'three/src/math/Vector3';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { Text } from '@react-three/drei';
+import { Link } from "react-router-dom";
+
+// interface ProjectsProps {
+//     match: {
+//         params: {
+//             id: string
+//         }
+//     }
+// }
 
 interface ProjectItem {
-    id: number,
+    id?: string,
     name: string,
     videoSrc: string,
     imageSrc: string,
@@ -36,7 +45,7 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active, onA
     const description = useRef(null);
     const texture = useLoader(TextureLoader, imageSrc);
     const { viewport } = useThree();
-    console.log(viewport.width, viewport.height);
+    // console.log(viewport.width, viewport.height);
 
     useEffect(() => {
         document.body.style.cursor = hovered ? 'pointer' : 'auto'
@@ -69,23 +78,31 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active, onA
         }
     })
 
+    const onClick = () => {
+        // if (project.current) {
+        //     project.current.renderOrder = 999;
+        //     project.current.material.depthOffset = false;
+        //     project.current.material.depthWrite = false;
+        //     project.current.onBeforeRender = (renderer) => renderer.clearDepth();
+        // }
+        onActive(name);
+    }
+
     return (
         <>
-            <group
+            <mesh
                 ref={project}
-                // scale={[ax, ay, 1]}
                 position={[x, y - 0.1, -13.1]}
-                onClick={() => onActive(name)}
+                onClick={() => onClick()}
                 onPointerOver={() => setHovered(true)}
                 onPointerOut={() => setHovered(false)}
             >
-                <mesh>
-                    <planeBufferGeometry args={[1.5, 1.5]} />
-                    <meshBasicMaterial >
-                        <videoTexture attach='map' args={[video]} />
-                    </meshBasicMaterial>
-                </mesh>
-            </group>
+                <planeBufferGeometry args={[1.5, 1.5]} />
+                <meshBasicMaterial>
+                    <videoTexture attach='map' args={[video]} />
+                </meshBasicMaterial>
+            </mesh>
+            {/* <Link to={'/projects'} /> */}
             <group
                 ref={description}
                 position={[x, y, -13]}
@@ -119,24 +136,26 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active, onA
                 </group>
                 <mesh position-y={-0.95}>
                     <planeBufferGeometry args={[1.5, 0.4]} />
-                    <meshStandardMaterial map={texture} transparent />
+                    <meshStandardMaterial map={texture} />
                 </mesh>
             </group>
         </>
     )
 }
 
+// const Projects = React.memo(({ match }: ProjectsProps) => {
 const Projects = React.memo(() => {
     console.log('projects rendered');
+    // let { id } = match.params;
     const [projectItems, setProjectItems] = useState<Array<ProjectItem>>([
-        { id: 0, name: 'PROJEKT STRONY GFE', videoSrc: 'videos/gfe.mp4', imageSrc: 'images/descriptions/gfe.svg', desc: 'STRONA STWORZONA NA PRAKTYKACH W TRZECIEJ KLASIE TECHNIKUM W FIRMIE BFIRST.TECH.', medium: 'desktop', x: 7, y: 1, active: false },
-        { id: 1, name: 'PROJEKT STRONY STALCRAFT', videoSrc: 'videos/stalcraft.mp4', imageSrc: 'images/descriptions/stalcraft.svg', desc: 'PROSTA STRONA WYKONANA DLA FIRMY STALCRAFT.', medium: 'desktop', x: 9, y: 1, active: false },
-        { id: 2, name: 'PROJEKT SKLEPU INTERNETOWEGO', videoSrc: '', imageSrc: 'images/descriptions/shop.svg', desc: 'PROJEKT SKLEPU INTERNETOWEGO Z GRAMI KOMPUTEROWYMI UTWORZONY W CZWARTEJ KLASIE TECHNIKUM.', medium: 'desktop', x: 11, y: 1, active: false },
-        { id: 3, name: 'CORONASTATS', videoSrc: 'videos/coronastats.mp4', imageSrc: 'images/descriptions/coronastats.svg', desc: 'PROJEKT APLIKACJI MOBILNEJ PRZEDSTAWIAJĄCEJ ROZWÓJ COVID-19. DANE POBIERANE SĄ Z OFICJALNEJ BAZY DANYCH WHO.', medium: 'phone', x: 13, y: 1, active: false },
-        { id: 4, name: 'MARBLES', videoSrc: 'videos/marbles.mp4', imageSrc: 'images/descriptions/marbles.svg', desc: 'PROJEKT KOŃCOWOROCZNY WYKONANY W TRZECIEJ KLASIE TECHNIKUM POLEGAJĄCY NA STWORZENIU GRY LOGICZNEJ. GRA POLEGA NA ZBIJANIU KULEK.', medium: 'desktop', x: 7, y: -1, active: false },
-        { id: 5, name: 'MP3 PLAYER', videoSrc: 'videos/mp3player.mp4', imageSrc: 'images/descriptions/mp3player.svg', desc: 'PROJEKT ODTWARZACZA MP3. UTWORY ŁADOWANE SĄ Z LOKALNYCH FOLDERÓW.', medium: 'desktop', x: 9, y: -1, active: false },
-        { id: 6, name: 'TASKY', videoSrc: 'videos/tasky.mp4', imageSrc: 'images/descriptions/tasky.svg', desc: 'PROJEKT APLIKACJI MOBILNEJ DO EFEKTYWNEGO ZARZĄDZANIA SWOIMI ZADANIAMI. APLIKACJA SŁUŻY DO LEPSZEGO ZARZĄDZANIA SWOIM CZASEM.', medium: 'phone', x: 11, y: -1, active: false },
-        { id: 7, name: 'MOJE PORTFOLIO', videoSrc: '', imageSrc: 'images/descriptions/portfolio.svg', desc: 'PROJEKT MOJEGO PORTFOLIO.', medium: 'desktop', x: 13, y: -1, active: false },
+        { name: 'PROJEKT STRONY GFE', videoSrc: 'videos/gfe.mp4', imageSrc: 'images/descriptions/gfe.svg', desc: 'STRONA STWORZONA NA PRAKTYKACH W TRZECIEJ KLASIE TECHNIKUM W FIRMIE BFIRST.TECH.', medium: 'desktop', x: 7, y: 1, active: false },
+        { name: 'PROJEKT STRONY STALCRAFT', videoSrc: 'videos/stalcraft.mp4', imageSrc: 'images/descriptions/stalcraft.svg', desc: 'PROSTA STRONA WYKONANA DLA FIRMY STALCRAFT.', medium: 'desktop', x: 9, y: 1, active: false },
+        { name: 'PROJEKT SKLEPU INTERNETOWEGO', videoSrc: '', imageSrc: 'images/descriptions/shop.svg', desc: 'PROJEKT SKLEPU INTERNETOWEGO Z GRAMI KOMPUTEROWYMI UTWORZONY W CZWARTEJ KLASIE TECHNIKUM.', medium: 'desktop', x: 11, y: 1, active: false },
+        { name: 'CORONASTATS', videoSrc: 'videos/coronastats.mp4', imageSrc: 'images/descriptions/coronastats.svg', desc: 'PROJEKT APLIKACJI MOBILNEJ PRZEDSTAWIAJĄCEJ ROZWÓJ COVID-19. DANE POBIERANE SĄ Z OFICJALNEJ BAZY DANYCH WHO.', medium: 'phone', x: 13, y: 1, active: false },
+        { name: 'MARBLES', videoSrc: 'videos/marbles.mp4', imageSrc: 'images/descriptions/marbles.svg', desc: 'PROJEKT KOŃCOWOROCZNY WYKONANY W TRZECIEJ KLASIE TECHNIKUM POLEGAJĄCY NA STWORZENIU GRY LOGICZNEJ. GRA POLEGA NA ZBIJANIU KULEK.', medium: 'desktop', x: 7, y: -1, active: false },
+        { name: 'MP3 PLAYER', videoSrc: 'videos/mp3player.mp4', imageSrc: 'images/descriptions/mp3player.svg', desc: 'PROJEKT ODTWARZACZA MP3. UTWORY ŁADOWANE SĄ Z LOKALNYCH FOLDERÓW.', medium: 'desktop', x: 9, y: -1, active: false },
+        { name: 'TASKY', videoSrc: 'videos/tasky.mp4', imageSrc: 'images/descriptions/tasky.svg', desc: 'PROJEKT APLIKACJI MOBILNEJ DO EFEKTYWNEGO ZARZĄDZANIA SWOIMI ZADANIAMI. APLIKACJA SŁUŻY DO LEPSZEGO ZARZĄDZANIA SWOIM CZASEM.', medium: 'phone', x: 11, y: -1, active: false },
+        { name: 'MOJE PORTFOLIO', videoSrc: '', imageSrc: 'images/descriptions/portfolio.svg', desc: 'PROJEKT MOJEGO PORTFOLIO.', medium: 'desktop', x: 13, y: -1, active: false },
     ]);
     const [activeName, setActiveName] = useState<string>(null);
 
@@ -160,6 +179,7 @@ const Projects = React.memo(() => {
                     (e: ProjectItem, i: number) =>
                         <Project
                             key={i}
+                            // id={id}
                             {...e}
                             onActive={(name: string) => setActiveName(name)}
                         />

@@ -4,22 +4,10 @@ import { useFrame } from 'react-three-fiber'
 import { AppContext } from './context';
 import { moveObject } from './functions';
 import { Vector3 } from 'three/src/math/Vector3';
-import Navbar from './Navbar';
 import Education from './Education';
 import Projects from './Projects';
 import Contact from './Contact';
-import { Text, useProgress } from '@react-three/drei';
-
-const navbar_items: Array<NavbarItem> = [
-    { id: 0, name: 'EDUKACJA' },
-    { id: 1, name: 'PROJEKTY' },
-    { id: 2, name: 'KONTAKT' },
-]
-
-export interface NavbarItem {
-    id: number,
-    name: string,
-}
+import { OrbitControls, Text, useProgress } from '@react-three/drei';
 
 const Loader = (): JSX.Element => {
     const { active, progress, errors, item, loaded, total } = useProgress();
@@ -63,13 +51,13 @@ const Scene = (): JSX.Element => {
     return (
         <>
             <Suspense fallback={<Loader />}>
-                <directionalLight position={[0, 1, 1]} intensity={1} color={'#fff'} />
-                <Navbar items={navbar_items} />
                 <Home />
                 <Education />
                 <Projects />
                 <Contact />
             </Suspense>
+            <directionalLight position={[0, 1, 1]} intensity={1} color={'#fff'} />
+            {/* <OrbitControls listenToKeyEvents /> */}
         </>
     )
 }
