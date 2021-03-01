@@ -4,16 +4,7 @@ import { NavbarItem } from './App';
 import { motion } from 'framer-motion';
 import { AppContext } from './context';
 import { Types } from './context/reducers';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-} from "react-router-dom";
-import Education from './Education';
-import Projects from './Projects';
-import Home from './Home';
-import Contact from './Contact';
+import { Link } from "react-router-dom";
 
 interface NavProps {
     items: Array<NavbarItem>
@@ -31,7 +22,7 @@ const Navbar = ({ items }: NavProps): JSX.Element => {
     }
 
     return (
-        <Router>
+        <>
             <Link className='full-name' to={'/'} onClick={() => onClick('HOME')} >KAMIL MROCZEK</ Link>
             <ul>
                 {
@@ -42,7 +33,7 @@ const Navbar = ({ items }: NavProps): JSX.Element => {
                     )
                 }
             </ul>
-        </Router >
+        </>
     )
 }
 

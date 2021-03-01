@@ -3,12 +3,33 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AppProvider } from './context';
+import { createBrowserHistory } from 'history';
+import { Router, Route, } from 'react-router-dom';
+
+declare global {
+  interface Window {
+    appHistory: any;
+  }
+}
+
+const customHistory = createBrowserHistory({
+  // basename: config.urlBasename || ""
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <AppProvider>
-      <App />
-    </AppProvider>
+    <Router history={customHistory}>
+      <Route
+        component={({ history }) => {
+          window.appHistory = history;
+          return (
+            <AppProvider>
+              <App />
+            </AppProvider>
+          )
+        }}
+      />
+    </Router>,
   </React.StrictMode>,
   document.getElementById('root')
 );
