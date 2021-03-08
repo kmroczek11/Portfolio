@@ -3,7 +3,7 @@
   src: url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
 }
 
-.full-name {
+.navbar-container .full-name {
   position: absolute;
   top: 0;
   left: 0;
@@ -17,14 +17,11 @@
   z-index: 1;
 }
 
-.full-name:hover {
+.navbar-container .full-name:hover {
   cursor: pointer;
 }
 
-ul {
-  position: absolute;
-  top: 0;
-  right: 0;
+.navbar-container ul {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -32,22 +29,31 @@ ul {
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
           flex-direction: row;
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  position: absolute;
+  width: 50vw;
+  height: 10vh;
+  top: 0;
+  right: 0;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
 }
 
-ul li {
+.navbar-container ul li {
   z-index: 1;
 }
 
-ul li a {
+.navbar-container ul li a {
   display: block;
-  margin: 2vw;
   color: #fff;
   text-align: center;
-  padding: 0 30px 0 30px;
   text-decoration: none;
   font-family: "Oswald", sans-serif;
   font-style: normal;
@@ -56,8 +62,18 @@ ul li a {
   color: #fff;
 }
 
-ul li a:hover {
+.navbar-container ul li a:hover {
   color: #ff0000;
+  cursor: pointer;
+}
+
+.navbar-container ul img {
+  z-index: 1;
+  width: 6vw;
+  height: 8vh;
+}
+
+.navbar-container ul img:hover {
   cursor: pointer;
 }
 /*# sourceMappingURL=navbar.css.map */

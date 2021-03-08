@@ -1,17 +1,25 @@
-import React, { Suspense, useContext, useRef, useState, useEffect } from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import { useFrame, useLoader, useThree } from 'react-three-fiber'
 import { AppContext } from './context';
 import { moveObject } from './functions';
 import { Vector3 } from 'three/src/math/Vector3';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { Text } from '@react-three/drei';
+import { Types } from './context/reducers';
+import { useTranslation } from 'react-i18next';
+
+declare global {
+    interface Window {
+        appHistory: any;
+    }
+}
 
 interface ProjectItem {
     id: string,
-    name: string,
+    name?: string,
     videoSrc: string,
     imageSrc: string,
-    desc: string,
+    desc?: string,
     medium: string,
     x: number,
     y: number,
@@ -19,7 +27,6 @@ interface ProjectItem {
 }
 
 const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: ProjectItem): JSX.Element => {
-    // const [ax, ay] = useAspect('cover', 2, 3);
     const [hovered, setHovered] = useState<boolean>(false);
     const [video] = useState(() => {
         const vid = document.createElement('video');
@@ -33,7 +40,8 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: P
     });
     const project = useRef(null);
     const description = useRef(null);
-    const texture = useLoader(TextureLoader, imageSrc);
+    const image = useLoader(TextureLoader, imageSrc);
+    const blackStone = useLoader(TextureLoader, 'images/textures/black_stone.jpg');
     const { viewport } = useThree();
     // console.log(viewport.width, viewport.height);
 
@@ -42,14 +50,14 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: P
     }, [hovered])
 
     useEffect(() => {
-        active ? video.play() : video.pause();
-    }, [active])
+        video && active ? video.play() : video.pause();
+    }, [video, active])
 
     useFrame(() => {
         if (active) {
             var maxWidth: number;
             var maxHeight: number;
-            if (medium == 'desktop') {
+            if (medium === 'desktop') {
                 maxWidth = viewport.width / 5;
                 maxHeight = viewport.height / 5;
             }
@@ -69,12 +77,6 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: P
     })
 
     const onClick = () => {
-        // if (project.current) {
-        //     project.current.renderOrder = 999;
-        //     project.current.material.depthOffset = false;
-        //     project.current.material.depthWrite = false;
-        //     project.current.onBeforeRender = (renderer) => renderer.clearDepth();
-        // }
         window.appHistory.push(`/projects/${id}`);
     }
 
@@ -92,14 +94,13 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: P
                     <videoTexture attach='map' args={[video]} />
                 </meshBasicMaterial>
             </mesh>
-            {/* <Link to={'/projects'} /> */}
             <group
                 ref={description}
                 position={[x, y, -13]}
             >
                 <mesh >
                     <planeBufferGeometry args={[1.5, 1.5]} />
-                    <meshStandardMaterial color='#000' />
+                    <meshBasicMaterial map={blackStone} />
                 </mesh>
                 <group>
                     <Text
@@ -126,7 +127,7 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: P
                 </group>
                 <mesh position-y={-0.95}>
                     <planeBufferGeometry args={[1.5, 0.4]} />
-                    <meshStandardMaterial map={texture} />
+                    <meshStandardMaterial map={image} transparent />
                 </mesh>
             </group>
         </>
@@ -135,25 +136,39 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: P
 
 const Projects = React.memo(() => {
     console.log('projects rendered');
+    const { dispatch } = useContext(AppContext);
     const [projectItems, setProjectItems] = useState<Array<ProjectItem>>([
-        { id: 'gfe', name: 'PROJEKT STRONY GFE', videoSrc: 'videos/gfe.mp4', imageSrc: 'images/descriptions/gfe.svg', desc: 'STRONA STWORZONA NA PRAKTYKACH W TRZECIEJ KLASIE TECHNIKUM W FIRMIE BFIRST.TECH.', medium: 'desktop', x: 7, y: 1, active: false },
-        { id: 'stalcraft', name: 'PROJEKT STRONY STALCRAFT', videoSrc: 'videos/stalcraft.mp4', imageSrc: 'images/descriptions/stalcraft.svg', desc: 'PROSTA STRONA WYKONANA DLA FIRMY STALCRAFT.', medium: 'desktop', x: 9, y: 1, active: false },
-        { id: 'shop', name: 'PROJEKT SKLEPU INTERNETOWEGO', videoSrc: '', imageSrc: 'images/descriptions/shop.svg', desc: 'PROJEKT SKLEPU INTERNETOWEGO Z GRAMI KOMPUTEROWYMI UTWORZONY W CZWARTEJ KLASIE TECHNIKUM.', medium: 'desktop', x: 11, y: 1, active: false },
-        { id: 'coronastats', name: 'CORONASTATS', videoSrc: 'videos/coronastats.mp4', imageSrc: 'images/descriptions/coronastats.svg', desc: 'PROJEKT APLIKACJI MOBILNEJ PRZEDSTAWIAJĄCEJ ROZWÓJ COVID-19. DANE POBIERANE SĄ Z OFICJALNEJ BAZY DANYCH WHO.', medium: 'phone', x: 13, y: 1, active: false },
-        { id: 'marbles', name: 'MARBLES', videoSrc: 'videos/marbles.mp4', imageSrc: 'images/descriptions/marbles.svg', desc: 'PROJEKT KOŃCOWOROCZNY WYKONANY W TRZECIEJ KLASIE TECHNIKUM POLEGAJĄCY NA STWORZENIU GRY LOGICZNEJ. GRA POLEGA NA ZBIJANIU KULEK.', medium: 'desktop', x: 7, y: -1, active: false },
-        { id: 'mp3player', name: 'MP3 PLAYER', videoSrc: 'videos/mp3player.mp4', imageSrc: 'images/descriptions/mp3player.svg', desc: 'PROJEKT ODTWARZACZA MP3. UTWORY ŁADOWANE SĄ Z LOKALNYCH FOLDERÓW.', medium: 'desktop', x: 9, y: -1, active: false },
-        { id: 'tasky', name: 'TASKY', videoSrc: 'videos/tasky.mp4', imageSrc: 'images/descriptions/tasky.svg', desc: 'PROJEKT APLIKACJI MOBILNEJ DO EFEKTYWNEGO ZARZĄDZANIA SWOIMI ZADANIAMI. APLIKACJA SŁUŻY DO LEPSZEGO ZARZĄDZANIA SWOIM CZASEM.', medium: 'phone', x: 11, y: -1, active: false },
-        { id: 'portfolio', name: 'MOJE PORTFOLIO', videoSrc: '', imageSrc: 'images/descriptions/portfolio.svg', desc: 'PROJEKT MOJEGO PORTFOLIO.', medium: 'desktop', x: 13, y: -1, active: false },
+        { id: 'gfe', videoSrc: 'videos/gfe.mp4', imageSrc: 'images/descriptions/gfe.svg', medium: 'desktop', x: 7, y: 1, active: false },
+        { id: 'stalcraft', videoSrc: 'videos/stalcraft.mp4', imageSrc: 'images/descriptions/stalcraft.svg', medium: 'desktop', x: 9, y: 1, active: false },
+        { id: 'shop', videoSrc: 'videos/shop.mp4', imageSrc: 'images/descriptions/shop.svg', medium: 'desktop', x: 11, y: 1, active: false },
+        { id: 'coronastats', videoSrc: 'videos/coronastats.mp4', imageSrc: 'images/descriptions/coronastats.svg', medium: 'phone', x: 13, y: 1, active: false },
+        { id: 'marbles', videoSrc: 'videos/marbles.mp4', imageSrc: 'images/descriptions/marbles.svg', medium: 'desktop', x: 7, y: -1, active: false },
+        { id: 'mp3player', videoSrc: 'videos/mp3player.mp4', imageSrc: 'images/descriptions/mp3player.svg', medium: 'desktop', x: 9, y: -1, active: false },
+        { id: 'tasky', videoSrc: 'videos/tasky.mp4', imageSrc: 'images/descriptions/tasky.svg', medium: 'phone', x: 11, y: -1, active: false },
+        { id: 'portfolio', videoSrc: '', imageSrc: 'images/descriptions/portfolio.svg', medium: 'desktop', x: 13, y: -1, active: false },
     ]);
+    const { t, i18n } = useTranslation();
 
     const unlisten = window.appHistory.listen((location: any) => {
         setProjectItems(prevProjectItems =>
             prevProjectItems.map(
                 (e: ProjectItem) =>
-                    e.id == location.pathname.split('/')[2] ?
+                    e.id === location.pathname.split('/')[2] ?
                         { ...e, active: true } : { ...e, active: false }
             ))
     })
+
+    useEffect(() => {
+        projectItems.some((e: ProjectItem) => e.active) ?
+            dispatch({
+                type: Types.SetFullScreen,
+                payload: true,
+            }) :
+            dispatch({
+                type: Types.SetFullScreen,
+                payload: false,
+            })
+    }, [projectItems])
 
     return (
         <>
@@ -162,8 +177,9 @@ const Projects = React.memo(() => {
                     (e: ProjectItem, i: number) =>
                         <Project
                             key={i}
-                            // id={id}
                             {...e}
+                            name={t(`projectTitles.${i}`)}
+                            desc={t(`projectDesc.${i}`)}
                         />
                 )
             }

@@ -1,22 +1,21 @@
-import React, { useEffect, useRef, useState, Suspense, forwardRef } from 'react';
-import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
 import { useFrame, useLoader } from 'react-three-fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { Vector3 } from 'three/src/math/Vector3';
 import { moveObject, rotateAroundPoint } from './functions';
 import { Text } from '@react-three/drei';
-import { MeshStandardMaterial } from 'three';
+import { useTranslation } from 'react-i18next';
 
 const Texts = (): JSX.Element => {
     const texts = useRef([]);
+    const { t, i18n } = useTranslation();
 
     useFrame(() => {
         [0, 1].forEach((e) => {
             var targetVector: Vector3;
-            e == 0 ? targetVector = new Vector3(-2, 0, 0.5) : targetVector = new Vector3(2, -1, 0.5);
-            moveObject(texts.current[e], texts.current[e].position, targetVector, 0.01);
+            e === 0 ? targetVector = new Vector3(-2, 0, 0.5) : targetVector = new Vector3(2, -1, 0.5);
+            texts.current[e] && moveObject(texts.current[e], texts.current[e].position, targetVector, 0.01);
         })
     })
 
@@ -29,7 +28,7 @@ const Texts = (): JSX.Element => {
                 fontSize={1}
                 textAlign='center'
             >
-                DEWELOPER, KTÓREGO
+                {t('homeDesc.0')}
             </Text>
             <Text
                 ref={el => texts.current[1] = el}
@@ -38,7 +37,7 @@ const Texts = (): JSX.Element => {
                 fontSize={1}
                 textAlign='center'
             >
-                POTRZEBUJESZ
+                {t('homeDesc.1')}
             </Text>
         </>
     )
@@ -46,6 +45,7 @@ const Texts = (): JSX.Element => {
 
 const Circle = (): JSX.Element => {
     const circle = useRef(null);
+    const blackStone = useLoader(TextureLoader, 'images/textures/black_stone.jpg');
 
     return (
         <mesh
@@ -54,7 +54,7 @@ const Circle = (): JSX.Element => {
             receiveShadow
         >
             <circleGeometry args={[3.5, 100]} />
-            <meshPhongMaterial color={'#000'} />
+            <meshPhongMaterial map={blackStone} />
         </mesh>
     )
 }
@@ -90,13 +90,14 @@ const Photo = (): JSX.Element => {
     const photo = useRef(null);
 
     useFrame(() => {
-        moveObject(photo.current, photo.current.position, new Vector3(0, 0, 0), 0.01);
+        photo.current && moveObject(photo.current, photo.current.position, new Vector3(0, 0, 0), 0.01);
     })
 
     return (
         <>
             <mesh
                 ref={photo}
+            // position={[0, 0, -1]}
             >
                 <planeGeometry args={[8, 8]} />
                 <meshStandardMaterial transparent map={photoTexture} />

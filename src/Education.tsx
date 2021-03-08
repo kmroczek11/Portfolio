@@ -1,14 +1,15 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useFrame, useLoader } from 'react-three-fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
-import { RoundedBox, Text } from '@react-three/drei';
-import { MeshStandardMaterial } from 'three';
+import { Text } from '@react-three/drei';
+import { TextureLoader } from 'three/src/loaders/TextureLoader';
+import { useTranslation } from 'react-i18next';
 
 interface InstitutionItem {
     id: number,
-    name: string,
+    name?: string,
     objSrc: string,
-    desc: string,
+    desc?: string,
     scale: number,
     x: number,
     y: number,
@@ -16,6 +17,7 @@ interface InstitutionItem {
 
 const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): JSX.Element => {
     const obj = useLoader(OBJLoader, objSrc);
+    const blackStone = useLoader(TextureLoader, 'images/textures/black_stone.jpg');
 
     useFrame(() => {
         obj.rotation.y += 0.01;
@@ -25,6 +27,7 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): 
         <group position={[x, y, -13]}>
             <mesh scale={[scale, scale, scale]}>
                 <primitive object={obj} />
+                <meshBasicMaterial map={blackStone} />
             </mesh>
             <Text
                 color='#fff'
@@ -51,16 +54,17 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): 
 const Education = React.memo(() => {
     const [institutionItems, setInstitutionItems] = useState<Array<InstitutionItem>>(
         [
-            { id: 0, name: 'GIMNAZJUM\nW RZEZAWIE', objSrc: 'models/school.obj', desc: 'TUTAJ STAWIAŁEM SWOJE PIERWSZE KROKI\nPISAŁEM PROSTE STRONY I PROGRAMY\nSWOJĄ PRZYSZŁOŚĆ WIĄZAŁEM Z INFORMATYKĄ', scale: 0.1, x: -3, y: 1 },
-            { id: 1, name: 'TECHNIKUM ŁĄCZNOŚCI\nNR 14 W KRAKOWIE', objSrc: 'models/college.obj', desc: 'TUTAJ POZNAŁEM BARDZIEJ ZAAWANSOWANE\nTECHNIKI PROGRAMOWANIA\nPOZNAŁEM PIERWSZE FRAMEWORKI\nSTWORZYŁEM WIELE ROZMAITYCH PROJEKTÓW', scale: 0.2, x: 0, y: 1 },
-            { id: 2, name: 'POLITECHNIKA\nKRAKOWSKA', objSrc: 'models/uni.obj', desc: 'JESTEM NA PIERWSZYM ROKU\nNIESTACJONARNYCH STUDIÓW\nINFORMATYCZNYCH', scale: 0.2, x: 3, y: 1 },
+            { id: 0, objSrc: 'models/school.obj', scale: 0.1, x: -3, y: 1 },
+            { id: 1, objSrc: 'models/college.obj', scale: 0.2, x: 0, y: 1 },
+            { id: 2, objSrc: 'models/uni.obj', scale: 0.2, x: 3, y: 1 },
         ]
     );
+    const { t, i18n } = useTranslation();
 
     return (
         <>
             {
-                institutionItems.map((e: InstitutionItem, i: number) => <Institution key={i} {...e} />)
+                institutionItems.map((e: InstitutionItem, i: number) => <Institution key={i} {...e} name={t(`educationTitles.${i}`)} desc={t(`educationDesc.${i}`)} />)
             }
         </>
     )

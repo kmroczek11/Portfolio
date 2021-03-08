@@ -1,11 +1,11 @@
-import React, { createContext, Dispatch, MutableRefObject, useReducer } from 'react';
+import React, { createContext, Dispatch, useReducer } from 'react';
 import { Camera } from 'three';
 import { sceneReducer, SceneActions } from './reducers';
 
 export type SceneType = {
     canvas: HTMLCanvasElement;
     camera: Camera;
-    currentElement: string;
+    fullScreen: boolean;
 }
 
 type InitialStateType = {
@@ -13,7 +13,7 @@ type InitialStateType = {
 }
 
 const initialState = {
-    scene: { canvas: null, camera: null, currentElement: 'HOME' }
+    scene: { canvas: null, camera: null, fullScreen: false }
 }
 
 const AppContext = createContext<{

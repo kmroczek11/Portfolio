@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useMemo } from 'react';
+import React, { Suspense, useContext, useState } from 'react';
 import Home from './Home';
 import { useFrame } from 'react-three-fiber'
 import { AppContext } from './context';
@@ -7,13 +7,18 @@ import { Vector3 } from 'three/src/math/Vector3';
 import Education from './Education';
 import Projects from './Projects';
 import Contact from './Contact';
-import { OrbitControls, Text, useProgress } from '@react-three/drei';
+import { Text, useProgress } from '@react-three/drei';
 
-const Loader = (): JSX.Element => {
-    const { active, progress, errors, item, loaded, total } = useProgress();
+interface LoaderProps {
+    position?: [x: number, y: number, z: number]
+}
+
+const Loader = ({ position }: LoaderProps): JSX.Element => {
+    const { progress } = useProgress();
     console.log(progress);
 
     return <Text
+        position={position}
         color='#ff0000'
         font='fonts/Oswald.ttf'
         fontSize={0.5}
@@ -27,20 +32,25 @@ const Loader = (): JSX.Element => {
 const Scene = (): JSX.Element => {
     console.log('scene rendered');
     const { state } = useContext(AppContext);
-    const { camera, currentElement } = state.scene;
+    const { camera } = state.scene;
+    const [currentItem, setCurrentItem] = useState<string>('');
+
+    const unlisten = window.appHistory.listen((location: any) => {
+        setCurrentItem(location.pathname.split('/')[1]);
+    })
 
     useFrame(() => {
-        switch (currentElement) {
-            case 'HOME':
+        switch (currentItem) {
+            case '':
                 camera && moveObject(camera, camera.position, new Vector3(0, 0, 5), 0.01);
                 break;
-            case 'EDUKACJA':
+            case 'education':
                 camera && moveObject(camera, camera.position, new Vector3(0, 0, -10), 0.01);
                 break;
-            case 'PROJEKTY':
+            case 'projects':
                 camera && moveObject(camera, camera.position, new Vector3(10, 0, -10), 0.01);
                 break;
-            case 'KONTAKT':
+            case 'contact':
                 camera && moveObject(camera, camera.position, new Vector3(10, 0, 5), 0.01);
                 break;
             default:
@@ -52,11 +62,16 @@ const Scene = (): JSX.Element => {
         <>
             <Suspense fallback={<Loader />}>
                 <Home />
-                <Education />
-                <Projects />
-                <Contact />
             </Suspense>
+            <Suspense fallback={<Loader position={[0, 0, -13]} />}>
+                <Education />
+            </Suspense>
+            <Suspense fallback={<Loader position={[10, 0, -13]} />}>
+                <Projects />
+            </Suspense>
+            <Contact />
             <directionalLight position={[0, 1, 1]} intensity={1} color={'#fff'} />
+            <ambientLight color={'#404040'} />
             {/* <OrbitControls listenToKeyEvents /> */}
         </>
     )

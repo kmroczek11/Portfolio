@@ -1,4 +1,3 @@
-import { MutableRefObject } from "react";
 import { Camera } from "three";
 import { SceneType } from "./index";
 
@@ -16,13 +15,13 @@ type ActionMap<M extends { [index: string]: any }> = {
 export enum Types {
     SetCanvas = 'SET_CANVAS',
     SetCamera = 'SET_CAMERA',
-    SetCurrentElement = 'SET_CURRENT_ELEMENT',
+    SetFullScreen = 'SET_FULL_SCREEN',
 }
 
 type ScenePayload = {
     [Types.SetCanvas]: HTMLCanvasElement;
     [Types.SetCamera]: Camera;
-    [Types.SetCurrentElement]: string;
+    [Types.SetFullScreen]: boolean;
 }
 
 export type SceneActions = ActionMap<ScenePayload>[keyof ActionMap<ScenePayload>];
@@ -33,8 +32,8 @@ export const sceneReducer = (state: SceneType, action: SceneActions) => {
             return { ...state, canvas: action.payload };
         case Types.SetCamera:
             return { ...state, camera: action.payload };
-        case Types.SetCurrentElement:
-            return { ...state, currentElement: action.payload };
+        case Types.SetFullScreen:
+            return { ...state, fullScreen: action.payload };
         default:
             return state;
     }

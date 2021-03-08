@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { AppProvider } from './context';
 import { createBrowserHistory } from 'history';
 import { Router, Route, } from 'react-router-dom';
+import './i18n';
 
 declare global {
   interface Window {
@@ -24,7 +25,9 @@ ReactDOM.render(
           window.appHistory = history;
           return (
             <AppProvider>
-              <App />
+              <Suspense fallback={null}>
+                <App />
+              </Suspense>
             </AppProvider>
           )
         }}

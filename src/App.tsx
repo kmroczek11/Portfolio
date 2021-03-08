@@ -5,22 +5,21 @@ import { Types } from './context/reducers';
 import { Canvas } from 'react-three-fiber';
 import Navbar from './Navbar';
 import Scene from './Scene';
-import { Stats, useContextBridge } from '@react-three/drei';
+import { Stars, Stats, useContextBridge } from '@react-three/drei';
 
 const navbar_items: Array<NavbarItem> = [
-  { id: 0, name: 'EDUKACJA', link: '/education' },
-  { id: 1, name: 'PROJEKTY', link: '/projects' },
-  { id: 2, name: 'KONTAKT', link: '/contact' },
+  { id: 0, link: '/education' },
+  { id: 1, link: '/projects' },
+  { id: 2, link: '/contact' },
 ]
 
 export interface NavbarItem {
   id: number,
-  name: string,
   link: string,
 }
 
 const App = (): JSX.Element => {
-  const { state, dispatch } = useContext(AppContext);
+  const { dispatch } = useContext(AppContext);
   const ContextBridge = useContextBridge(AppContext);
 
   return (
@@ -44,6 +43,14 @@ const App = (): JSX.Element => {
         <ContextBridge>
           <Scene />
         </ContextBridge>
+        <Stars
+          radius={100} // Radius of the inner sphere (default=100)
+          depth={50} // Depth of area where stars should fit (default=50)
+          count={5000} // Amount of stars (default=5000)
+          factor={6} // Size factor (default=4)
+          saturation={0} // Saturation 0-1 (default=0)
+          fade // Faded dots (default=false)
+        />
       </Canvas>
       <Stats showPanel={0} />
     </>

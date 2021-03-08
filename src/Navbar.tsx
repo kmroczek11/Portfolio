@@ -1,40 +1,48 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import './styles/navbar.css';
 import { NavbarItem } from './App';
-import { motion } from 'framer-motion';
 import { AppContext } from './context';
-import { Types } from './context/reducers';
 import { Link } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 interface NavProps {
     items: Array<NavbarItem>
 }
 
+interface LanguageItem {
+    name: string,
+    src: string,
+}
+
 const Navbar = ({ items }: NavProps): JSX.Element => {
     console.log('navbar rendered');
-    const { state, dispatch } = useContext(AppContext);
+    const { state } = useContext(AppContext);
+    const [languages] = useState<Array<LanguageItem>>([
+        { name: 'pl', src: 'images/flags/poland.png' },
+        { name: 'en', src: 'images/flags/england.png' }
+    ]);
+    const { t, i18n } = useTranslation();
 
-    const onClick = (element: string) => {
-        dispatch({
-            type: Types.SetCurrentElement,
-            payload: element,
-        })
-    }
+    const onClick = (language: string) => i18n.changeLanguage(language);
 
-    return (
-        <>
-            <Link className='full-name' to={'/'} onClick={() => onClick('HOME')} >KAMIL MROCZEK</ Link>
+    return !state.scene.fullScreen ? (
+        <div className='navbar-container'>
+            <Link className='full-name' to={'/'}>KAMIL MROCZEK</ Link>
             <ul>
                 {
                     items.map((item: NavbarItem, index: number) =>
-                        <li key={index} onClick={() => onClick(item.name)}>
-                            <Link to={item.link}>{item.name}</Link>
+                        <li key={index}>
+                            <Link to={item.link}>{t(`navItems.${index}`)}</Link>
                         </li>
                     )
                 }
+                {
+                    languages.map((language: LanguageItem, index: number) =>
+                        <img key={index} src={language.src} onClick={() => onClick(language.name)} />)
+                }
             </ul>
-        </>
-    )
+        </div>
+    ) : null;
 }
 
 export default Navbar;
