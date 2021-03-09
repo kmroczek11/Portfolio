@@ -8,6 +8,7 @@ import Education from './Education';
 import Projects from './Projects';
 import Contact from './Contact';
 import { Text, useProgress } from '@react-three/drei';
+import { useTranslation } from 'react-i18next';
 
 interface LoaderProps {
     position?: [x: number, y: number, z: number]
@@ -15,6 +16,7 @@ interface LoaderProps {
 
 const Loader = ({ position }: LoaderProps): JSX.Element => {
     const { progress } = useProgress();
+    const { t, i18n } = useTranslation();
     console.log(progress);
 
     return <Text
@@ -24,9 +26,8 @@ const Loader = ({ position }: LoaderProps): JSX.Element => {
         fontSize={0.5}
         textAlign='center'
     >
-        Poczekaj chwilkę...{'\n'}
-        Załadowano {progress}%
-  </Text>
+        {t('loadingMessage', { progress: progress })}
+    </Text>
 }
 
 const Scene = (): JSX.Element => {

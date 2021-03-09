@@ -43,7 +43,7 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): 
                 font='fonts/Oswald.ttf'
                 fontSize={0.15}
                 textAlign='center'
-                anchorY={1.5}
+                anchorY={2}
             >
                 {desc}
             </Text>

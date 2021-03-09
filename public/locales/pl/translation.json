@@ -42,10 +42,11 @@
     "0": "Imię",
     "1": "Email",
     "2": "Numer telefonu",
-    "3": "Link do mediów",
+    "3": "Linki do mediów",
     "4": "Wiadomość",
     "5": "Wyślij",
     "6": "*Nieprawidłowy email",
     "7": "*Wymagane"
-  }
+  },
+  "loadingMessage": "Poczekaj chwilkę...\nZaładowano {{progress}}%"
 }
