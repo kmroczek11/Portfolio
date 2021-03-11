@@ -1,6 +1,6 @@
 {
     "version": 3,
-    "mappings": "ACMA,UAAU;EACR,WAAW,EAAE,MAAM;EACnB,GAAG,EAAE,mEAAmE",
+    "mappings": "ACKA,UAAU;EACR,WAAW,EAAE,MAAM;EACnB,GAAG,EAAE,mEAAmE",
     "sources": [
         "home.scss",
         "_variables.scss"

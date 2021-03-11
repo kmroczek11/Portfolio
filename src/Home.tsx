@@ -32,7 +32,7 @@ const Texts = (): JSX.Element => {
             </Text>
             <Text
                 ref={el => texts.current[1] = el}
-                color='#ff0000'
+                color='#ff4d17'
                 font='fonts/Oswald.ttf'
                 fontSize={1}
                 textAlign='center'
@@ -45,7 +45,7 @@ const Texts = (): JSX.Element => {
 
 const Circle = (): JSX.Element => {
     const circle = useRef(null);
-    const blackStone = useLoader(TextureLoader, 'images/textures/black_stone.jpg');
+    const texture = useLoader(TextureLoader, 'images/textures/planet.png');
 
     return (
         <mesh
@@ -53,8 +53,8 @@ const Circle = (): JSX.Element => {
             position={[0, 0, -0.5]}
             receiveShadow
         >
-            <circleGeometry args={[3.5, 100]} />
-            <meshPhongMaterial map={blackStone} />
+            <planeGeometry args={[8, 8]} />
+            <meshPhongMaterial transparent map={texture} />
         </mesh>
     )
 }
@@ -97,7 +97,7 @@ const Photo = (): JSX.Element => {
         <>
             <mesh
                 ref={photo}
-            // position={[0, 0, -1]}
+            // position={[0, 0, -1.5]}
             >
                 <planeGeometry args={[8, 8]} />
                 <meshStandardMaterial transparent map={photoTexture} />

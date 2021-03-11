@@ -39,7 +39,7 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): 
                 {name}
             </Text>
             <Text
-                color='#ff0000'
+                color='#ff4d17'
                 font='fonts/Oswald.ttf'
                 fontSize={0.15}
                 textAlign='center'

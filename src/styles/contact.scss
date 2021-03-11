@@ -15,7 +15,7 @@
     align-items: center;
     flex: 1 0 40%;
     margin: 0.5vw;
-    background: $black;
+    // background-image: url('/images/textures/stone.png');
     border-radius: 20px;
 
     span {
@@ -39,7 +39,7 @@
     }
 
     .error {
-      color: $red;
+      color: $primary;
       margin: 0;
       font-size: 1vw;
     }
@@ -59,7 +59,7 @@
     padding: 0.5vw;
 
     &:hover {
-      background: $red;
+      background: $primary;
       cursor: pointer;
     }
   }

@@ -35,7 +35,6 @@
       -ms-flex: 1 0 40%;
           flex: 1 0 40%;
   margin: 0.5vw;
-  background: #000;
   border-radius: 20px;
 }
 
@@ -60,7 +59,7 @@
 }
 
 .contact-form div .error {
-  color: #ff0000;
+  color: #ff4d17;
   margin: 0;
   font-size: 1vw;
 }
@@ -85,7 +84,7 @@
 }
 
 .contact-form button:hover {
-  background: #ff0000;
+  background: #ff4d17;
   cursor: pointer;
 }
 /*# sourceMappingURL=contact.css.map */

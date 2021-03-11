@@ -41,7 +41,7 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: P
     const project = useRef(null);
     const description = useRef(null);
     const image = useLoader(TextureLoader, imageSrc);
-    const blackStone = useLoader(TextureLoader, 'images/textures/black_stone.jpg');
+    const blackStone = useLoader(TextureLoader, 'images/textures/stone.png');
     const { viewport } = useThree();
     // console.log(viewport.width, viewport.height);
 
@@ -104,7 +104,7 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: P
                 </mesh>
                 <group>
                     <Text
-                        color='#ff0000'
+                        color='#ff4d17'
                         font='fonts/Oswald.ttf'
                         fontSize={0.1}
                         maxWidth={0.5}

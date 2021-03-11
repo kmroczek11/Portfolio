@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useState } from 'react';
+import React, { Suspense, useContext, useState, useEffect } from 'react';
 import Home from './Home';
 import { useFrame } from 'react-three-fiber'
 import { AppContext } from './context';
@@ -7,8 +7,9 @@ import { Vector3 } from 'three/src/math/Vector3';
 import Education from './Education';
 import Projects from './Projects';
 import Contact from './Contact';
-import { Text, useProgress } from '@react-three/drei';
+import { OrbitControls, Text, useProgress } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
+import { TextureLoader, BackSide } from 'three';
 
 interface LoaderProps {
     position?: [x: number, y: number, z: number]
@@ -21,7 +22,7 @@ const Loader = ({ position }: LoaderProps): JSX.Element => {
 
     return <Text
         position={position}
-        color='#ff0000'
+        color='#ff4d17'
         font='fonts/Oswald.ttf'
         fontSize={0.5}
         textAlign='center'
@@ -29,6 +30,29 @@ const Loader = ({ position }: LoaderProps): JSX.Element => {
         {t('loadingMessage', { progress: progress })}
     </Text>
 }
+
+const Skybox = React.memo(() => {
+    console.log('skybox rendered');
+    const textures: Array<string> = [
+        'images/textures/skybox/space_ft.png',
+        'images/textures/skybox/space_bk.png',
+        'images/textures/skybox/space_up.png',
+        'images/textures/skybox/space_dn.png',
+        'images/textures/skybox/space_rt.png',
+        'images/textures/skybox/space_lf.png'
+    ];
+
+    return <mesh>
+        <boxBufferGeometry args={[1000, 1000, 1000]} />
+        {
+            textures.map((value: string, i: number) => {
+                const texture = new TextureLoader().load(value);
+                console.log(texture);
+                return <meshBasicMaterial key={i} attachArray='material' map={texture} side={BackSide} />;
+            })
+        }
+    </mesh>
+})
 
 const Scene = (): JSX.Element => {
     console.log('scene rendered');
@@ -73,6 +97,9 @@ const Scene = (): JSX.Element => {
             <Contact />
             <directionalLight position={[0, 1, 1]} intensity={1} color={'#fff'} />
             <ambientLight color={'#404040'} />
+            <Suspense fallback={null}>
+                <Skybox />
+            </Suspense>
             {/* <OrbitControls listenToKeyEvents /> */}
         </>
     )
