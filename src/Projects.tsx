@@ -21,12 +21,13 @@ interface ProjectItem {
     imageSrc: string,
     desc?: string,
     medium: string,
+    github: string,
     x: number,
     y: number,
     active: boolean,
 }
 
-const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: ProjectItem): JSX.Element => {
+const Project = ({ id, name, videoSrc, imageSrc, desc, medium, github, x, y, active }: ProjectItem): JSX.Element => {
     const [hovered, setHovered] = useState<boolean>(false);
     const [video] = useState(() => {
         const vid = document.createElement('video');
@@ -41,7 +42,7 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: P
     const project = useRef(null);
     const description = useRef(null);
     const image = useLoader(TextureLoader, imageSrc);
-    const blackStone = useLoader(TextureLoader, 'images/textures/stone.png');
+    const stone = useLoader(TextureLoader, 'images/textures/stone.png');
     const { viewport } = useThree();
     // console.log(viewport.width, viewport.height);
 
@@ -100,14 +101,14 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: P
             >
                 <mesh >
                     <planeBufferGeometry args={[1.5, 1.5]} />
-                    <meshBasicMaterial map={blackStone} />
+                    <meshBasicMaterial map={stone} />
                 </mesh>
                 <group>
                     <Text
-                        color='#ff4d17'
+                        color='#d4af37'
                         font='fonts/Oswald.ttf'
                         fontSize={0.1}
-                        maxWidth={0.5}
+                        maxWidth={1.5}
                         textAlign='center'
                         anchorY={-0.6}
                     >
@@ -119,10 +120,21 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, x, y, active }: P
                         fontSize={0.08}
                         maxWidth={1}
                         textAlign='center'
-                        anchorY={-0.1}
+                        anchorY={-0.4}
                         lineHeight={2}
                     >
                         {desc}
+                    </Text>
+                    <Text
+                        color='#fff'
+                        font='fonts/Oswald.ttf'
+                        fontSize={0.06}
+                        maxWidth={1}
+                        textAlign='center'
+                        anchorY={0.5}
+                        lineHeight={2}
+                    >
+                        {github}
                     </Text>
                 </group>
                 <mesh position-y={-0.95}>
@@ -138,14 +150,14 @@ const Projects = React.memo(() => {
     console.log('projects rendered');
     const { dispatch } = useContext(AppContext);
     const [projectItems, setProjectItems] = useState<Array<ProjectItem>>([
-        { id: 'gfe', videoSrc: 'videos/gfe.mp4', imageSrc: 'images/descriptions/gfe.svg', medium: 'desktop', x: 7, y: 1, active: false },
-        { id: 'stalcraft', videoSrc: 'videos/stalcraft.mp4', imageSrc: 'images/descriptions/stalcraft.svg', medium: 'desktop', x: 9, y: 1, active: false },
-        { id: 'shop', videoSrc: 'videos/shop.mp4', imageSrc: 'images/descriptions/shop.svg', medium: 'desktop', x: 11, y: 1, active: false },
-        { id: 'coronastats', videoSrc: 'videos/coronastats.mp4', imageSrc: 'images/descriptions/coronastats.svg', medium: 'phone', x: 13, y: 1, active: false },
-        { id: 'marbles', videoSrc: 'videos/marbles.mp4', imageSrc: 'images/descriptions/marbles.svg', medium: 'desktop', x: 7, y: -1, active: false },
-        { id: 'mp3player', videoSrc: 'videos/mp3player.mp4', imageSrc: 'images/descriptions/mp3player.svg', medium: 'desktop', x: 9, y: -1, active: false },
-        { id: 'tasky', videoSrc: 'videos/tasky.mp4', imageSrc: 'images/descriptions/tasky.svg', medium: 'phone', x: 11, y: -1, active: false },
-        { id: 'portfolio', videoSrc: '', imageSrc: 'images/descriptions/portfolio.svg', medium: 'desktop', x: 13, y: -1, active: false },
+        { id: 'gfe', videoSrc: 'videos/gfe.mp4', imageSrc: 'images/descriptions/gfe.svg', medium: 'desktop', github: '-------------------', x: 7, y: 1, active: false },
+        { id: 'stalcraft', videoSrc: 'videos/stalcraft.mp4', imageSrc: 'images/descriptions/stalcraft.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Stalcraft', x: 9, y: 1, active: false },
+        { id: 'shop', videoSrc: 'videos/shop.mp4', imageSrc: 'images/descriptions/shop.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Shop', x: 11, y: 1, active: false },
+        { id: 'coronastats', videoSrc: 'videos/coronastats.mp4', imageSrc: 'images/descriptions/coronastats.svg', medium: 'phone', github: 'https://github.com/kmroczek11/Coronastats', x: 13, y: 1, active: false },
+        { id: 'marbles', videoSrc: 'videos/marbles.mp4', imageSrc: 'images/descriptions/marbles.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Marbles', x: 7, y: -1, active: false },
+        { id: 'mp3player', videoSrc: 'videos/mp3player.mp4', imageSrc: 'images/descriptions/mp3player.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/School-projects/tree/master/MP3%20Player', x: 9, y: -1, active: false },
+        { id: 'tasky', videoSrc: 'videos/tasky.mp4', imageSrc: 'images/descriptions/tasky.svg', medium: 'phone', github: 'https://github.com/kmroczek11/Tasky', x: 11, y: -1, active: false },
+        { id: 'portfolio', videoSrc: '', imageSrc: 'images/descriptions/portfolio.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Portfolio', x: 13, y: -1, active: false },
     ]);
     const { t, i18n } = useTranslation();
 

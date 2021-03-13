@@ -35,6 +35,7 @@
       -ms-flex: 1 0 40%;
           flex: 1 0 40%;
   margin: 0.5vw;
+  background-image: url("../images/textures/stone.png");
   border-radius: 20px;
 }
 
@@ -59,7 +60,7 @@
 }
 
 .contact-form div .error {
-  color: #ff4d17;
+  color: #d4af37;
   margin: 0;
   font-size: 1vw;
 }
@@ -84,7 +85,7 @@
 }
 
 .contact-form button:hover {
-  background: #ff4d17;
+  background: #d4af37;
   cursor: pointer;
 }
 /*# sourceMappingURL=contact.css.map */

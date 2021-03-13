@@ -1,21 +1,39 @@
 @import "./variables";
 
 .navbar-container {
-  .full-name {
+  .logo-container {
+    display:flex;
+    justify-content: left;
+    align-items: center;
+    flex-direction: row;
     position: absolute;
     top: 0;
     left: 0;
-    width: 25vw;
+    width: 50vw;
     margin: 2vw;
-    font-family: $font_family;
-    font-weight: 400;
-    font-size: 3vw;
-    color: $white;
-    text-decoration: none;
-    z-index: 1;
 
-    &:hover {
-      cursor: pointer;
+    .logo {
+      z-index:1;
+      width: 10vw;
+      height: 10vh;
+      overflow: visible;
+      stroke: $primary;
+      stroke-width: 10;
+      stroke-linejoin: miter;
+      stroke-linecap: square;
+    }
+
+    .full-name {
+      font-family: $font_family;
+      font-weight: 400;
+      font-size: 3vw;
+      color: $white;
+      text-decoration: none;
+      z-index: 1;
+
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 

@@ -32,7 +32,7 @@ const Texts = (): JSX.Element => {
             </Text>
             <Text
                 ref={el => texts.current[1] = el}
-                color='#ff4d17'
+                color='#d4af37'
                 font='fonts/Oswald.ttf'
                 fontSize={1}
                 textAlign='center'
@@ -43,18 +43,23 @@ const Texts = (): JSX.Element => {
     )
 }
 
-const Circle = (): JSX.Element => {
-    const circle = useRef(null);
-    const texture = useLoader(TextureLoader, 'images/textures/planet.png');
+const Globe = (): JSX.Element => {
+    const globe = useRef(null);
+    const texture = useLoader(TextureLoader, 'images/textures/night.jpg');
+
+    useFrame(() => {
+        globe.current.rotation.y -= 0.005;
+        if (globe.current.material.opacity < 1) globe.current.material.opacity += 0.01;
+    })
 
     return (
         <mesh
-            ref={circle}
-            position={[0, 0, -0.5]}
-            receiveShadow
+            ref={globe}
+            position={[0, 0, -6]}
+        // receiveShadow
         >
-            <planeGeometry args={[8, 8]} />
-            <meshPhongMaterial transparent map={texture} />
+            <sphereGeometry args={[6, 100, 100]} />
+            <meshPhongMaterial transparent map={texture} opacity={0} />
         </mesh>
     )
 }
@@ -90,16 +95,16 @@ const Photo = (): JSX.Element => {
     const photo = useRef(null);
 
     useFrame(() => {
-        photo.current && moveObject(photo.current, photo.current.position, new Vector3(0, 0, 0), 0.01);
+        photo.current && moveObject(photo.current, photo.current.position, new Vector3(0, 0, 0), 0.05);
     })
 
     return (
         <>
             <mesh
                 ref={photo}
-            // position={[0, 0, -1.5]}
+                position={[0, 0, -6]}
             >
-                <planeGeometry args={[8, 8]} />
+                <planeGeometry args={[6, 8]} />
                 <meshStandardMaterial transparent map={photoTexture} />
             </mesh>
             <Objects />
@@ -113,7 +118,7 @@ const Home = React.memo(() => {
     return (
         <>
             <Photo />
-            <Circle />
+            <Globe />
             <Texts />
         </>
     )

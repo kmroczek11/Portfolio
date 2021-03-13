@@ -27,7 +27,17 @@ const Navbar = ({ items }: NavProps): JSX.Element => {
 
     return !state.scene.fullScreen ? (
         <div className='navbar-container'>
-            <Link className='full-name' to={'/'}>KAMIL MROCZEK</ Link>
+            <div className="logo-container">
+                <svg
+                    className="logo"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 200 100"
+                    fill="rgba(255, 255, 255, 0)"
+                >
+                    <path d="M 50 100 L 50 0 L 100 50 L 150 0 L 150 100" />
+                </svg>
+                <Link className='full-name' to={'/'}>KAMIL MROCZEK</ Link>
+            </div>
             <ul>
                 {
                     items.map((item: NavbarItem, index: number) =>

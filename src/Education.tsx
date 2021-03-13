@@ -17,7 +17,6 @@ interface InstitutionItem {
 
 const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): JSX.Element => {
     const obj = useLoader(OBJLoader, objSrc);
-    const blackStone = useLoader(TextureLoader, 'images/textures/black_stone.jpg');
 
     useFrame(() => {
         obj.rotation.y += 0.01;
@@ -27,10 +26,10 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): 
         <group position={[x, y, -13]}>
             <mesh scale={[scale, scale, scale]}>
                 <primitive object={obj} />
-                <meshBasicMaterial map={blackStone} />
+                <meshBasicMaterial />
             </mesh>
             <Text
-                color='#fff'
+                color='#d4af37'
                 font='fonts/Oswald.ttf'
                 fontSize={0.3}
                 textAlign='center'
@@ -39,7 +38,7 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): 
                 {name}
             </Text>
             <Text
-                color='#ff4d17'
+                color='#fff'
                 font='fonts/Oswald.ttf'
                 fontSize={0.15}
                 textAlign='center'
