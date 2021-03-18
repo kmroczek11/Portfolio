@@ -48,5 +48,6 @@
     "6": "*Nieprawidłowy email",
     "7": "*Wymagane"
   },
-  "loadingMessage": "Poczekaj chwilkę...\nZaładowano {{progress}}%"
+  "loadingMessage": "Poczekaj chwilkę...\nZaładowano {{progress}}%",
+  "exit": "Wyjście"
 }

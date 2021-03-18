@@ -8,14 +8,14 @@ import Scene from './Scene';
 import { Stars, Stats, useContextBridge } from '@react-three/drei';
 
 const navbar_items: Array<NavbarItem> = [
-  { id: 0, link: '/education' },
-  { id: 1, link: '/projects' },
-  { id: 2, link: '/contact' },
+  { id: 0, name: 'education' },
+  { id: 1, name: 'projects' },
+  { id: 2, name: 'contact' },
 ]
 
 export interface NavbarItem {
   id: number,
-  link: string,
+  name: string,
 }
 
 const App = (): JSX.Element => {
@@ -33,24 +33,24 @@ const App = (): JSX.Element => {
           dispatch({
             type: Types.SetCanvas,
             payload: domElement,
-          })
+          });
           dispatch({
             type: Types.SetCamera,
             payload: camera,
-          })
+          });
         }}
       >
         <ContextBridge>
           <Scene />
         </ContextBridge>
-        <Stars
+        {/* <Stars
           radius={100} // Radius of the inner sphere (default=100)
           depth={50} // Depth of area where stars should fit (default=50)
           count={5000} // Amount of stars (default=5000)
           factor={4} // Size factor (default=4)
           saturation={0} // Saturation 0-1 (default=0)
           fade // Faded dots (default=false)
-        />
+        /> */}
       </Canvas>
       <Stats showPanel={0} />
     </>

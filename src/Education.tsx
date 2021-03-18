@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useFrame, useLoader } from 'react-three-fiber'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
 import { Text } from '@react-three/drei';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { useTranslation } from 'react-i18next';
+import Loader from './Loader';
 
 interface InstitutionItem {
     id: number,
@@ -61,11 +62,11 @@ const Education = React.memo(() => {
     const { t, i18n } = useTranslation();
 
     return (
-        <>
+        <Suspense fallback={<Loader />}>
             {
                 institutionItems.map((e: InstitutionItem, i: number) => <Institution key={i} {...e} name={t(`educationTitles.${i}`)} desc={t(`educationDesc.${i}`)} />)
             }
-        </>
+        </Suspense>
     )
 })
 

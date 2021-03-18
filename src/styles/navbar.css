@@ -98,6 +98,8 @@
   z-index: 1;
   width: 6vw;
   height: 8vh;
+  -webkit-filter: grayscale(100%);
+          filter: grayscale(100%);
 }
 
 .navbar-container ul img:hover {

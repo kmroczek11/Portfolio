@@ -15,12 +15,14 @@ type ActionMap<M extends { [index: string]: any }> = {
 export enum Types {
     SetCanvas = 'SET_CANVAS',
     SetCamera = 'SET_CAMERA',
-    SetFullScreen = 'SET_FULL_SCREEN',
+    SetCurrentItem = 'SET_CURRENT_ELEMENT',
+    SetFullScreen = 'SET_FULL_SCREEN'
 }
 
 type ScenePayload = {
     [Types.SetCanvas]: HTMLCanvasElement;
     [Types.SetCamera]: Camera;
+    [Types.SetCurrentItem]: string;
     [Types.SetFullScreen]: boolean;
 }
 
@@ -32,6 +34,8 @@ export const sceneReducer = (state: SceneType, action: SceneActions) => {
             return { ...state, canvas: action.payload };
         case Types.SetCamera:
             return { ...state, camera: action.payload };
+        case Types.SetCurrentItem:
+            return { ...state, currentItem: action.payload };
         case Types.SetFullScreen:
             return { ...state, fullScreen: action.payload };
         default:

@@ -48,5 +48,6 @@
     "6": "*Invalid email address",
     "7": "*Required"
   },
-  "loadingMessage": "Wait a minute...\nLoaded {{progress}}%"
+  "loadingMessage": "Wait a minute...\nLoaded {{progress}}%",
+  "exit": "Exit"
 }

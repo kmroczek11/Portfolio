@@ -5,6 +5,7 @@ import { sceneReducer, SceneActions } from './reducers';
 export type SceneType = {
     canvas: HTMLCanvasElement;
     camera: Camera;
+    currentItem: string;
     fullScreen: boolean;
 }
 
@@ -13,7 +14,7 @@ type InitialStateType = {
 }
 
 const initialState = {
-    scene: { canvas: null, camera: null, fullScreen: false }
+    scene: { canvas: null, camera: null, currentItem: 'home', fullScreen: false }
 }
 
 const AppContext = createContext<{

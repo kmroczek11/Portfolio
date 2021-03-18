@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState, useEffect } from 'react';
+import React, { useContext, useRef, useState, useEffect, Suspense } from 'react';
 import { useFrame, useLoader, useThree } from 'react-three-fiber'
 import { AppContext } from './context';
 import { moveObject } from './functions';
@@ -7,32 +7,29 @@ import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { Text } from '@react-three/drei';
 import { Types } from './context/reducers';
 import { useTranslation } from 'react-i18next';
-
-declare global {
-    interface Window {
-        appHistory: any;
-    }
-}
+import Loader from './Loader';
 
 interface ProjectItem {
-    id: string,
-    name?: string,
+    id: number,
     videoSrc: string,
     imageSrc: string,
-    desc?: string,
     medium: string,
     github: string,
     x: number,
     y: number,
     active: boolean,
+    onClick?: (id: number) => void,
 }
 
-const Project = ({ id, name, videoSrc, imageSrc, desc, medium, github, x, y, active }: ProjectItem): JSX.Element => {
+const Project = ({ id, videoSrc, imageSrc, medium, github, x, y, active, onClick }: ProjectItem): JSX.Element => {
+    const { state } = useContext(AppContext);
+    const { fullScreen } = state.scene;
+    const { t, i18n } = useTranslation();
     const [hovered, setHovered] = useState<boolean>(false);
     const [video] = useState(() => {
         const vid = document.createElement('video');
         vid.src = videoSrc;
-        vid.onerror = () => console.log(`${name} error ${vid.error.code}; details: ${vid.error.message}`);
+        vid.onerror = () => console.log(`${id} error ${vid.error.code}; details: ${vid.error.message}`);
         vid.crossOrigin = 'Anonymous';
         vid.loop = true;
         vid.controls = true;
@@ -42,7 +39,7 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, github, x, y, act
     const project = useRef(null);
     const description = useRef(null);
     const image = useLoader(TextureLoader, imageSrc);
-    const stone = useLoader(TextureLoader, 'images/textures/stone.png');
+    const stone = useLoader(TextureLoader, 'images/textures/diamond.jpg');
     const { viewport } = useThree();
     // console.log(viewport.width, viewport.height);
 
@@ -68,17 +65,23 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, github, x, y, act
             }
             if (project.current.scale.x < maxWidth) project.current.scale.x += 0.1;
             if (project.current.scale.y < maxHeight) project.current.scale.y += 0.1;
-            project && moveObject(project.current, project.current.position, new Vector3(10, 0, -11.5), 0.1);
+            moveObject(project.current, project.current.position, new Vector3(10, 0, -11.5), 0.1);
         }
         if (!active) {
             if (project.current.scale.x > 1) project.current.scale.x -= 0.1;
             if (project.current.scale.y > 1) project.current.scale.y -= 0.1;
-            project && moveObject(project.current, project.current.position, new Vector3(x, y, -13), 0.1);
+            moveObject(project.current, project.current.position, new Vector3(x, y, -13), 0.1);
         }
     })
 
-    const onClick = () => {
-        window.appHistory.push(`/projects/${id}`);
+    const onSelected = () => {
+        setHovered(false);
+        onClick(id);
+    }
+
+    const onExit = () => {
+        setHovered(false);
+        onClick(null);
     }
 
     return (
@@ -86,9 +89,9 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, github, x, y, act
             <mesh
                 ref={project}
                 position={[x, y - 0.1, -13.1]}
-                onClick={() => onClick()}
-                onPointerOver={() => setHovered(true)}
-                onPointerOut={() => setHovered(false)}
+                onClick={fullScreen ? null : onSelected}
+                onPointerOver={fullScreen ? null : () => setHovered(true)}
+                onPointerOut={fullScreen ? null : () => setHovered(false)}
             >
                 <planeBufferGeometry args={[1.5, 1.5]} />
                 <meshBasicMaterial>
@@ -112,7 +115,7 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, github, x, y, act
                         textAlign='center'
                         anchorY={-0.6}
                     >
-                        {name}
+                        {t(`projectTitles.${id}`)}
                     </Text>
                     <Text
                         color='#fff'
@@ -123,7 +126,7 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, github, x, y, act
                         anchorY={-0.4}
                         lineHeight={2}
                     >
-                        {desc}
+                        {t(`projectDesc.${id}`)}
                     </Text>
                     <Text
                         color='#fff'
@@ -142,6 +145,19 @@ const Project = ({ id, name, videoSrc, imageSrc, desc, medium, github, x, y, act
                     <meshStandardMaterial map={image} transparent />
                 </mesh>
             </group>
+            {
+                fullScreen && <Text
+                    position={[8, -1, -11.5]}
+                    color='#d4af37'
+                    font='fonts/Oswald.ttf'
+                    fontSize={0.2}
+                    onClick={onExit}
+                    onPointerOver={() => setHovered(true)}
+                    onPointerOut={() => setHovered(false)}
+                >
+                    {t('exit')}
+                </Text>
+            }
         </>
     )
 }
@@ -150,51 +166,52 @@ const Projects = React.memo(() => {
     console.log('projects rendered');
     const { dispatch } = useContext(AppContext);
     const [projectItems, setProjectItems] = useState<Array<ProjectItem>>([
-        { id: 'gfe', videoSrc: 'videos/gfe.mp4', imageSrc: 'images/descriptions/gfe.svg', medium: 'desktop', github: '-------------------', x: 7, y: 1, active: false },
-        { id: 'stalcraft', videoSrc: 'videos/stalcraft.mp4', imageSrc: 'images/descriptions/stalcraft.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Stalcraft', x: 9, y: 1, active: false },
-        { id: 'shop', videoSrc: 'videos/shop.mp4', imageSrc: 'images/descriptions/shop.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Shop', x: 11, y: 1, active: false },
-        { id: 'coronastats', videoSrc: 'videos/coronastats.mp4', imageSrc: 'images/descriptions/coronastats.svg', medium: 'phone', github: 'https://github.com/kmroczek11/Coronastats', x: 13, y: 1, active: false },
-        { id: 'marbles', videoSrc: 'videos/marbles.mp4', imageSrc: 'images/descriptions/marbles.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Marbles', x: 7, y: -1, active: false },
-        { id: 'mp3player', videoSrc: 'videos/mp3player.mp4', imageSrc: 'images/descriptions/mp3player.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/School-projects/tree/master/MP3%20Player', x: 9, y: -1, active: false },
-        { id: 'tasky', videoSrc: 'videos/tasky.mp4', imageSrc: 'images/descriptions/tasky.svg', medium: 'phone', github: 'https://github.com/kmroczek11/Tasky', x: 11, y: -1, active: false },
-        { id: 'portfolio', videoSrc: '', imageSrc: 'images/descriptions/portfolio.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Portfolio', x: 13, y: -1, active: false },
+        { id: 0, videoSrc: 'videos/gfe.mp4', imageSrc: 'images/descriptions/gfe.svg', medium: 'desktop', github: '-------------------', x: 7, y: 1, active: false },
+        { id: 1, videoSrc: 'videos/stalcraft.mp4', imageSrc: 'images/descriptions/stalcraft.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Stalcraft', x: 9, y: 1, active: false },
+        { id: 2, videoSrc: 'videos/shop.mp4', imageSrc: 'images/descriptions/shop.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Shop', x: 11, y: 1, active: false },
+        { id: 3, videoSrc: 'videos/coronastats.mp4', imageSrc: 'images/descriptions/coronastats.svg', medium: 'phone', github: 'https://github.com/kmroczek11/Coronastats', x: 13, y: 1, active: false },
+        { id: 4, videoSrc: 'videos/marbles.mp4', imageSrc: 'images/descriptions/marbles.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Marbles', x: 7, y: -1, active: false },
+        { id: 5, videoSrc: 'videos/mp3player.mp4', imageSrc: 'images/descriptions/mp3player.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/School-projects/tree/master/MP3%20Player', x: 9, y: -1, active: false },
+        { id: 6, videoSrc: 'videos/tasky.mp4', imageSrc: 'images/descriptions/tasky.svg', medium: 'phone', github: 'https://github.com/kmroczek11/Tasky', x: 11, y: -1, active: false },
+        { id: 7, videoSrc: '', imageSrc: 'images/descriptions/portfolio.svg', medium: 'desktop', github: 'https://github.com/kmroczek11/Portfolio', x: 13, y: -1, active: false },
     ]);
+    const [selected, setSelected] = useState<number>(null);
     const { t, i18n } = useTranslation();
 
-    const unlisten = window.appHistory.listen((location: any) => {
+    useEffect(() => {
         setProjectItems(prevProjectItems =>
             prevProjectItems.map(
                 (e: ProjectItem) =>
-                    e.id === location.pathname.split('/')[2] ?
+                    e.id === selected ?
                         { ...e, active: true } : { ...e, active: false }
-            ))
-    })
+            ));
+    }, [selected])
 
     useEffect(() => {
         projectItems.some((e: ProjectItem) => e.active) ?
             dispatch({
                 type: Types.SetFullScreen,
                 payload: true,
-            }) :
-            dispatch({
+            }) : dispatch({
                 type: Types.SetFullScreen,
                 payload: false,
-            })
+            });
     }, [projectItems])
 
     return (
         <>
-            {
-                projectItems.map(
-                    (e: ProjectItem, i: number) =>
-                        <Project
-                            key={i}
-                            {...e}
-                            name={t(`projectTitles.${i}`)}
-                            desc={t(`projectDesc.${i}`)}
-                        />
-                )
-            }
+            <Suspense fallback={<Loader />}>
+                {
+                    projectItems.map(
+                        (e: ProjectItem, i: number) =>
+                            <Project
+                                key={i}
+                                {...e}
+                                onClick={setSelected}
+                            />
+                    )
+                }
+            </Suspense>
         </>
     )
 })
