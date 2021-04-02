@@ -8,7 +8,7 @@
     flex-direction: row;
     position: absolute;
     top: 0;
-    left: 0;
+    left: 12vw;
     width: 50vw;
     margin: 2vw;
 
@@ -26,7 +26,7 @@
     .full-name {
       font-family: $font_family;
       font-weight: 400;
-      font-size: 3vw;
+      font-size: 2vw;
       color: $white;
       text-decoration: none;
       z-index: 1;
@@ -40,12 +40,12 @@
   ul {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content:space-evenly;
     position: absolute;
-    width: 50vw;
+    width: 40vw;
     height: 10vh;
     top: 0;
-    right: 0;
+    right: 12vw;
     align-items: center;
     list-style-type: none;
     margin: 0;
@@ -63,7 +63,7 @@
         font-family: $font_family;
         font-style: normal;
         font-weight: 400;
-        font-size: 2vw;
+        font-size: 1.5vw;
         color: $white;
 
         &:hover {
@@ -75,8 +75,8 @@
 
     img {
       z-index: 1;
-      width: 6vw;
-      height: 8vh;
+      width: 4vw;
+      height: 6vh;
       filter: grayscale(100%);
 
       &:hover {

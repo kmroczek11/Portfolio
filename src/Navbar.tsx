@@ -25,7 +25,7 @@ const Navbar = ({ items }: NavProps): JSX.Element => {
     ]);
     const { t, i18n } = useTranslation();
 
-    const onNavigation = (name: string) => {
+    const onNavigationStarted = (name: string) => {
         dispatch({
             type: Types.SetCurrentItem,
             payload: name,
@@ -47,13 +47,13 @@ const Navbar = ({ items }: NavProps): JSX.Element => {
                 >
                     <path d="M 50 100 L 50 0 L 100 50 L 150 0 L 150 100" />
                 </svg>
-                <Link className='full-name' to={'/'} onClick={() => onNavigation('home')}>KAMIL MROCZEK</ Link>
+                <Link className='full-name' to={'/'} onClick={() => onNavigationStarted('home.to')}>KAMIL MROCZEK</ Link>
             </div>
             <ul>
                 {
                     items.map((item: NavbarItem, index: number) =>
                         <li key={index}>
-                            <Link to={`/${item.name}`} onClick={() => onNavigation(item.name)}>{t(`navItems.${index}`)}</Link>
+                            <Link to={`/${item.name}`} onClick={() => onNavigationStarted(`${item.name}.to`)}>{t(`navItems.${index}`)}</Link>
                         </li>
                     )
                 }

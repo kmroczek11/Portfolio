@@ -24,7 +24,7 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): 
     })
 
     return (
-        <group position={[x, y, -13]}>
+        <group position={[x, y, -18]}>
             <mesh scale={[scale, scale, scale]}>
                 <primitive object={obj} />
                 <meshBasicMaterial />

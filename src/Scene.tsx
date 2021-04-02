@@ -5,6 +5,7 @@ import Projects from './Projects';
 import Contact from './Contact';
 import { TextureLoader, BackSide } from 'three';
 import SceneController from './SceneController';
+import { OrbitControls } from '@react-three/drei';
 
 const Skybox = React.memo(() => {
     console.log('skybox rendered');
@@ -44,7 +45,7 @@ const Scene = (): JSX.Element => {
             {/* <Suspense fallback={null}>
                 <Skybox />
             </Suspense> */}
-            {/* <OrbitControls listenToKeyEvents /> */}
+            {/* <OrbitControls /> */}
         </>
     )
 }

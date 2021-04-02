@@ -8,7 +8,7 @@ const Loader = (): JSX.Element => {
     console.log(progress);
 
     return <Text
-        color='#ff4d17'
+        color='#d4af37'
         font='fonts/Oswald.ttf'
         fontSize={0.5}
         textAlign='center'

@@ -8,7 +8,7 @@ const ContactForm = (): JSX.Element => {
     const { t, i18n } = useTranslation();
 
     return (
-        <Html position={[10, 0, 0]} center>
+        <Html position={[15, 0, 0]} center>
             <Formik
                 initialValues={{ name: '', email: '', phone: '', link: '', message: '' }}
                 validate={values => {

@@ -8,19 +8,21 @@ import { Text } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from './context';
 import Loader from './Loader';
+import gsap from 'gsap';
 
-// const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
-const Texts = (): JSX.Element => {
+const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
     const texts = useRef([]);
     const { t, i18n } = useTranslation();
 
-    useFrame(() => {
-        [0, 1].forEach((e) => {
-            var targetVector: Vector3;
-            e === 0 ? targetVector = new Vector3(-2, 0, 0.5) : targetVector = new Vector3(2, -1, 0.5);
-            moveObject(texts.current[e], texts.current[e].position, targetVector, 0.01);
-        })
-    })
+    useEffect(() => {
+        if (focus) {
+            texts.current[0] && gsap.to(texts.current[0].position, { duration: 5, ease: 'slow (0.1, 0.7, false)', x: -2, y: 0, z: 0.5 });
+            texts.current[1] && gsap.to(texts.current[1].position, { duration: 5, ease: 'slow (0.1, 0.7, false)', x: 2, y: -1, z: 0.5 });
+        } else {
+            texts.current[0] && gsap.to(texts.current[0].position, { duration: 5, ease: 'slow (0.1, 0.7, false)', x: 0, y: 0, z: 0 });
+            texts.current[1] && gsap.to(texts.current[1].position, { duration: 5, ease: 'slow (0.1, 0.7, false)', x: 0, y: 0, z: 0 });
+        }
+    }, [focus])
 
     return (
         <>
@@ -46,15 +48,19 @@ const Texts = (): JSX.Element => {
     )
 }
 
-// const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
-const Globe = (): JSX.Element => {
+const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
     const globe = useRef(null);
     const texture = useLoader(TextureLoader, 'images/textures/night.jpg');
 
     useFrame(() => {
         globe.current.rotation.y -= 0.005;
-        if (globe.current.material.opacity < 1) globe.current.material.opacity += 0.01;
     })
+
+    useEffect(() => {
+        focus ?
+            globe.current && gsap.to(globe.current.material, { duration: 5, ease: 'slow (0.1, 0.7, false)', opacity: 1 }) :
+            globe.current && gsap.to(globe.current.material, { duration: 5, ease: 'slow (0.1, 0.7, false)', opacity: 0 })
+    }, [focus])
 
     return (
         <mesh
@@ -96,15 +102,14 @@ const Objects = (): JSX.Element => {
 }
 
 const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
-    // const Photo = (): JSX.Element => {
     const photoTexture = useLoader(TextureLoader, 'images/photo.png');
     const photo = useRef(null);
 
-    useFrame(() => {
+    useEffect(() => {
         focus ?
-            moveObject(photo.current, photo.current.position, new Vector3(0, 0, 0), 0.05) :
-            moveObject(photo.current, photo.current.position, new Vector3(0, 0, 6), 0.05);
-    })
+            photo.current && gsap.to(photo.current.position, { duration: 2, ease: 'slow (0.1, 0.7, false)', x: 0, y: 0, z: 0 }) :
+            photo.current && gsap.to(photo.current.position, { duration: 2, ease: 'slow (0.1, 0.7, false)', x: 0, y: 0, z: 6 });
+    }, [focus])
 
     return (
         <mesh
@@ -120,12 +125,12 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
 const Home = React.memo(() => {
     console.log('home rendered');
     const { state } = useContext(AppContext);
-    const { camera } = state.scene;
+    const { currentItem } = state.scene;
     const [focus, setFocus] = useState<boolean>(false);
 
     useEffect(() => {
-        camera && camera.position.z > 4 ? setFocus(true) : setFocus(false);
-    }, [camera])
+        currentItem == 'home.end' ? setFocus(true) : setFocus(false);
+    }, [currentItem])
 
     return (
         <>
@@ -133,10 +138,10 @@ const Home = React.memo(() => {
                 <Photo focus={focus} />
             </Suspense>
             <Suspense fallback={<Loader />}>
-                <Globe />
+                <Globe focus={focus} />
             </Suspense>
             <Suspense fallback={<Loader />}>
-                <Texts />
+                <Texts focus={focus} />
             </Suspense>
             <Suspense fallback={<Loader />}>
                 <Objects />
