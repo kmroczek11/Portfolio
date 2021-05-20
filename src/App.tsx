@@ -29,7 +29,7 @@ const App = (): JSX.Element => {
         colorManagement={false}
         style={{ width: '100vw', height: '100vh' }}
         onCreated={({ camera, gl: { domElement } }) => {
-          // camera.position.set(0, 0, -10);
+          camera.position.set(15, 0, -15);
           dispatch({
             type: Types.SetCanvas,
             payload: domElement,

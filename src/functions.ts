@@ -1,20 +1,5 @@
 import { Vector3 } from "three/src/math/Vector3";
 
-export const moveObject = (
-  obj: any,
-  position: Vector3,
-  targetVector: Vector3,
-  speed: number
-) => {
-  const direction = new Vector3();
-  direction.subVectors(targetVector, position);
-  const vector = direction.multiplyScalar(speed);
-
-  obj.position.x += vector.x;
-  obj.position.y += vector.y;
-  obj.position.z += vector.z;
-};
-
 export const rotateAroundPoint = (
   obj: any,
   point: Vector3,

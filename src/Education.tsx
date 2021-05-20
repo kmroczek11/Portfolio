@@ -1,10 +1,12 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useContext, useEffect, useRef, useState } from 'react';
 import { useFrame, useLoader } from 'react-three-fiber'
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Text } from '@react-three/drei';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { useTranslation } from 'react-i18next';
 import Loader from './Loader';
+import { AppContext } from './context';
+import gsap from 'gsap';
 
 interface InstitutionItem {
     id: number,
@@ -14,19 +16,31 @@ interface InstitutionItem {
     scale: number,
     x: number,
     y: number,
+    focus?: boolean
 }
 
-const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): JSX.Element => {
-    const obj = useLoader(OBJLoader, objSrc);
+const Institution = ({ id, name, objSrc, desc, scale, x, y, focus }: InstitutionItem): JSX.Element => {
+    const obj = useLoader(GLTFLoader, objSrc);
+    const insitution = useRef(null);
 
     useFrame(() => {
-        obj.rotation.y += 0.01;
+        obj.scene.rotation.y += 0.01;
     })
 
+    useEffect(() => {
+        focus ?
+            insitution.current && gsap.to(insitution.current.scale, { x: 1, y: 1, z: 1, duration: 5, ease: 'expo.out' }) :
+            insitution.current && gsap.to(insitution.current.scale, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
+    }, [focus])
+
     return (
-        <group position={[x, y, -18]}>
+        <group
+            ref={insitution}
+            position={[x, y, -18]}
+            scale={[0, 0, 0]}
+        >
             <mesh scale={[scale, scale, scale]}>
-                <primitive object={obj} />
+                <primitive object={obj.scene} />
                 <meshBasicMaterial />
             </mesh>
             <Text
@@ -54,17 +68,31 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y }: InstitutionItem): 
 const Education = React.memo(() => {
     const [institutionItems, setInstitutionItems] = useState<Array<InstitutionItem>>(
         [
-            { id: 0, objSrc: 'models/school.obj', scale: 0.1, x: -3, y: 1 },
-            { id: 1, objSrc: 'models/college.obj', scale: 0.2, x: 0, y: 1 },
-            { id: 2, objSrc: 'models/uni.obj', scale: 0.2, x: 3, y: 1 },
+            { id: 0, objSrc: 'models/school.glb', scale: 0.1, x: -3, y: 1 },
+            { id: 1, objSrc: 'models/college.glb', scale: 0.2, x: 0, y: 1 },
+            { id: 2, objSrc: 'models/uni.glb', scale: 0.2, x: 3, y: 1 },
         ]
     );
     const { t, i18n } = useTranslation();
+    const { state } = useContext(AppContext);
+    const { currentItem } = state.scene;
+    const [focus, setFocus] = useState<boolean>(false);
+
+    useEffect(() => {
+        currentItem == 'education.end' ? setFocus(true) : setFocus(false);
+    }, [currentItem])
 
     return (
         <Suspense fallback={<Loader />}>
             {
-                institutionItems.map((e: InstitutionItem, i: number) => <Institution key={i} {...e} name={t(`educationTitles.${i}`)} desc={t(`educationDesc.${i}`)} />)
+                institutionItems.map((e: InstitutionItem, i: number) =>
+                    <Institution
+                        key={i} {...e}
+                        name={t(`educationTitles.${i}`)}
+                        desc={t(`educationDesc.${i}`)}
+                        focus={focus}
+                    />
+                )
             }
         </Suspense>
     )
