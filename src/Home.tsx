@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useEffect, useRef, useState } from 'react';
+import React, { Suspense, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame, useLoader } from 'react-three-fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { AppContext } from './context';
 import Loader from './Loader';
 import gsap from 'gsap';
+import { BufferAttribute, BufferGeometry } from 'three';
 
 const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
     const texts = useRef([]);
@@ -59,8 +60,34 @@ const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
     const globe = useRef(null);
     const texture = useLoader(TextureLoader, 'images/textures/night.jpg');
 
+    const randFloatSpread = (range: number) => {
+        const min: number = -range / 2;
+        const max: number = range / 2;
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    const [coords] = useMemo(() => {
+        const distance: number = 6;
+        const initialCoords: Array<number> = [];
+        for (let i = 0; i < 1000; i++) {
+            var theta = randFloatSpread(360);
+            var phi = randFloatSpread(360);
+
+            const x = distance * Math.sin(theta) * Math.cos(phi);
+            const y = distance * Math.sin(theta) * Math.sin(phi);
+            const z = distance * Math.cos(theta);
+
+            initialCoords.push(x, y, z);
+        }
+        console.log(initialCoords)
+
+        const coords = new Float32Array(initialCoords)
+        return [coords]
+    }, [])
+
     useFrame(() => {
-        globe.current.rotation.y -= 0.005;
+        if (globe.current)
+            globe.current.rotation.y -= 0.005;
     })
 
     useEffect(() => {
@@ -70,14 +97,26 @@ const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
     }, [focus])
 
     return (
-        <mesh
+        <points
             ref={globe}
             position={[0, 0, -6]}
-        // receiveShadow
         >
-            <sphereGeometry args={[6, 100, 100]} />
-            <meshPhongMaterial transparent map={texture} opacity={0} />
-        </mesh>
+            <bufferGeometry>
+                <bufferAttribute
+                    attachObject={["attributes", "position"]}
+                    count={coords.length / 3}
+                    array={coords}
+                    itemSize={3}
+                />
+            </bufferGeometry>
+            <pointsMaterial
+                sizeAttenuation
+                attach="material"
+                color='#fff'
+                opacity={0}
+                size={0.005}
+            />
+        </points>
     )
 }
 

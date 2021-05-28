@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Home from './Home';
 import Education from './Education';
 import Projects from './Projects';
@@ -6,6 +6,7 @@ import Contact from './Contact';
 import { TextureLoader, BackSide } from 'three';
 import SceneController from './SceneController';
 import { OrbitControls } from '@react-three/drei';
+import Loader from './Loader';
 
 const Skybox = React.memo(() => {
     console.log('skybox rendered');
