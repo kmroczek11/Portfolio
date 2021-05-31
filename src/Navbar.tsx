@@ -59,7 +59,7 @@ const Navbar = ({ items }: NavProps): JSX.Element => {
                 }
                 {
                     languages.map((language: LanguageItem, index: number) =>
-                        <img key={index} src={language.src} onClick={() => onLanguageChanged(language.name)} />)
+                        <img key={index} src={language.src} alt={language.name} onClick={() => onLanguageChanged(language.name)} />)
                 }
             </ul>
         </div>

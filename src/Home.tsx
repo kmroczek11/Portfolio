@@ -4,16 +4,15 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { Vector3 } from 'three/src/math/Vector3';
 import { rotateAroundPoint } from './functions';
-import { Preload, Text } from '@react-three/drei';
+import { Text } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from './context';
 import Loader from './Loader';
 import gsap from 'gsap';
-import { BufferAttribute, BufferGeometry } from 'three';
 
 const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
     const texts = useRef([]);
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (focus) {
@@ -58,7 +57,7 @@ const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
 
 const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
     const globe = useRef(null);
-    const texture = useLoader(TextureLoader, 'images/textures/night.jpg');
+    const [distance, setDistance] = useState<number>(6);
 
     const randFloatSpread = (range: number) => {
         const min: number = -range / 2;
@@ -67,11 +66,11 @@ const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
     }
 
     const [coords] = useMemo(() => {
-        const distance: number = 6;
+        console.log(`distance: ${distance}`)
         const initialCoords: Array<number> = [];
         for (let i = 0; i < 1000; i++) {
-            var theta = randFloatSpread(360);
-            var phi = randFloatSpread(360);
+            const theta = randFloatSpread(360);
+            const phi = randFloatSpread(360);
 
             const x = distance * Math.sin(theta) * Math.cos(phi);
             const y = distance * Math.sin(theta) * Math.sin(phi);
@@ -79,22 +78,25 @@ const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
 
             initialCoords.push(x, y, z);
         }
-        console.log(initialCoords)
-
         const coords = new Float32Array(initialCoords)
         return [coords]
-    }, [])
+    }, [distance])
 
     useFrame(() => {
-        if (globe.current)
+        if (globe.current) {
             globe.current.rotation.y -= 0.005;
+            if (distance <= 6) {
+                setDistance(distance => distance + 0.01);
+                globe.current.geometry.verticesNeedUpdate = true;
+            }
+        }
     })
 
-    useEffect(() => {
-        focus ?
-            globe.current && gsap.to(globe.current.material, { duration: 5, ease: 'expo.out', opacity: 1 }) :
-            globe.current && gsap.to(globe.current.material, { duration: 5, ease: 'expo.out', opacity: 0 });
-    }, [focus])
+    // useEffect(() => {
+    //     focus ?
+    //         globe.current && gsap.to(globe.current.material, { duration: 5, ease: 'expo.out', opacity: 1 }) :
+    //         globe.current && gsap.to(globe.current.material, { duration: 5, ease: 'expo.out', opacity: 0 });
+    // }, [focus])
 
     return (
         <points
@@ -112,9 +114,9 @@ const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
             <pointsMaterial
                 sizeAttenuation
                 attach="material"
-                color='#fff'
-                opacity={0}
-                size={0.005}
+                color='#000'
+                // opacity={0}
+                size={0.05}
             />
         </points>
     )
@@ -175,7 +177,7 @@ const Home = React.memo(() => {
     const [focus, setFocus] = useState<boolean>(false);
 
     useEffect(() => {
-        currentItem == 'home.end' ? setFocus(true) : setFocus(false);
+        currentItem === 'home.end' ? setFocus(true) : setFocus(false);
     }, [currentItem])
 
     return (

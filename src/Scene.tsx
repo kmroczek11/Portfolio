@@ -1,35 +1,32 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import Home from './Home';
 import Education from './Education';
 import Projects from './Projects';
 import Contact from './Contact';
-import { TextureLoader, BackSide } from 'three';
 import SceneController from './SceneController';
-import { OrbitControls } from '@react-three/drei';
-import Loader from './Loader';
 
-const Skybox = React.memo(() => {
-    console.log('skybox rendered');
-    const textures: Array<string> = [
-        'images/textures/skybox/space_ft.png',
-        'images/textures/skybox/space_bk.png',
-        'images/textures/skybox/space_up.png',
-        'images/textures/skybox/space_dn.png',
-        'images/textures/skybox/space_rt.png',
-        'images/textures/skybox/space_lf.png'
-    ];
+// const Skybox = React.memo(() => {
+//     console.log('skybox rendered');
+//     const textures: Array<string> = [
+//         'images/textures/skybox/space_ft.png',
+//         'images/textures/skybox/space_bk.png',
+//         'images/textures/skybox/space_up.png',
+//         'images/textures/skybox/space_dn.png',
+//         'images/textures/skybox/space_rt.png',
+//         'images/textures/skybox/space_lf.png'
+//     ];
 
-    return <mesh>
-        <boxBufferGeometry args={[1000, 1000, 1000]} />
-        {
-            textures.map((value: string, i: number) => {
-                const texture = new TextureLoader().load(value);
-                console.log(texture);
-                return <meshBasicMaterial key={i} attachArray='material' map={texture} side={BackSide} />;
-            })
-        }
-    </mesh>
-})
+//     return <mesh>
+//         <boxBufferGeometry args={[1000, 1000, 1000]} />
+//         {
+//             textures.map((value: string, i: number) => {
+//                 const texture = new TextureLoader().load(value);
+//                 console.log(texture);
+//                 return <meshBasicMaterial key={i} attachArray='material' map={texture} side={BackSide} />;
+//             })
+//         }
+//     </mesh>
+// })
 
 const Scene = (): JSX.Element => {
     console.log('scene rendered');

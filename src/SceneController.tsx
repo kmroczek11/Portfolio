@@ -1,7 +1,5 @@
-import React, { useContext, useEffect } from 'react';
-import { useFrame } from 'react-three-fiber'
+import { useContext, useEffect } from 'react';
 import { AppContext } from './context';
-import { Vector3 } from 'three/src/math/Vector3';
 import gsap from 'gsap';
 import { Types } from './context/reducers';
 

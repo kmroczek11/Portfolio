@@ -1,15 +1,12 @@
 import React, { useContext, useRef, useState, useEffect, Suspense } from 'react';
-import { useFrame, useLoader, useResource, useThree } from 'react-three-fiber'
+import { useLoader } from 'react-three-fiber'
 import { AppContext } from './context';
-import { Vector3 } from 'three/src/math/Vector3';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
-import { Text, Html, useGLTF, RoundedBox } from '@react-three/drei';
+import { Text } from '@react-three/drei';
 import { Types } from './context/reducers';
 import { useTranslation } from 'react-i18next';
 import Loader from './Loader';
-import gsap, { TimelineMax } from 'gsap';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import RoundedBoxGeometry from 'three-rounded-box'
+import gsap from 'gsap';
 import { Mesh, PlaneGeometry, ShaderMaterial, Vector2, VideoTexture } from 'three';
 
 interface ProjectItem {
@@ -51,24 +48,21 @@ void main()
 
 const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick }: ProjectItem): JSX.Element => {
     const { state } = useContext(AppContext);
-    const { fullScreen, gui } = state.scene;
-    const { t, i18n } = useTranslation();
+    const { fullScreen } = state.scene;
+    const { t } = useTranslation();
     const [hovered, setHovered] = useState<boolean>(false);
     const [vidPlayer] = useState(() => {
         const vid = document.createElement('video');
-        vid.src = `videos/${name}.mp4`;
-        vid.onerror = () => console.log(`${name} error ${vid.error.code}; details: ${vid.error.message}`);
         vid.crossOrigin = 'Anonymous';
         vid.loop = true;
         vid.controls = true;
-        vid.load();
         return vid;
     });
     const [vidObject] = useState(() => {
-        const geometry = medium == 'desktop' ? new PlaneGeometry(2, 1) : new PlaneGeometry(1, 2);
+        const geometry = medium === 'desktop' ? new PlaneGeometry(2, 1) : new PlaneGeometry(1, 2);
         const uniforms = {
             u_tex: { value: new VideoTexture(vidPlayer) },
-            u_adjust_uv: { value: medium == 'desktop' ? new Vector2(1, 1) : new Vector2(1, 1) }
+            u_adjust_uv: { value: medium === 'desktop' ? new Vector2(1, 1) : new Vector2(1, 1) }
         }
         const material = new ShaderMaterial({
             uniforms: uniforms,
@@ -80,11 +74,10 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
         return video;
     });
     const project = useRef(null);
-    const projectVideo = useRef(null);
     const projectDescription = useRef(null);
     const exit = useRef(null);
     const normalMap1 = useLoader(TextureLoader, 'images/textures/nm1.jpg');
-    const normalMap2 = useLoader(TextureLoader, 'images/textures/nm2.jpg');
+    // const normalMap2 = useLoader(TextureLoader, 'images/textures/nm2.jpg');
     const timeline = gsap.timeline();
 
     // useEffect(() => {
@@ -103,9 +96,13 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
 
     useEffect(() => {
         if (active) {
-            vidPlayer && vidPlayer.play();
-            projectDescription.current.visible = true;
-            if (medium == 'desktop') {
+            if (vidPlayer) {
+                vidPlayer.src = `videos/${name}.mp4`;
+                vidPlayer.onerror = () => console.log(`${name} error ${vidPlayer.error.code}; details: ${vidPlayer.error.message}`);
+                vidPlayer.load();
+                vidPlayer.play();
+            }
+            if (medium === 'desktop') {
                 timeline.to(project.current.position, { x: 16, y: 0, z: -17.5 });
                 timeline.to(project.current.scale, { x: 2, y: 2, z: 2, duration: 1 });
             } else {
@@ -113,13 +110,20 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
                 timeline.to(project.current.scale, { x: 1.6, y: 1.6, z: 1.6, duration: 1 });
             }
             timeline.to(project.current.rotation, { y: -0.2, duration: 1 });
+            projectDescription.current.visible = true;
+            console.log('current', projectDescription.current)
+            gsap.to(projectDescription.current.children[0].material, { opacity: 0.5, duration: 3 });
         }
         if (!active) {
-            vidPlayer && vidPlayer.pause();
-            projectDescription.current.visible = false;
+            if (vidPlayer) {
+                vidPlayer.src = '';
+                vidPlayer.pause();
+            }
             timeline.to(project.current.position, { x: x, y: y, z: -18 })
             timeline.to(project.current.rotation, { y: 0, duration: 1 });
             timeline.to(project.current.scale, { x: 1, y: 1, z: 1, duration: 1 });
+            projectDescription.current.visible = false;
+            gsap.to(projectDescription.current.children[0].material, { opacity: 0, duration: 3 });
         }
     }, [active])
 
@@ -129,11 +133,11 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
     //         project.current && gsap.to(project.current.position, { duration: 5, ease: 'expo.out', x: generateNumber(-2, 2), y: generateNumber(-2, 2), z: generateNumber(-2, 2) });
     // }, [focus])
 
-    const generateNumber = (min: number, max: number) => {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+    // const generateNumber = (min: number, max: number) => {
+    //     min = Math.ceil(min);
+    //     max = Math.floor(max);
+    //     return Math.floor(Math.random() * (max - min + 1)) + min;
+    // }
 
     const onSelected = () => {
         setHovered(false);
@@ -158,15 +162,14 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
             </group>
             <group
                 ref={projectDescription}
-                visible={false}
                 position={[14.3, 0, -16]}
+                visible={false}
             >
                 <mesh>
                     <planeBufferGeometry args={[1.5, 1.5]} />
                     <meshStandardMaterial
                         map={normalMap1}
                         color='#000'
-                        opacity={0.5}
                         transparent
                     />
                 </mesh>
@@ -233,7 +236,7 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
 const Projects = React.memo(() => {
     console.log('projects rendered');
     const { state, dispatch } = useContext(AppContext);
-    const { currentItem, gui } = state.scene;
+    const { currentItem } = state.scene;
     const [projectItems, setProjectItems] = useState<Array<ProjectItem>>([
         { id: 0, name: 'gfe', logos: ['vue', 'uikit', 'firebase'], medium: 'desktop', github: '-------------------', x: 12, y: 1, active: false },
         { id: 1, name: 'stalcraft', logos: ['angular', 'node'], medium: 'desktop', github: 'https://github.com/kmroczek11/Stalcraft', x: 14, y: 1, active: false },
@@ -248,10 +251,10 @@ const Projects = React.memo(() => {
     const [focus, setFocus] = useState<boolean>(false);
 
     useEffect(() => {
-        currentItem == 'projects.end' ? setFocus(true) : setFocus(false);
+        currentItem === 'projects.end' ? setFocus(true) : setFocus(false);
     }, [currentItem])
-    const light1 = useRef(null);
-    const light2 = useRef(null);
+    // const light1 = useRef(null);
+    // const light2 = useRef(null);
 
     useEffect(() => {
         // light1.current && gui.add(light1.current.position, 'x').min(10).max(20);

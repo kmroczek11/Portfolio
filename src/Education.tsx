@@ -2,7 +2,6 @@ import React, { Suspense, useContext, useEffect, useRef, useState } from 'react'
 import { useFrame, useLoader } from 'react-three-fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Text } from '@react-three/drei';
-import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { useTranslation } from 'react-i18next';
 import Loader from './Loader';
 import { AppContext } from './context';
@@ -66,20 +65,20 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y, focus }: Institution
 }
 
 const Education = React.memo(() => {
-    const [institutionItems, setInstitutionItems] = useState<Array<InstitutionItem>>(
+    const [institutionItems] = useState<Array<InstitutionItem>>(
         [
             { id: 0, objSrc: 'models/school.glb', scale: 0.1, x: -3, y: 1 },
             { id: 1, objSrc: 'models/college.glb', scale: 0.2, x: 0, y: 1 },
             { id: 2, objSrc: 'models/uni.glb', scale: 0.2, x: 3, y: 1 },
         ]
     );
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const { state } = useContext(AppContext);
     const { currentItem } = state.scene;
     const [focus, setFocus] = useState<boolean>(false);
 
     useEffect(() => {
-        currentItem == 'education.end' ? setFocus(true) : setFocus(false);
+        currentItem === 'education.end' ? setFocus(true) : setFocus(false);
     }, [currentItem])
 
     return (

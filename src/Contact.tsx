@@ -5,7 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useTranslation } from 'react-i18next';
 
 const ContactForm = (): JSX.Element => {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     return (
         <RoundedBox

@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo, useRef } from 'react';
 import './styles/app.css';
 import { AppContext } from './context';
 import { Types } from './context/reducers';
-import { Canvas } from 'react-three-fiber';
+import { Canvas, useFrame } from 'react-three-fiber';
 import Navbar from './Navbar';
 import Scene from './Scene';
-import { Stars, Stats, useContextBridge } from '@react-three/drei';
+import { Stats, useContextBridge } from '@react-three/drei';
+import useMousePosition from './useMousePosition';
 
 const navbar_items: Array<NavbarItem> = [
   { id: 0, name: 'education' },
@@ -16,6 +17,49 @@ const navbar_items: Array<NavbarItem> = [
 export interface NavbarItem {
   id: number,
   name: string,
+}
+
+const Particles = (): JSX.Element => {
+  const particles = useRef(null);
+  const { x, y } = useMousePosition();
+  const [coords] = useMemo(() => {
+    const particlesCnt: number = 5000;
+    const posArray = new Float32Array(particlesCnt * 3);
+    for (let i = 0; i < particlesCnt * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 100;
+    }
+    return [posArray]
+  }, [])
+
+  useFrame((state) => {
+    particles.current.rotation.y = -0.1 * state.clock.getElapsedTime();
+    if (x > 0) {
+      particles.current.rotation.x = -y * (state.clock.getElapsedTime() * 0.000001);
+      particles.current.rotation.y = x * (state.clock.getElapsedTime() * 0.000001);
+    }
+  })
+
+  return (
+    <>
+      <points ref={particles}>
+        <bufferGeometry>
+          <bufferAttribute
+            attachObject={["attributes", "position"]}
+            count={coords.length / 3}
+            array={coords}
+            itemSize={3}
+          />
+        </bufferGeometry>
+        <pointsMaterial
+          sizeAttenuation
+          attach="material"
+          color='#fff'
+          opacity={0}
+          size={0.005}
+        />
+      </points>
+    </>
+  )
 }
 
 const App = (): JSX.Element => {
@@ -43,14 +87,7 @@ const App = (): JSX.Element => {
         <ContextBridge>
           <Scene />
         </ContextBridge>
-        {/* <Stars
-          radius={100} // Radius of the inner sphere (default=100)
-          depth={50} // Depth of area where stars should fit (default=50)
-          count={5000} // Amount of stars (default=5000)
-          factor={4} // Size factor (default=4)
-          saturation={0} // Saturation 0-1 (default=0)
-          fade // Faded dots (default=false)
-        /> */}
+        <Particles />
       </Canvas>
       <Stats showPanel={0} />
     </>
