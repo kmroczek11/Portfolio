@@ -4,11 +4,71 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { Vector3 } from 'three/src/math/Vector3';
 import { rotateAroundPoint } from './functions';
-import { Text } from '@react-three/drei';
+import { Sphere, Text } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from './context';
 import Loader from './Loader';
 import gsap from 'gsap';
+import globeVertexShader from './shaders/globeVertex.glsl';
+import globeFragmentShader from './shaders/globeFragment.glsl';
+import atmosphereVertexShader from './shaders/atmosphereVertex.glsl';
+import atmosphereFragmentShader from './shaders/atmosphereFragment.glsl';
+import { AdditiveBlending, BackSide } from 'three';
+import useMousePosition from './useMousePosition';
+console.log(globeVertexShader)
+
+const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
+    const globe = useRef(null);
+    const globeController = useRef(null);
+    const { x, y } = useMousePosition('3D');
+
+    useFrame(() => {
+        if (globe.current)
+            globe.current.rotation.y -= 0.005;
+        if (globeController.current)
+            gsap.to(globeController.current.rotation, { x: -y * 0.3, y: x * 0.5, duration: 2 })
+    })
+
+    return (
+        <>
+            <group
+                ref={globeController}
+                position={[0, 0, -6]}
+            >
+                <Sphere
+                    args={[5, 50, 50]}
+                    ref={globe}
+                >
+                    <shaderMaterial
+                        vertexShader={globeVertexShader}
+                        fragmentShader={globeFragmentShader}
+                        uniforms={
+                            {
+                                globeTexture: {
+                                    value: new TextureLoader().load('images/textures/night.jpg')
+                                }
+                            }
+                        }
+                        attach="material"
+                    />
+                </Sphere>
+            </group>
+            <Sphere
+                args={[5, 50, 50]}
+                position={[0, 0, -6]}
+                scale={[1.1, 1.1, 1.1]}
+            >
+                <shaderMaterial
+                    vertexShader={atmosphereVertexShader}
+                    fragmentShader={atmosphereFragmentShader}
+                    blending={AdditiveBlending}
+                    side={BackSide}
+                    attach="material"
+                />
+            </Sphere>
+        </>
+    )
+}
 
 const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
     const texts = useRef([]);
@@ -52,73 +112,6 @@ const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
                 {t('homeDesc.1')}
             </Text>
         </>
-    )
-}
-
-const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
-    const globe = useRef(null);
-    const [distance, setDistance] = useState<number>(6);
-
-    const randFloatSpread = (range: number) => {
-        const min: number = -range / 2;
-        const max: number = range / 2;
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-
-    const [coords] = useMemo(() => {
-        console.log(`distance: ${distance}`)
-        const initialCoords: Array<number> = [];
-        for (let i = 0; i < 1000; i++) {
-            const theta = randFloatSpread(360);
-            const phi = randFloatSpread(360);
-
-            const x = distance * Math.sin(theta) * Math.cos(phi);
-            const y = distance * Math.sin(theta) * Math.sin(phi);
-            const z = distance * Math.cos(theta);
-
-            initialCoords.push(x, y, z);
-        }
-        const coords = new Float32Array(initialCoords)
-        return [coords]
-    }, [distance])
-
-    useFrame(() => {
-        if (globe.current) {
-            globe.current.rotation.y -= 0.005;
-            if (distance <= 6) {
-                setDistance(distance => distance + 0.01);
-                globe.current.geometry.verticesNeedUpdate = true;
-            }
-        }
-    })
-
-    // useEffect(() => {
-    //     focus ?
-    //         globe.current && gsap.to(globe.current.material, { duration: 5, ease: 'expo.out', opacity: 1 }) :
-    //         globe.current && gsap.to(globe.current.material, { duration: 5, ease: 'expo.out', opacity: 0 });
-    // }, [focus])
-
-    return (
-        <points
-            ref={globe}
-            position={[0, 0, -6]}
-        >
-            <bufferGeometry>
-                <bufferAttribute
-                    attachObject={["attributes", "position"]}
-                    count={coords.length / 3}
-                    array={coords}
-                    itemSize={3}
-                />
-            </bufferGeometry>
-            <pointsMaterial
-                sizeAttenuation
-                attach="material"
-                color='#000'
-                // opacity={0}
-                size={0.05}
-            />
-        </points>
     )
 }
 

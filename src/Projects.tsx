@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import Loader from './Loader';
 import gsap from 'gsap';
 import { Mesh, PlaneGeometry, ShaderMaterial, Vector2, VideoTexture } from 'three';
+import videoVertexShader from './shaders/videoVertex.glsl';
+import videoFragmentShader from './shaders/videoFragment.glsl';
 
 interface ProjectItem {
     id: number,
@@ -21,30 +23,6 @@ interface ProjectItem {
     focus?: boolean,
     onClick?: (id: number) => void,
 }
-
-const vshader = `
-varying vec2 vUv;
-
-void main() {
-  vUv = uv;
-
-  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-}
-`
-const fshader = `
-varying vec2 vUv;
-
-uniform sampler2D u_tex;
-uniform vec2 u_adjust_uv;
-
-void main()
-{
-  vec2 uv = vec2(0.5) + vUv * u_adjust_uv - u_adjust_uv*0.5;
-  vec3 color = vec3(0.3);
-  if (uv.x>=0.0 && uv.y>=0.0 && uv.x<1.0 && uv.y<1.0) color = texture2D(u_tex, uv).rgb;
-  gl_FragColor = vec4(color, 1.0);
-}
-`
 
 const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick }: ProjectItem): JSX.Element => {
     const { state } = useContext(AppContext);
@@ -66,8 +44,8 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
         }
         const material = new ShaderMaterial({
             uniforms: uniforms,
-            vertexShader: vshader,
-            fragmentShader: fshader
+            vertexShader: videoVertexShader,
+            fragmentShader: videoFragmentShader
         });
 
         const video = new Mesh(geometry, material);

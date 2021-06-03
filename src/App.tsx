@@ -21,7 +21,7 @@ export interface NavbarItem {
 
 const Particles = (): JSX.Element => {
   const particles = useRef(null);
-  const { x, y } = useMousePosition();
+  const { x, y } = useMousePosition('2D');
   const [coords] = useMemo(() => {
     const particlesCnt: number = 5000;
     const posArray = new Float32Array(particlesCnt * 3);
@@ -70,6 +70,8 @@ const App = (): JSX.Element => {
     <>
       <Navbar items={navbar_items} />
       <Canvas
+        gl={{ antialias: true }}
+        pixelRatio={window.devicePixelRatio}
         colorManagement={false}
         style={{ width: '100vw', height: '100vh' }}
         onCreated={({ camera, gl: { domElement } }) => {
