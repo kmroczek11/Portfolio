@@ -1,13 +1,13 @@
-import React, { useContext, useRef, useState, useEffect, Suspense } from 'react';
+import React, { useContext, useRef, useState, useEffect, Suspense, useMemo } from 'react';
 import { useLoader } from 'react-three-fiber'
 import { AppContext } from './context';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
-import { Text } from '@react-three/drei';
+import { RoundedBox, Text } from '@react-three/drei';
 import { Types } from './context/reducers';
 import { useTranslation } from 'react-i18next';
 import Loader from './Loader';
 import gsap from 'gsap';
-import { Mesh, PlaneGeometry, ShaderMaterial, Vector2, VideoTexture } from 'three';
+import { Color, DoubleSide, FrontSide, Mesh, PlaneGeometry, ShaderMaterial, Vector2, VideoTexture } from 'three';
 import videoVertexShader from './shaders/videoVertex.glsl';
 import videoFragmentShader from './shaders/videoFragment.glsl';
 
@@ -16,7 +16,7 @@ interface ProjectItem {
     name: string,
     logos: Array<string>,
     medium: string,
-    github: string,
+    preview: string,
     x: number,
     y: number,
     active: boolean,
@@ -24,9 +24,9 @@ interface ProjectItem {
     onClick?: (id: number) => void,
 }
 
-const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick }: ProjectItem): JSX.Element => {
+const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClick }: ProjectItem): JSX.Element => {
     const { state } = useContext(AppContext);
-    const { fullScreen } = state.scene;
+    const { fullScreen, gui } = state.scene;
     const { t } = useTranslation();
     const [hovered, setHovered] = useState<boolean>(false);
     const [vidPlayer] = useState(() => {
@@ -36,11 +36,12 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
         vid.controls = true;
         return vid;
     });
-    const [vidObject] = useState(() => {
-        const geometry = medium === 'desktop' ? new PlaneGeometry(2, 1) : new PlaneGeometry(1, 2);
+    const [vidObject] = useMemo(() => {
+        const geometry = medium === 'desktop' ? new PlaneGeometry(1.8, 0.8) : new PlaneGeometry(0.8, 1.8);
+        geometry.center();
         const uniforms = {
             u_tex: { value: new VideoTexture(vidPlayer) },
-            u_adjust_uv: { value: medium === 'desktop' ? new Vector2(1, 1) : new Vector2(1, 1) }
+            u_adjust_uv: { value: new Vector2(1, 1) }
         }
         const material = new ShaderMaterial({
             uniforms: uniforms,
@@ -49,8 +50,8 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
         });
 
         const video = new Mesh(geometry, material);
-        return video;
-    });
+        return [video];
+    }, []);
     const project = useRef(null);
     const projectDescription = useRef(null);
     const exit = useRef(null);
@@ -62,7 +63,6 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
     //     project.current && gui.add(project.current.rotation, 'x').min(0).max(360)
     //     project.current && gui.add(project.current.rotation, 'y').min(0).max(360)
     //     project.current && gui.add(project.current.rotation, 'z').min(0).max(360)
-    //     console.log(viewport.width)
     // }, [])
 
     useEffect(() => {
@@ -75,9 +75,11 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
     useEffect(() => {
         if (active) {
             if (vidPlayer) {
-                vidPlayer.src = `videos/${name}.mp4`;
-                vidPlayer.onerror = () => console.log(`${name} error ${vidPlayer.error.code}; details: ${vidPlayer.error.message}`);
-                vidPlayer.load();
+                if (vidPlayer.readyState < 3) {
+                    vidPlayer.src = `videos/${name}.mp4`;
+                    vidPlayer.load();
+                    vidPlayer.onerror = () => console.log(`${name} error ${vidPlayer.error.code}; details: ${vidPlayer.error.message}`);
+                }
                 vidPlayer.play();
             }
             if (medium === 'desktop') {
@@ -93,10 +95,7 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
             gsap.to(projectDescription.current.children[0].material, { opacity: 0.5, duration: 3 });
         }
         if (!active) {
-            if (vidPlayer) {
-                vidPlayer.src = '';
-                vidPlayer.pause();
-            }
+            if (vidPlayer) vidPlayer.pause();
             timeline.to(project.current.position, { x: x, y: y, z: -18 })
             timeline.to(project.current.rotation, { y: 0, duration: 1 });
             timeline.to(project.current.scale, { x: 1, y: 1, z: 1, duration: 1 });
@@ -136,7 +135,10 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
                 onPointerOver={fullScreen ? null : () => setHovered(true)}
                 onPointerOut={fullScreen ? null : () => setHovered(false)}
             >
-                <primitive object={vidObject} />
+                <primitive object={vidObject} position-z={0.08} />
+                <RoundedBox args={medium == 'desktop' ? [2, 1, 0.1] : [1, 2, 0.1]}>
+                    <meshPhongMaterial attach="material" color="#000" />
+                </RoundedBox>
             </group>
             <group
                 ref={projectDescription}
@@ -179,16 +181,16 @@ const Project = ({ id, name, logos, medium, github, x, y, active, focus, onClick
                         fontSize={0.06}
                         maxWidth={1}
                         textAlign='center'
-                        anchorY={0.4}
+                        anchorY={0.3}
                         lineHeight={2}
                     >
-                        {github}
+                        {preview}
                     </Text>
                 </group>
                 {logos.map((logo: string, index: number) => {
                     const texture = new TextureLoader().load(`images/logos/${logo}.png`);
 
-                    return <mesh position-x={0.5 * (index % 3) - 0.5} position-y={index < 3 ? -0.6 : -0.8}>
+                    return <mesh position-x={0.5 * (index % 3) - 0.5} position-y={index < 3 ? -0.5 : -0.7}>
                         <planeBufferGeometry args={[0.2, 0.1]} />
                         <meshStandardMaterial map={texture} transparent />
                     </mesh>
@@ -216,14 +218,14 @@ const Projects = React.memo(() => {
     const { state, dispatch } = useContext(AppContext);
     const { currentItem } = state.scene;
     const [projectItems, setProjectItems] = useState<Array<ProjectItem>>([
-        { id: 0, name: 'gfe', logos: ['vue', 'uikit', 'firebase'], medium: 'desktop', github: '-------------------', x: 12, y: 1, active: false },
-        { id: 1, name: 'stalcraft', logos: ['angular', 'node'], medium: 'desktop', github: 'https://github.com/kmroczek11/Stalcraft', x: 14, y: 1, active: false },
-        { id: 2, name: 'shop', logos: ['aspnet', 'mysql'], medium: 'desktop', github: 'https://github.com/kmroczek11/Shop', x: 16, y: 1, active: false },
-        { id: 3, name: 'coronastats', logos: ['reactnative', 'redux'], medium: 'mobile', github: 'https://github.com/kmroczek11/Coronastats', x: 18, y: 1, active: false },
-        { id: 4, name: 'marbles', logos: ['three', 'node', 'jquery', 'ajax', 'socketio', 'mongodb'], medium: 'desktop', github: 'https://github.com/kmroczek11/Marbles', x: 12, y: -1, active: false },
-        { id: 5, name: 'mp3player', logos: ['jquery', 'node', 'ajax'], medium: 'desktop', github: 'https://github.com/kmroczek11/School-projects/tree/master/MP3%20Player', x: 14, y: -1, active: false },
-        { id: 6, name: 'tasky', logos: ['flutter', 'rive', 'firebase'], medium: 'mobile', github: 'https://github.com/kmroczek11/Tasky', x: 16, y: -1, active: false },
-        // { id: 7, name: '', logos: ['react', 'sass'], medium: 'desktop', github: 'https://github.com/kmroczek11/Portfolio', x: 18, y: -1, active: false },
+        { id: 0, name: 'gfe', logos: ['vue', 'uikit', 'firebase'], medium: 'desktop', preview: 'http://www.gfe.agh.edu.pl', x: 12, y: 1, active: false },
+        { id: 1, name: 'stalcraft', logos: ['angular', 'node'], medium: 'desktop', preview: 'https://github.com/kmroczek11/Stalcraft', x: 14.5, y: 1, active: false },
+        { id: 2, name: 'shop', logos: ['aspnet', 'mysql'], medium: 'desktop', preview: 'https://github.com/kmroczek11/Shop', x: 17, y: 1, active: false },
+        { id: 3, name: 'coronastats', logos: ['reactnative', 'redux'], medium: 'mobile', preview: 'https://github.com/kmroczek11/Coronastats', x: 19, y: 1, active: false },
+        { id: 4, name: 'marbles', logos: ['three', 'node', 'jquery', 'ajax', 'socketio', 'mongodb'], medium: 'desktop', preview: 'https://github.com/kmroczek11/Marbles', x: 12, y: -1, active: false },
+        { id: 5, name: 'mp3player', logos: ['jquery', 'node', 'ajax'], medium: 'desktop', preview: 'https://github.com/kmroczek11/School-projects/tree/master/MP3%20Player', x: 14.5, y: -1, active: false },
+        { id: 6, name: 'tasky', logos: ['flutter', 'rive', 'firebase'], medium: 'mobile', preview: 'https://github.com/kmroczek11/Tasky', x: 16.5, y: -1, active: false },
+        // { id: 7, name: '', logos: ['react', 'sass'], medium: 'desktop', preview: 'https://github.com/kmroczek11/Portfolio', x: 19.5, y: -1, active: false },
     ]);
     const [selected, setSelected] = useState<number>(null);
     const [focus, setFocus] = useState<boolean>(false);

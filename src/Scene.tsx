@@ -4,6 +4,7 @@ import Education from './Education';
 import Projects from './Projects';
 import Contact from './Contact';
 import SceneController from './SceneController';
+import { OrbitControls } from '@react-three/drei/core/OrbitControls';
 
 // const Skybox = React.memo(() => {
 //     console.log('skybox rendered');
