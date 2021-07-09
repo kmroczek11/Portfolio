@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, Suspense, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame, useLoader } from 'react-three-fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
@@ -15,9 +15,9 @@ import atmosphereVertexShader from './shaders/atmosphereVertex.glsl';
 import atmosphereFragmentShader from './shaders/atmosphereFragment.glsl';
 import photoVertexShader from './shaders/photoVertex.glsl';
 import photoFragmentShader from './shaders/photoFragment.glsl';
-import { AdditiveBlending, BackSide, DoubleSide } from 'three';
+import { AdditiveBlending, BackSide, Color, DoubleSide } from 'three';
 import useMousePosition from './useMousePosition';
-console.log(globeVertexShader)
+import EffectText from './EffectText';
 
 const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
     const globe = useRef(null);
@@ -73,42 +73,45 @@ const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
 }
 
 const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
-    const texts = useRef([]);
+    const first = useRef(null);
+    const second = useRef(null);
     const { t } = useTranslation();
 
     useEffect(() => {
         if (focus) {
-            texts.current[0] && gsap.to(texts.current[0].position, { x: -2, y: 0, z: 0.5, duration: 5, ease: 'expo.out' });
-            texts.current[1] && gsap.to(texts.current[1].position, { x: 2, y: -1, z: 0.5, duration: 5, ease: 'expo.out' });
-            texts.current[0] && gsap.to(texts.current[0], { duration: 5, ease: 'expo.out', fillOpacity: 1 });
-            texts.current[1] && gsap.to(texts.current[1], { duration: 5, ease: 'expo.out', fillOpacity: 1 });
+            first.current && gsap.to(first.current.position, { x: -2, y: 0, z: 0.5, duration: 5, ease: 'expo.out' });
+            second.current && gsap.to(second.current.position, { x: 2, y: -1, z: 0.5, duration: 5, ease: 'expo.out' });
+            first.current && gsap.to(first.current, { duration: 5, ease: 'expo.out', fillOpacity: 1 });
+            second.current && gsap.to(second.current, { duration: 5, ease: 'expo.out', fillOpacity: 1 });
         } else {
-            texts.current[0] && gsap.to(texts.current[0].position, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
-            texts.current[1] && gsap.to(texts.current[1].position, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
-            texts.current[0] && gsap.to(texts.current[0], { duration: 5, ease: 'expo.out', fillOpacity: 0 });
-            texts.current[1] && gsap.to(texts.current[1], { duration: 5, ease: 'expo.out', fillOpacity: 0 });
+            first.current && gsap.to(first.current.position, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
+            second.current && gsap.to(second.current.position, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
+            first.current && gsap.to(first.current, { duration: 5, ease: 'expo.out', fillOpacity: 0 });
+            second.current && gsap.to(second.current, { duration: 5, ease: 'expo.out', fillOpacity: 0 });
         }
     }, [focus])
 
     return (
         <>
             <Text
-                ref={el => texts.current[0] = el}
+                ref={first}
                 color='#fff'
                 font='fonts/Oswald.ttf'
                 fontSize={1}
                 textAlign='center'
                 fillOpacity={0}
+                layers={[1]}
             >
                 {t('homeDesc.0')}
             </Text>
             <Text
-                ref={el => texts.current[1] = el}
+                ref={second}
                 color='#d4af37'
                 font='fonts/Oswald.ttf'
                 fontSize={1}
                 textAlign='center'
                 fillOpacity={0}
+                layers={[1]}
             >
                 {t('homeDesc.1')}
             </Text>
@@ -191,8 +194,8 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
 
     useEffect(() => {
         focus ?
-            photo.current && gsap.to(photo.current.material.uniforms.move, { value: 0, duration: 5, ease: 'expo.out',}) :
-            photo.current && gsap.to(photo.current.material.uniforms.move, { value: 5, duration: 5, ease: 'expo.out',onUpdate: () => {console.log(photo.current.material.uniforms.move);photo.current.geometry.verticesNeedUpdate = true},});
+            photo.current && gsap.to(photo.current.material.uniforms.move, { value: 0, duration: 5, ease: 'expo.out', }) :
+            photo.current && gsap.to(photo.current.material.uniforms.move, { value: 5, duration: 5, ease: 'expo.out', onUpdate: () => { console.log(photo.current.material.uniforms.move); photo.current.geometry.verticesNeedUpdate = true }, });
     }, [focus])
 
     return (
@@ -231,14 +234,14 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
                 uniforms={uniforms}
                 side={DoubleSide}
                 transparent={true}
-                depthTest={false}
-                depthWrite={false}
+                // depthTest={false}
+                // depthWrite={false}
             />
         </points>
     )
 }
 
-const Home = React.memo(() => {
+const Home = memo(() => {
     console.log('home rendered');
     const { state } = useContext(AppContext);
     const { currentItem } = state.scene;

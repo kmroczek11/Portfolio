@@ -7,17 +7,8 @@ import Navbar from './Navbar';
 import Scene from './Scene';
 import { Stats, useContextBridge } from '@react-three/drei';
 import useMousePosition from './useMousePosition';
-
-const navbar_items: Array<NavbarItem> = [
-  { id: 0, name: 'education' },
-  { id: 1, name: 'projects' },
-  { id: 2, name: 'contact' },
-]
-
-export interface NavbarItem {
-  id: number,
-  name: string,
-}
+import Effects from './Effects';
+import { ACESFilmicToneMapping, ReinhardToneMapping } from 'three';
 
 const Particles = (): JSX.Element => {
   const particles = useRef(null);
@@ -32,10 +23,12 @@ const Particles = (): JSX.Element => {
   }, [])
 
   useFrame((state) => {
-    particles.current.rotation.y = -0.1 * state.clock.getElapsedTime();
-    if (x > 0) {
-      particles.current.rotation.x = -y * (state.clock.getElapsedTime() * 0.000001);
-      particles.current.rotation.y = x * (state.clock.getElapsedTime() * 0.000001);
+    if (particles.current) {
+      particles.current.rotation.y = -0.1 * state.clock.getElapsedTime();
+      if (x > 0) {
+        particles.current.rotation.x = -y * (state.clock.getElapsedTime() * 0.000001);
+        particles.current.rotation.y = x * (state.clock.getElapsedTime() * 0.000001);
+      }
     }
   })
 
@@ -68,28 +61,24 @@ const App = (): JSX.Element => {
 
   return (
     <>
-      <Navbar items={navbar_items} />
       <Canvas
         gl={{ antialias: true }}
         pixelRatio={window.devicePixelRatio}
         colorManagement={false}
+        shadowMap
         style={{ width: '100vw', height: '100vh' }}
-        onCreated={({ camera, gl: { domElement } }) => {
+        onCreated={({ camera, gl, raycaster }) => {
           // camera.position.set(15, 0, -15);
-          dispatch({
-            type: Types.SetCanvas,
-            payload: domElement,
-          });
-          dispatch({
-            type: Types.SetCamera,
-            payload: camera,
-          });
+          raycaster.layers.enableAll();
+          gl.toneMapping = ACESFilmicToneMapping;
+          gl.toneMappingExposure = 1;
         }}
       >
         <ContextBridge>
           <Scene />
         </ContextBridge>
-        <Particles />
+        {/* <Particles /> */}
+        <Effects />
       </Canvas>
       <Stats showPanel={0} />
     </>

@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useEffect, useRef, useState } from 'react';
+import { Fragment, memo, Suspense, useContext, useEffect, useRef, useState } from 'react';
 import { useFrame, useLoader } from 'react-three-fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Text } from '@react-three/drei';
@@ -8,7 +8,6 @@ import { AppContext } from './context';
 import gsap from 'gsap';
 
 interface InstitutionItem {
-    id: number,
     name?: string,
     objSrc: string,
     desc?: string,
@@ -18,7 +17,7 @@ interface InstitutionItem {
     focus?: boolean
 }
 
-const Institution = ({ id, name, objSrc, desc, scale, x, y, focus }: InstitutionItem): JSX.Element => {
+const Institution = ({ name, objSrc, desc, scale, x, y, focus }: InstitutionItem): JSX.Element => {
     const obj = useLoader(GLTFLoader, objSrc);
     const insitution = useRef(null);
 
@@ -48,6 +47,7 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y, focus }: Institution
                 fontSize={0.3}
                 textAlign='center'
                 anchorY={0.5}
+                layers={[1]}
             >
                 {name}
             </Text>
@@ -57,6 +57,7 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y, focus }: Institution
                 fontSize={0.15}
                 textAlign='center'
                 anchorY={2}
+                layers={[1]}
             >
                 {desc}
             </Text>
@@ -64,12 +65,12 @@ const Institution = ({ id, name, objSrc, desc, scale, x, y, focus }: Institution
     )
 }
 
-const Education = React.memo(() => {
+const Education = memo(() => {
     const [institutionItems] = useState<Array<InstitutionItem>>(
         [
-            { id: 0, objSrc: 'models/school.glb', scale: 0.1, x: -3, y: 1 },
-            { id: 1, objSrc: 'models/college.glb', scale: 0.2, x: 0, y: 1 },
-            { id: 2, objSrc: 'models/uni.glb', scale: 0.2, x: 3, y: 1 },
+            { objSrc: 'models/school.glb', scale: 0.1, x: -3, y: 1 },
+            { objSrc: 'models/college.glb', scale: 0.2, x: 0, y: 1 },
+            { objSrc: 'models/uni.glb', scale: 0.2, x: 3, y: 1 },
         ]
     );
     const { t } = useTranslation();
@@ -84,13 +85,15 @@ const Education = React.memo(() => {
     return (
         <Suspense fallback={<Loader />}>
             {
-                institutionItems.map((e: InstitutionItem, i: number) =>
-                    <Institution
-                        key={i} {...e}
-                        name={t(`educationTitles.${i}`)}
-                        desc={t(`educationDesc.${i}`)}
-                        focus={focus}
-                    />
+                institutionItems.map((institution: InstitutionItem, index: number) =>
+                    <Fragment key={index}>
+                        <Institution
+                            name={t(`educationTitles.${index}`)}
+                            desc={t(`educationDesc.${index}`)}
+                            focus={focus}
+                            {...institution}
+                        />
+                    </Fragment>
                 )
             }
         </Suspense>

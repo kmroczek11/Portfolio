@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState, useEffect, Suspense, useMemo } from 'react';
+import React, { useContext, useRef, useState, useEffect, Suspense, useMemo, Fragment } from 'react';
 import { useLoader } from 'react-three-fiber'
 import { AppContext } from './context';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
@@ -38,7 +38,6 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
     });
     const [vidObject] = useMemo(() => {
         const geometry = medium === 'desktop' ? new PlaneGeometry(1.8, 0.8) : new PlaneGeometry(0.8, 1.8);
-        geometry.center();
         const uniforms = {
             u_tex: { value: new VideoTexture(vidPlayer) },
             u_adjust_uv: { value: new Vector2(1, 1) }
@@ -58,6 +57,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
     const normalMap1 = useLoader(TextureLoader, 'images/textures/nm1.jpg');
     // const normalMap2 = useLoader(TextureLoader, 'images/textures/nm2.jpg');
     const timeline = gsap.timeline();
+    const [enteredPreviewMode, setEnteredPreviewMode] = useState<boolean>(false);
 
     // useEffect(() => {
     //     project.current && gui.add(project.current.rotation, 'x').min(0).max(360)
@@ -89,12 +89,12 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                 timeline.to(project.current.position, { x: 16.5, y: 0, z: -17.5 });
                 timeline.to(project.current.scale, { x: 1.6, y: 1.6, z: 1.6, duration: 1 });
             }
-            timeline.to(project.current.rotation, { y: -0.2, duration: 1 });
+            timeline.to(project.current.rotation, { y: -0.2, duration: 1, onComplete: () => setEnteredPreviewMode(true) });
             projectDescription.current.visible = true;
-            console.log('current', projectDescription.current)
             gsap.to(projectDescription.current.children[0].material, { opacity: 0.5, duration: 3 });
         }
         if (!active) {
+            setEnteredPreviewMode(false);
             if (vidPlayer) vidPlayer.pause();
             timeline.to(project.current.position, { x: x, y: y, z: -18 })
             timeline.to(project.current.rotation, { y: 0, duration: 1 });
@@ -126,14 +126,38 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
         onClick(null);
     }
 
+    const onEnterPreviewMode = () => {
+        if (enteredPreviewMode) {
+            if (medium === 'desktop')
+                timeline.to(project.current.position, { x: 15, y: 0, z: -16.5 });
+            else
+                timeline.to(project.current.position, { x: 15, y: 0, z: -17.1 });
+            timeline.to(project.current.rotation, { y: 0, duration: 1 });
+            gsap.to(projectDescription.current.children[0].material, { opacity: 0, duration: 3 });
+            projectDescription.current.visible = false;
+        }
+    }
+
+    const onExitPreviewMode = () => {
+        if (enteredPreviewMode) {
+            if (medium === 'desktop')
+                timeline.to(project.current.position, { x: 16, y: 0, z: -17.5 });
+            else
+                timeline.to(project.current.position, { x: 16.5, y: 0, z: -17.5 });
+            timeline.to(project.current.rotation, { y: -0.2, duration: 1 });
+            gsap.to(projectDescription.current.children[0].material, { opacity: 0.5, duration: 3 });
+            projectDescription.current.visible = true;
+        }
+    }
+
     return (
         <>
             <group
                 ref={project}
                 position={[x, y - 0.1, -18]}
                 onClick={fullScreen ? null : onSelected}
-                onPointerOver={fullScreen ? null : () => setHovered(true)}
-                onPointerOut={fullScreen ? null : () => setHovered(false)}
+                onPointerOver={fullScreen ? () => onEnterPreviewMode() : () => setHovered(true)}
+                onPointerOut={fullScreen ? () => onExitPreviewMode() : () => setHovered(false)}
             >
                 <primitive object={vidObject} position-z={0.08} />
                 <RoundedBox args={medium == 'desktop' ? [2, 1, 0.1] : [1, 2, 0.1]}>
@@ -161,6 +185,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                         maxWidth={1.5}
                         textAlign='center'
                         anchorY={-0.7}
+                        layers={[1]}
                     >
                         {t(`projectTitles.${id}`)}
                     </Text>
@@ -172,6 +197,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                         textAlign='center'
                         anchorY={-0.5}
                         lineHeight={2}
+                        layers={[1]}
                     >
                         {t(`projectDesc.${id}`)}
                     </Text>
@@ -183,6 +209,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                         textAlign='center'
                         anchorY={0.3}
                         lineHeight={2}
+                        layers={[1]}
                     >
                         {preview}
                     </Text>
@@ -190,10 +217,17 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                 {logos.map((logo: string, index: number) => {
                     const texture = new TextureLoader().load(`images/logos/${logo}.png`);
 
-                    return <mesh position-x={0.5 * (index % 3) - 0.5} position-y={index < 3 ? -0.5 : -0.7}>
-                        <planeBufferGeometry args={[0.2, 0.1]} />
-                        <meshStandardMaterial map={texture} transparent />
-                    </mesh>
+                    return (
+                        <Fragment key={index}>
+                            <mesh
+                                position-x={0.5 * (index % 3) - 0.5}
+                                position-y={index < 3 ? -0.5 : -0.7}
+                            >
+                                <planeBufferGeometry args={[0.2, 0.1]} />
+                                <meshStandardMaterial map={texture} transparent />
+                            </mesh>
+                        </Fragment>
+                    )
                 })}
             </group>
             {
