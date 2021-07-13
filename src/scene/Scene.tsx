@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
-import Home from './Home';
-import Education from './Education';
-import Projects from './Projects';
-import Contact from './Contact';
+import Home from '../home/Home';
+import Education from '../education/Education';
+import Projects from '../projects/Projects';
+import Contact from '../contact/Contact';
 import SceneController from './SceneController';
 import { OrbitControls } from '@react-three/drei/core/OrbitControls';
 import { useRef } from 'react';
 import { useFrame, useThree } from 'react-three-fiber';
-import Navbar from './Navbar';
+import Navbar from '../navigation/Navbar';
 
 // const Skybox = React.memo(() => {
 //     console.log('skybox rendered');

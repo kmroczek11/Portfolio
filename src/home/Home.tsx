@@ -3,21 +3,21 @@ import { useFrame, useLoader } from 'react-three-fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { Vector3 } from 'three/src/math/Vector3';
-import { rotateAroundPoint } from './functions';
+import { rotateAroundPoint } from '../components/functions';
 import { Sphere, Text } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
-import { AppContext } from './context';
-import Loader from './Loader';
+import { AppContext } from '../context';
+import Loader from '../components/Loader';
 import gsap from 'gsap';
-import globeVertexShader from './shaders/globeVertex.glsl';
-import globeFragmentShader from './shaders/globeFragment.glsl';
-import atmosphereVertexShader from './shaders/atmosphereVertex.glsl';
-import atmosphereFragmentShader from './shaders/atmosphereFragment.glsl';
-import photoVertexShader from './shaders/photoVertex.glsl';
-import photoFragmentShader from './shaders/photoFragment.glsl';
+import globeVertexShader from '../shaders/globeVertex.glsl';
+import globeFragmentShader from '../shaders/globeFragment.glsl';
+import atmosphereVertexShader from '../shaders/atmosphereVertex.glsl';
+import atmosphereFragmentShader from '../shaders/atmosphereFragment.glsl';
+import photoVertexShader from '../shaders/photoVertex.glsl';
+import photoFragmentShader from '../shaders/photoFragment.glsl';
 import { AdditiveBlending, BackSide, Color, DoubleSide } from 'three';
-import useMousePosition from './useMousePosition';
-import EffectText from './EffectText';
+import useMousePosition from '../hooks/useMousePosition';
+import EffectText from '../components/EffectText';
 
 const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
     const globe = useRef(null);

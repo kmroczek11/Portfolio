@@ -3,8 +3,8 @@ import { useFrame, useLoader } from 'react-three-fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Text } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
-import Loader from './Loader';
-import { AppContext } from './context';
+import Loader from '../components/Loader';
+import { AppContext } from '../context';
 import gsap from 'gsap';
 
 interface InstitutionItem {

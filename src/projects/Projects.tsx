@@ -1,15 +1,15 @@
 import React, { useContext, useRef, useState, useEffect, Suspense, useMemo, Fragment } from 'react';
 import { useLoader } from 'react-three-fiber'
-import { AppContext } from './context';
+import { AppContext } from '../context';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { RoundedBox, Text } from '@react-three/drei';
-import { Types } from './context/reducers';
+import { Types } from '../context/reducers';
 import { useTranslation } from 'react-i18next';
-import Loader from './Loader';
+import Loader from '../components/Loader';
 import gsap from 'gsap';
 import { Color, DoubleSide, FrontSide, Mesh, PlaneGeometry, ShaderMaterial, Vector2, VideoTexture } from 'three';
-import videoVertexShader from './shaders/videoVertex.glsl';
-import videoFragmentShader from './shaders/videoFragment.glsl';
+import videoVertexShader from '../shaders/videoVertex.glsl';
+import videoFragmentShader from '../shaders/videoFragment.glsl';
 
 interface ProjectItem {
     id: number,

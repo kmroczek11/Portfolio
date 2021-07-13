@@ -1,13 +1,13 @@
 import { Fragment, memo, Suspense, useContext, useEffect, useState } from 'react';
-import './styles/navbar.css';
-import { NavbarItem } from './Scene';
-import { AppContext } from './context';
-import { Types } from './context/reducers';
+import '../styles/navbar.css';
+import { NavbarItem } from '../scene/Scene';
+import { AppContext } from '../context';
+import { Types } from '../context/reducers';
 import { Html, Text } from '@react-three/drei';
 import { MeshStandardMaterial, Shader, TextureLoader, WebGLRenderer } from 'three';
 import { useTranslation } from 'react-i18next';
 import { useLoader, useThree } from 'react-three-fiber';
-import Loader from './Loader';
+import Loader from '../components/Loader';
 
 interface NavProps {
     items: Array<NavbarItem>
@@ -66,7 +66,7 @@ const Language = ({ imageSrc, name, position, onClick }: LanguageItem) => {
 const Navbar = memo(({ items }: NavProps) => {
     console.log('navbar rendered');
     const { state, dispatch } = useContext(AppContext);
-    const { fullScreen } = state.scene;
+    const { currentItem, fullScreen } = state.scene;
     const [languages] = useState<Array<LanguageItem>>([
         { name: 'pl', imageSrc: 'images/flags/poland.png' },
         { name: 'en', imageSrc: 'images/flags/england.png' }
@@ -90,11 +90,12 @@ const Navbar = memo(({ items }: NavProps) => {
         i18n.changeLanguage(language);
     };
 
-    return !fullScreen ? (
+    return (
         <group
             position={[camera.position.x, 3, camera.position.z - 5]}
             onPointerOver={() => setHovered(true)}
             onPointerOut={() => setHovered(false)}
+            visible={!fullScreen && !currentItem.endsWith('to')}
         >
             <group onClick={() => onNavigationStarted('home.to')}>
                 <Text
@@ -144,7 +145,7 @@ const Navbar = memo(({ items }: NavProps) => {
                 )
             }
         </group>
-    ) : null;
+    )
 })
 
 export default Navbar;

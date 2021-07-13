@@ -7,8 +7,8 @@ import {
     BLOOM_LAYER_NUM,
     FILM_LAYER_NUM,
     MULTIPASS_LAYER_NUM
-} from "./postprocessing/constant";
-import { createRenderPass, bloomPass, filmPass, createFinalPass } from "./postprocessing/pass";
+} from "../postprocessing/constant";
+import { createRenderPass, bloomPass, filmPass, createFinalPass } from "../postprocessing/pass";
 
 const Effects = (): JSX.Element => {
     const { scene, gl, size, camera } = useThree()

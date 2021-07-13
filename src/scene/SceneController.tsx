@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
-import { AppContext } from './context';
+import { AppContext } from '../context';
 import gsap from 'gsap';
-import { Types } from './context/reducers';
+import { Types } from '../context/reducers';
 import { useThree } from 'react-three-fiber';
 
 const SceneController = (): JSX.Element => {

@@ -1,13 +1,13 @@
 import React, { useContext, useMemo, useRef } from 'react';
-import './styles/app.css';
-import { AppContext } from './context';
-import { Types } from './context/reducers';
+import '../styles/app.css';
+import { AppContext } from '../context';
+import { Types } from '../context/reducers';
 import { Canvas, useFrame } from 'react-three-fiber';
-import Navbar from './Navbar';
-import Scene from './Scene';
+import Navbar from '../navigation/Navbar';
+import Scene from '../scene/Scene';
 import { Stats, useContextBridge } from '@react-three/drei';
-import useMousePosition from './useMousePosition';
-import Effects from './Effects';
+import useMousePosition from '../hooks/useMousePosition';
+import Effects from '../components/Effects';
 import { ACESFilmicToneMapping, ReinhardToneMapping } from 'three';
 
 const Particles = (): JSX.Element => {

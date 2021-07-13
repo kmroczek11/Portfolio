@@ -1,20 +1,35 @@
-import React from 'react';
-import './styles/contact.css';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import '../styles/contact.css';
 import { Html, RoundedBox } from '@react-three/drei';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useTranslation } from 'react-i18next';
+import { AppContext } from '../context';
 
 const ContactForm = (): JSX.Element => {
+    const form = useRef(null);
     const { t } = useTranslation();
+    const { state } = useContext(AppContext);
+    const { currentItem } = state.scene;
+    const [focus, setFocus] = useState<boolean>(false);
+
+    useEffect(() => {
+        currentItem === 'contact.end' ? setFocus(true) : setFocus(false);
+    }, [currentItem])
 
     return (
         <RoundedBox
+            ref={form}
             position={[15, 0, 0]}
             args={[5, 6, 0.2]}
             radius={0.1}
         >
-            <meshPhongMaterial attach="material" color="#000"/>
-            <Html center>
+            <meshPhongMaterial attach="material" color="#000" />
+            <Html
+                center
+                style={{
+                    opacity: focus ? 1 : 0,
+                }}
+            >
                 <Formik
                     initialValues={{ name: '', email: '', phone: '', link: '', message: '' }}
                     validate={values => {
