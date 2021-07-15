@@ -5,7 +5,7 @@ import { Text, useProgress } from '@react-three/drei';
 const Loader = (): JSX.Element => {
     const { progress } = useProgress();
     const { t } = useTranslation();
-    console.log(progress);
+    // console.log(progress);
 
     return <Text
         color='#d4af37'
