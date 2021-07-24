@@ -10,4 +10,15 @@ body {
   padding: 0;
   overflow: hidden;
 }
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  canvas {
+    position: absolute;
+    bottom: 50%;
+    right: 50%;
+    -webkit-transform: translate(50%, 50%) rotate(90deg);
+            transform: translate(50%, 50%) rotate(90deg);
+  }
+}
 /*# sourceMappingURL=app.css.map */

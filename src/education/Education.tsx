@@ -1,5 +1,5 @@
 import { Fragment, memo, Suspense, useContext, useEffect, useRef, useState } from 'react';
-import { useFrame, useLoader } from 'react-three-fiber'
+import { useFrame, useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Text } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';

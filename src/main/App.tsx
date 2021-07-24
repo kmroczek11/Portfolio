@@ -1,79 +1,93 @@
-import React, { useContext, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import '../styles/app.css';
 import { AppContext } from '../context';
-import { Types } from '../context/reducers';
-import { Canvas, useFrame } from 'react-three-fiber';
-import Navbar from '../navigation/Navbar';
 import Scene from '../scene/Scene';
 import { Stats, useContextBridge } from '@react-three/drei';
-import useMousePosition from '../hooks/useMousePosition';
 import Effects from '../components/Effects';
-import { ACESFilmicToneMapping, ReinhardToneMapping } from 'three';
+import { ACESFilmicToneMapping, Intersection, Vector2, WebGLRenderer, PerspectiveCamera } from 'three';
+import { Types } from '../context/reducers';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { FullScreen, useFullScreenHandle } from 'react-full-screen';
 
-const Particles = (): JSX.Element => {
-  const particles = useRef(null);
-  const { x, y } = useMousePosition('2D');
-  const [coords] = useMemo(() => {
-    const particlesCnt: number = 5000;
-    const posArray = new Float32Array(particlesCnt * 3);
-    for (let i = 0; i < particlesCnt * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 100;
-    }
-    return [posArray]
-  }, [])
+// const Camera = (props) => {
+//   const ref = useRef(null);
+//   // const { setDefaultCamera } = useThree();
+//   // useEffect(() => void setDefaultCamera(ref.current), [])
+//   useFrame(() => ref.current.updateMatrixWorld())
 
-  useFrame((state) => {
-    if (particles.current) {
-      particles.current.rotation.y = -0.1 * state.clock.getElapsedTime();
-      if (x > 0) {
-        particles.current.rotation.x = -y * (state.clock.getElapsedTime() * 0.000001);
-        particles.current.rotation.y = x * (state.clock.getElapsedTime() * 0.000001);
-      }
-    }
-  })
-
-  return (
-    <>
-      <points ref={particles}>
-        <bufferGeometry>
-          <bufferAttribute
-            attachObject={["attributes", "position"]}
-            count={coords.length / 3}
-            array={coords}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          sizeAttenuation
-          attach="material"
-          color='#fff'
-          opacity={0}
-          size={0.005}
-        />
-      </points>
-    </>
-  )
-}
+//   return <perspectiveCamera ref={ref} {...props} />
+// }
 
 const App = (): JSX.Element => {
-  const { dispatch } = useContext(AppContext);
   const ContextBridge = useContextBridge(AppContext);
+  const [gl, setGL] = useState<WebGLRenderer>(null);
+  const [camera, setCamera] = useState<PerspectiveCamera>(null);
+
+  const adjustCanvasSize = () => {
+    if (gl && camera) {
+      const canvas = gl.domElement;
+      // look up the size the canvas is being displayed
+      let width = canvas.clientWidth;
+      let height = canvas.clientHeight;
+
+      if (width < 768)
+        [width, height] = [height, width];
+
+      // adjust displayBuffer size to match
+      if (canvas.width !== width || canvas.height !== height) {
+        const ratio = window.devicePixelRatio;
+        // you must pass false here or three.js sadly fights the browser
+        gl.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        canvas.width = width * ratio;
+        canvas.height = height * ratio;
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        // update any render target sizes here
+      }
+    }
+  }
+
+  useEffect(() => {
+    adjustCanvasSize();
+    window.addEventListener('resize', adjustCanvasSize, false);
+  }, [gl, camera])
 
   return (
     <>
       <Canvas
         gl={{ antialias: true }}
-        pixelRatio={window.devicePixelRatio}
-        colorManagement={false}
-        shadowMap
-        style={{ width: '100vw', height: '100vh' }}
+        dpr={window.devicePixelRatio}
+        raycaster={{
+          filter: (items, state) => {
+            console.log('raycaster', state.mouse)
+            return items;
+          }
+        }}
+        shadows
+        linear
+        style={{
+          display: 'block',
+          width: '100vw',
+          height: '100vh'
+        }}
+        // raycaster={{
+        //   filter: (intersects, s) => {
+        //     console.log(s.mouse)
+        //     return intersects;
+        //   }
+        // }}
         onCreated={({ camera, gl, raycaster }) => {
-          // camera.position.set(15, 0, -15);
+          camera.position.set(15, 0, -15);
           raycaster.layers.enableAll();
           gl.toneMapping = ACESFilmicToneMapping;
           gl.toneMappingExposure = 1;
+          setGL(gl);
+          setCamera(camera as PerspectiveCamera);
         }}
       >
+        {/* <Camera/> */}
         <ContextBridge>
           <Scene />
         </ContextBridge>

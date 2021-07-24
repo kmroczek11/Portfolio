@@ -1,4 +1,4 @@
-import { useFrame, useLoader } from 'react-three-fiber'
+import { useFrame, useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Vector3 } from 'three/src/math/Vector3';
 import { rotateAroundPoint } from '../components/functions';

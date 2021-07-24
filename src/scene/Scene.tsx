@@ -6,7 +6,7 @@ import Contact from '../contact/Contact';
 import SceneController from './SceneController';
 import { OrbitControls } from '@react-three/drei/core/OrbitControls';
 import { useRef } from 'react';
-import { useFrame, useThree } from 'react-three-fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import Navbar from '../navigation/Navbar';
 
 // const Skybox = React.memo(() => {

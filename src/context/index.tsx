@@ -1,7 +1,6 @@
 import { GUI } from 'dat.gui';
 import * as dat from 'dat.gui';
 import React, { createContext, Dispatch, useReducer } from 'react';
-import { Camera } from 'three';
 import { sceneReducer, SceneActions } from './reducers';
 
 export type SceneType = {
@@ -15,7 +14,11 @@ type InitialStateType = {
 }
 
 const initialState = {
-    scene: { currentItem: 'home.end', fullScreen: false, gui: new dat.GUI() }
+    scene: {
+        currentItem: 'home.end',
+        fullScreen: false,
+        gui: new dat.GUI(),
+    }
 }
 
 const AppContext = createContext<{

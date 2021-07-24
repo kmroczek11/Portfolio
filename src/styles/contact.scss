@@ -63,3 +63,42 @@
     }
   }
 }
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .contact-form {
+    // overflow-x: hidden;
+    width: 70vw !important;
+    height: 30vh !important;
+    position: absolute;
+    bottom: 50%;
+    right: 50%;
+    transform: translate(50%, 50%) rotate(90deg);
+
+    span {
+      margin: 1vw;
+      font-size: 1.5em !important;
+    }
+
+    input {
+      width: 20vw !important;
+      height: 3vh !important;
+      font-size: 4vw !important;
+    }
+
+    textarea {
+      width: 30vw !important;
+      height: 5vh !important;
+      font-size: 4vw !important;
+    }
+
+    button {
+      font-size: 4vw !important;
+      padding: 2vw !important;
+    }
+
+    .error {
+      font-size: 4vw !important;
+    }
+  }
+}

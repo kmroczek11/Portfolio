@@ -1,5 +1,4 @@
-import { Camera } from "three";
-import { SceneType } from "./index";
+import { SceneType } from './index';
 
 type ActionMap<M extends { [index: string]: any }> = {
     [Key in keyof M]: M[Key] extends undefined
@@ -14,7 +13,7 @@ type ActionMap<M extends { [index: string]: any }> = {
 
 export enum Types {
     SetCurrentItem = 'SET_CURRENT_ELEMENT',
-    SetFullScreen = 'SET_FULL_SCREEN'
+    SetFullScreen = 'SET_FULL_SCREEN',
 }
 
 type ScenePayload = {

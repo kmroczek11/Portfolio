@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { useLoader } from 'react-three-fiber'
+import { useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import gsap from 'gsap';
 import photoVertexShader from '../shaders/photoVertex.glsl';

@@ -1,17 +1,16 @@
-import React, { useRef, useMemo, useEffect, useState } from 'react'
-import { useThree, useFrame } from 'react-three-fiber'
+import { useMemo, useState } from 'react'
+import { useThree, useFrame } from '@react-three/fiber'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer'
-import { Vector2 } from 'three/src/math/Vector2'
 import {
     DEFAULT_LAYER_NUM,
     BLOOM_LAYER_NUM,
-    FILM_LAYER_NUM,
-    MULTIPASS_LAYER_NUM
-} from "../postprocessing/constant";
-import { createRenderPass, bloomPass, filmPass, createFinalPass } from "../postprocessing/pass";
+    // FILM_LAYER_NUM,
+    // MULTIPASS_LAYER_NUM
+} from '../postprocessing/constant';
+import { createRenderPass, bloomPass, createFinalPass } from "../postprocessing/pass";
 
 const Effects = (): JSX.Element => {
-    const { scene, gl, size, camera } = useThree()
+    const { scene, gl, camera } = useThree()
     const [bloomComposer, setBloomComposer] = useState<EffectComposer>(null);
     const [finalComposer, setFinalComposer] = useState<EffectComposer>(null);
 

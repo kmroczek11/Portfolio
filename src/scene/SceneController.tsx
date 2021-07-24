@@ -2,7 +2,9 @@ import { useContext, useEffect } from 'react';
 import { AppContext } from '../context';
 import gsap from 'gsap';
 import { Types } from '../context/reducers';
-import { useThree } from 'react-three-fiber';
+import { useFrame, useThree } from '@react-three/fiber';
+import { PerspectiveCamera } from 'three';
+import { Vector2 } from 'three/src/math/Vector2';
 
 const SceneController = (): JSX.Element => {
     const { state, dispatch } = useContext(AppContext);

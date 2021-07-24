@@ -3,10 +3,10 @@ import '../styles/navbar.css';
 import { NavbarItem } from '../scene/Scene';
 import { AppContext } from '../context';
 import { Types } from '../context/reducers';
-import { Html, Text } from '@react-three/drei';
-import { MeshStandardMaterial, Shader, TextureLoader, WebGLRenderer } from 'three';
+import { Text } from '@react-three/drei';
+import { TextureLoader } from 'three';
 import { useTranslation } from 'react-i18next';
-import { useLoader, useThree } from 'react-three-fiber';
+import { useLoader, useThree } from '@react-three/fiber';
 import Loader from '../components/Loader';
 
 interface NavProps {

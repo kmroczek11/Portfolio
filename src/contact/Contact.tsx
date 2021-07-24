@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { Suspense, useContext, useEffect, useRef, useState } from 'react';
 import '../styles/contact.css';
 import { Html, RoundedBox } from '@react-three/drei';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '../context';
+import Loader from '../components/Loader';
 
 const ContactForm = (): JSX.Element => {
     const form = useRef(null);
@@ -85,7 +86,9 @@ const Contact = (): JSX.Element => {
     console.log('contact rendered');
 
     return (
-        <ContactForm />
+        <Suspense fallback={<Loader />}>
+            <ContactForm />
+        </Suspense>
     )
 }
 

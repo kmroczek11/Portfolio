@@ -87,4 +87,38 @@
   background: #d4af37;
   cursor: pointer;
 }
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .contact-form {
+    width: 70vw !important;
+    height: 30vh !important;
+    position: absolute;
+    bottom: 50%;
+    right: 50%;
+    -webkit-transform: translate(50%, 50%) rotate(90deg);
+            transform: translate(50%, 50%) rotate(90deg);
+  }
+  .contact-form span {
+    margin: 1vw;
+    font-size: 1.5em !important;
+  }
+  .contact-form input {
+    width: 20vw !important;
+    height: 3vh !important;
+    font-size: 4vw !important;
+  }
+  .contact-form textarea {
+    width: 30vw !important;
+    height: 5vh !important;
+    font-size: 4vw !important;
+  }
+  .contact-form button {
+    font-size: 4vw !important;
+    padding: 2vw !important;
+  }
+  .contact-form .error {
+    font-size: 4vw !important;
+  }
+}
 /*# sourceMappingURL=contact.css.map */

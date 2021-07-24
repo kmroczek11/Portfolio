@@ -7,8 +7,10 @@ import gsap from 'gsap';
 import { Mesh, PlaneGeometry, ShaderMaterial, Vector2, VideoTexture } from 'three';
 import videoVertexShader from '../shaders/videoVertex.glsl';
 import videoFragmentShader from '../shaders/videoFragment.glsl';
-import { PointerEvent,MouseEvent } from 'react';
+import { PointerEvent, MouseEvent } from 'react';
 import { ProjectItem } from './Projects';
+import { useThree } from 'react-three-fiber';
+import { Interaction } from 'three.interaction'
 
 const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClick }: ProjectItem): JSX.Element => {
     const { state } = useContext(AppContext);
@@ -44,10 +46,12 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
     const [enteredPreviewMode, setEnteredPreviewMode] = useState<boolean>(false);
 
     useEffect(() => {
-        document.body.style.cursor = hovered ? 'pointer' : 'auto';
-        hovered ?
-            project.current && gsap.to(project.current.scale, { duration: 1, ease: 'expo.out', x: 1.1, y: 1.1 }) :
-            project.current && gsap.to(project.current.scale, { duration: 1, ease: 'expo.out', x: 1, y: 1 });
+        if (active || !fullScreen) document.body.style.cursor = hovered ? 'pointer' : 'auto';
+        if (!fullScreen) {
+            hovered ?
+                project.current && gsap.to(project.current.scale, { duration: 1, ease: 'expo.out', x: 1.1, y: 1.1 }) :
+                project.current && gsap.to(project.current.scale, { duration: 1, ease: 'expo.out', x: 1, y: 1 });
+        }
     }, [hovered])
 
     useEffect(() => {
@@ -67,12 +71,13 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                 timeline.to(project.current.position, { x: 16.5, y: 0, z: -17.5 });
                 timeline.to(project.current.scale, { x: 1.6, y: 1.6, z: 1.6, duration: 1 });
             }
-            timeline.to(project.current.rotation, { y: -0.2, duration: 1, onComplete: () => setEnteredPreviewMode(true) });
+            timeline.to(project.current.rotation, {
+                y: -0.2, duration: 1,
+            });
             projectDescription.current.visible = true;
             gsap.to(projectDescription.current.children[0].material, { opacity: 0.5, duration: 3 });
         }
         if (!active) {
-            setEnteredPreviewMode(false);
             if (vidPlayer) vidPlayer.pause();
             timeline.to(project.current.position, { x: x, y: y, z: -18 })
             timeline.to(project.current.rotation, { y: 0, duration: 1 });
@@ -82,60 +87,62 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
         }
     }, [active])
 
-    useEffect(() => {
-        if (project.current) {
-            if (focus) {
-                gsap.to(project.current.position, { duration: 3, ease: 'expo.out', x: x, y: y - 0.1, z: -18 });
-                gsap.to(project.current.children[1].material, { duration: 3, ease: 'expo.out', opacity: 1, onComplete: () => project.current.children[0].visible = true });
-            } else {
-                gsap.to(project.current.position, { duration: 3, ease: 'expo.out', x: rand(x - 2, x + 2), y: rand(y - 2, y + 2), z: -18 });
-                gsap.to(project.current.children[1].material, { duration: 3, ease: 'expo.out', opacity: 0, onComplete: () => project.current.children[0].visible = false });
-            }
-        }
-    }, [focus])
+    // useEffect(() => {
+    //     if (project.current) {
+    //         if (focus) {
+    //             gsap.to(project.current.position, { duration: 3, ease: 'expo.out', x: x, y: y - 0.1, z: -18 });
+    //             gsap.to(project.current.children[1].material, { duration: 3, ease: 'expo.out', opacity: 1, onComplete: () => project.current.children[0].visible = true });
+    //         } else {
+    //             gsap.to(project.current.position, { duration: 3, ease: 'expo.out', x: rand(x - 2, x + 2), y: rand(y - 2, y + 2), z: -18 });
+    //             gsap.to(project.current.children[1].material, { duration: 3, ease: 'expo.out', opacity: 0, onComplete: () => project.current.children[0].visible = false });
+    //         }
+    //     }
+    // }, [focus])
 
     const rand = (a: number, b: number) => a + (b - a) * Math.random();
 
-    const onSelected = (e: MouseEvent) => {
-        if (timeline.isActive()) {
-            e.stopPropagation();
-            return;
-        }
-        setHovered(false);
-        onClick(id);
+    const preventAnimation = () => {
+        if (timeline.isActive()) timeline.clear();
     }
 
-    const onExit = (e: MouseEvent) => {
-        if (timeline.isActive()) {
-            e.stopPropagation();
-            return;
+    const onSelected = (e: MouseEvent) => {
+        e.stopPropagation();
+        if (!fullScreen) {
+            preventAnimation();
+            setHovered(false);
+            onClick(id);
         }
+    }
+
+    const onExit = () => {
+        preventAnimation();
         setHovered(false);
         onClick(null);
     }
 
-    const onEnterPreviewMode = (e: PointerEvent) => {
-        if (enteredPreviewMode) {
-            if (timeline.isActive()) {
-                e.stopPropagation();
-                return;
-            }
+    const onEnterPreviewMode = (e: MouseEvent) => {
+        e.stopPropagation();
+        if (active) {
+            preventAnimation();
             if (medium === 'desktop')
                 timeline.to(project.current.position, { x: 15, y: 0, z: -16.5 });
             else
                 timeline.to(project.current.position, { x: 15, y: 0, z: -17.1 });
-            timeline.to(project.current.rotation, { y: 0, duration: 1 });
+            timeline.to(project.current.rotation, {
+                y: 0,
+                duration: 1,
+                onComplete: () => setEnteredPreviewMode(true)
+            });
             gsap.to(projectDescription.current.children[0].material, { opacity: 0, duration: 3 });
             projectDescription.current.visible = false;
         }
     }
 
-    const onExitPreviewMode = (e: PointerEvent) => {
-        if (enteredPreviewMode) {
-            if (timeline.isActive()) {
-                e.stopPropagation();
-                return;
-            }
+    const onExitPreviewMode = (e: MouseEvent) => {
+        e.stopPropagation();
+        if (active) {
+            preventAnimation();
+            setEnteredPreviewMode(false);
             if (medium === 'desktop')
                 timeline.to(project.current.position, { x: 16, y: 0, z: -17.5 });
             else
@@ -150,12 +157,13 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
         <>
             <group
                 ref={project}
-                onClick={fullScreen ? null : (e) => onSelected(e)}
-                onPointerOver={fullScreen ? (e) => onEnterPreviewMode(e) : () => setHovered(true)}
-                onPointerOut={fullScreen ? (e) => onExitPreviewMode(e) : () => setHovered(false)}
+                onClick={fullScreen ? (e) => onEnterPreviewMode(e) : (e) => onSelected(e)}
+                onPointerMissed={fullScreen ? (e) => onExitPreviewMode(e) : null}
+                onPointerOver={enteredPreviewMode ? () => setHovered(false) : () => setHovered(true)}
+                onPointerOut={enteredPreviewMode ? () => setHovered(true) : () => setHovered(false)}
             >
                 <primitive
-                    visible={false}
+                    // visible={false}
                     object={vidObject}
                     position-z={0.08}
                 />
@@ -163,8 +171,8 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                     <meshPhongMaterial
                         attach="material"
                         color="#000"
-                        opacity={0}
-                        transparent={true}
+                    // opacity={0}
+                    // transparent={true}
                     />
                 </RoundedBox>
             </group>
@@ -241,7 +249,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                     color='#d4af37'
                     font='fonts/Oswald.ttf'
                     fontSize={0.2}
-                    onClick={(e) => onExit(e)}
+                    onClick={() => onExit()}
                     layers={[1]}
                 >
                     {t('exit')}
