@@ -1,9 +1,8 @@
-import { Fragment, memo, Suspense, useContext, useEffect, useRef, useState } from 'react';
+import { Fragment, memo, useContext, useEffect, useRef, useState } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Text } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
-import Loader from '../components/Loader';
 import { AppContext } from '../context';
 import gsap from 'gsap';
 
@@ -26,9 +25,10 @@ const Institution = ({ name, objSrc, desc, scale, x, y, focus }: InstitutionItem
     })
 
     useEffect(() => {
+        if (!insitution.current) return;
         focus ?
-            insitution.current && gsap.to(insitution.current.scale, { x: 1, y: 1, z: 1, duration: 5, ease: 'expo.out' }) :
-            insitution.current && gsap.to(insitution.current.scale, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
+            gsap.to(insitution.current.scale, { x: 1, y: 1, z: 1, duration: 5, ease: 'expo.out' }) :
+            gsap.to(insitution.current.scale, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
     }, [focus])
 
     return (
@@ -44,20 +44,20 @@ const Institution = ({ name, objSrc, desc, scale, x, y, focus }: InstitutionItem
             <Text
                 color='#d4af37'
                 font='fonts/Oswald.ttf'
-                fontSize={0.3}
+                fontSize={0.25}
                 textAlign='center'
-                anchorY={0.5}
-                layers={[1]}
+                anchorY={0.8}
+                layers={1}
             >
                 {name}
             </Text>
             <Text
                 color='#fff'
                 font='fonts/Oswald.ttf'
-                fontSize={0.15}
+                fontSize={0.12}
                 textAlign='center'
                 anchorY={2}
-                layers={[1]}
+                layers={1}
             >
                 {desc}
             </Text>
@@ -83,7 +83,7 @@ const Education = memo(() => {
     }, [currentItem])
 
     return (
-        <Suspense fallback={<Loader />}>
+        <>
             {
                 institutionItems.map((institution: InstitutionItem, index: number) =>
                     <Fragment key={index}>
@@ -96,7 +96,7 @@ const Education = memo(() => {
                     </Fragment>
                 )
             }
-        </Suspense>
+        </>
     )
 })
 

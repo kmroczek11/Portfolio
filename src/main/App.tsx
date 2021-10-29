@@ -1,13 +1,14 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../styles/app.css';
 import { AppContext } from '../context';
 import Scene from '../scene/Scene';
 import { Stats, useContextBridge } from '@react-three/drei';
 import Effects from '../components/Effects';
-import { ACESFilmicToneMapping, Intersection, Vector2, WebGLRenderer, PerspectiveCamera } from 'three';
+import { ACESFilmicToneMapping, WebGLRenderer, PerspectiveCamera, sRGBEncoding } from 'three';
 import { Types } from '../context/reducers';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { FullScreen, useFullScreenHandle } from 'react-full-screen';
+import { Canvas } from '@react-three/fiber';
+import DialogBox from '../components/DialogBox';
+import { useTranslation } from 'react-i18next';
 
 // const Camera = (props) => {
 //   const ref = useRef(null);
@@ -21,35 +22,64 @@ import { FullScreen, useFullScreenHandle } from 'react-full-screen';
 const App = (): JSX.Element => {
   const ContextBridge = useContextBridge(AppContext);
   const [gl, setGL] = useState<WebGLRenderer>(null);
+  const [canvas, setCanvas] = useState<any>(null);
   const [camera, setCamera] = useState<PerspectiveCamera>(null);
+  const { dispatch } = useContext(AppContext);
+  const { t } = useTranslation();
+
+  const enterFullScreenMode = () => {
+    if (canvas.requestFullscreen) {
+      canvas.requestFullscreen();
+    }
+    else if (canvas.webkitRequestFullscreen) {
+      canvas.webkitRequestFullscreen();
+    } else if (canvas.mozRequestFullScreen) {
+      canvas.mozRequestFullScreen();
+    } else if (canvas.msRequestFullScreen) {
+      canvas.msRequestFullScreen();
+    } else {
+      alert('Fullscreen not supported in your browser')
+    }
+  }
 
   const adjustCanvasSize = () => {
-    if (gl && camera) {
-      const canvas = gl.domElement;
-      // look up the size the canvas is being displayed
-      let width = canvas.clientWidth;
-      let height = canvas.clientHeight;
+    // look up the size the canvas is being displayed
+    let width = canvas.clientWidth;
+    let height = canvas.clientHeight;
 
-      if (width < 768)
-        [width, height] = [height, width];
+    if (width < 768) {
+      // swap width and height on mobile
+      [width, height] = [height, width];
 
-      // adjust displayBuffer size to match
-      if (canvas.width !== width || canvas.height !== height) {
-        const ratio = window.devicePixelRatio;
-        // you must pass false here or three.js sadly fights the browser
-        gl.setSize(width, height, false);
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        canvas.width = width * ratio;
-        canvas.height = height * ratio;
-        canvas.style.width = `${width}px`;
-        canvas.style.height = `${height}px`;
-        // update any render target sizes here
-      }
+      dispatch({
+        type: Types.SetMode,
+        payload: 'mobile',
+      });
+    } else
+      dispatch({
+        type: Types.SetMode,
+        payload: 'desktop',
+      });
+
+    // adjust displayBuffer size to match
+    if (canvas.width !== width || canvas.height !== height) {
+      const ratio = window.devicePixelRatio;
+      // you must pass false here or three.js sadly fights the browser
+      gl.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      // update any render target sizes here
     }
   }
 
   useEffect(() => {
+    if (!gl || !camera) return;
+
+    // console.log = console.warn = () => { };
     adjustCanvasSize();
     window.addEventListener('resize', adjustCanvasSize, false);
   }, [gl, camera])
@@ -57,14 +87,18 @@ const App = (): JSX.Element => {
   return (
     <>
       <Canvas
-        gl={{ antialias: true }}
-        dpr={window.devicePixelRatio}
-        raycaster={{
-          filter: (items, state) => {
-            console.log('raycaster', state.mouse)
-            return items;
-          }
+        gl={{
+          antialias: true,
+          physicallyCorrectLights: true,
+          outputEncoding: sRGBEncoding
         }}
+        dpr={window.devicePixelRatio}
+        // raycaster={{
+        //   filter: (items, state) => {
+        //     console.log('raycaster', state.mouse)
+        //     return items;
+        //   }
+        // }}
         shadows
         linear
         style={{
@@ -72,18 +106,13 @@ const App = (): JSX.Element => {
           width: '100vw',
           height: '100vh'
         }}
-        // raycaster={{
-        //   filter: (intersects, s) => {
-        //     console.log(s.mouse)
-        //     return intersects;
-        //   }
-        // }}
         onCreated={({ camera, gl, raycaster }) => {
-          camera.position.set(15, 0, -15);
+          // camera.position.set(15, 0, -15);
           raycaster.layers.enableAll();
           gl.toneMapping = ACESFilmicToneMapping;
           gl.toneMappingExposure = 1;
           setGL(gl);
+          setCanvas(gl.domElement);
           setCamera(camera as PerspectiveCamera);
         }}
       >
@@ -94,6 +123,16 @@ const App = (): JSX.Element => {
         {/* <Particles /> */}
         <Effects />
       </Canvas>
+      {
+        canvas?.clientWidth < 768 &&
+        <DialogBox
+          title={t('mobileDialog.0')}
+          content={t('mobileDialog.1')}
+          agreeTxt={t('mobileDialog.2')}
+          disagreeTxt={t('mobileDialog.3')}
+          onAgreed={enterFullScreenMode}
+        />
+      }
       <Stats showPanel={0} />
     </>
   )

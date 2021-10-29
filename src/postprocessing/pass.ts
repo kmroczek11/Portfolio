@@ -34,6 +34,7 @@ const scale = 0.75;
 export const filmPass = new DotScreenPass(center, angle, scale);
 
 export const createFinalPass = (
+  pixelRatio: number,
   bloomComposer?: EffectComposer,
   filmComposer?: EffectComposer,
   multipassComposer?: EffectComposer
@@ -50,6 +51,12 @@ export const createFinalPass = (
         },
         multipassTexture: {
           value: multipassComposer && multipassComposer.renderTarget2.texture,
+        },
+        resolution: {
+          value: {
+            x: 1 / (window.innerWidth * pixelRatio),
+            y: 1 / (window.innerHeight * pixelRatio),
+          },
         },
       },
       vertexShader: postVertexShader,

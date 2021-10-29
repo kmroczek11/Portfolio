@@ -40,6 +40,7 @@ const Effects = (): JSX.Element => {
         const finalComposer = new EffectComposer(gl);
         finalComposer.addPass(renderPass);
         const finalPass = createFinalPass(
+            gl.getPixelRatio(),
             bloomComposer,
             // filmComposer,
             // multipassComposer
@@ -50,7 +51,7 @@ const Effects = (): JSX.Element => {
 
         setBloomComposer(bloomComposer);
         setFinalComposer(finalComposer);
-    }, [])
+    }, [camera, gl, scene])
 
     useFrame(() => {
         gl.clear();

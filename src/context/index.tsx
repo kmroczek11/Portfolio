@@ -7,6 +7,7 @@ export type SceneType = {
     currentItem: string;
     fullScreen: boolean;
     gui: GUI;
+    mode: string;
 }
 
 type InitialStateType = {
@@ -18,6 +19,7 @@ const initialState = {
         currentItem: 'home.end',
         fullScreen: false,
         gui: new dat.GUI(),
+        mode: 'desktop'
     }
 }
 

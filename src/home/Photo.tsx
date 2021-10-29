@@ -22,15 +22,15 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
         const initialSpeeds: Array<number> = [];
         const initialOffset: Array<number> = [];
 
-        for (let y = 0; y < row; y += 0.01) {
-            let posY: number = y - row / 2;
-            for (let x = 0; x < col; x += 0.01) {
-                let posX: number = x - col / 2;
-                initialPositions.push(posY * 2);
+        for (let x = 0; x < row; x += 0.002) {
+            let posX: number = x - row / 2;
+            for (let y = 0; y < col; y += 0.002) {
+                let posY: number = y - col / 2;
                 initialPositions.push(posX * 2);
+                initialPositions.push(posY * 2);
                 initialPositions.push(0);
-                initialCoordinates.push(y);
                 initialCoordinates.push(x);
+                initialCoordinates.push(y);
                 initialCoordinates.push(0);
                 initialSpeeds.push(rand(0.4, 1));
                 initialOffset.push(rand(0, 5));
@@ -41,6 +41,7 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
         const coordinates: Float32Array = new Float32Array(initialCoordinates);
         const speeds: Float32Array = new Float32Array(initialSpeeds);
         const offset: Float32Array = new Float32Array(initialOffset);
+
         return [positions, coordinates, speeds, offset];
     }, [])
 
@@ -50,13 +51,16 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
         mask: { value: maskTexture },
         move: { value: 5 },
         time: { value: 0 }
-    }), [])
+    }), [photoTexture, maskTexture])
 
     useEffect(() => {
+        if (!photo.current) return;
         focus ?
-            photo.current && gsap.to(photo.current.material.uniforms.move, { value: 0, duration: 5, ease: 'expo.out', }) :
-            photo.current && gsap.to(photo.current.material.uniforms.move, { value: 5, duration: 5, ease: 'expo.out', onUpdate: () => photo.current.geometry.verticesNeedUpdate = true, });
+            gsap.to(photo.current.material.uniforms.move, { value: 0, duration: 5, ease: 'expo.out', }) :
+            gsap.to(photo.current.material.uniforms.move, { value: 5, duration: 5, ease: 'expo.out', onUpdate: () => photo.current.geometry.verticesNeedUpdate = true, });
     }, [focus])
+
+    // return null
 
     return (
         <points
@@ -94,8 +98,6 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
                 uniforms={uniforms}
                 side={DoubleSide}
                 transparent={true}
-            // depthTest={false}
-            // depthWrite={false}
             />
         </points>
     )

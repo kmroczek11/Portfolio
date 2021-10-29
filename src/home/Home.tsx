@@ -1,10 +1,9 @@
-import { memo, Suspense, useContext, useEffect, useState } from 'react';
+import { memo, useContext, useEffect, useState } from 'react';
 import { AppContext } from '../context';
-import Loader from '../components/Loader';
 import Photo from './Photo'
-import Objects from './Objects'
-import Texts from './Texts'
 import Globe from './Globe'
+import Texts from './Texts'
+import Objects from './Objects'
 
 const Home = memo(() => {
     console.log('home rendered');
@@ -18,19 +17,11 @@ const Home = memo(() => {
 
     return (
         <>
-            <Suspense fallback={<Loader />}>
-                <Photo focus={focus} />
-            </Suspense>
-            <Suspense fallback={<Loader />}>
-                <Globe focus={focus} />
-            </Suspense>
-            <Suspense fallback={<Loader />}>
-                <Texts focus={focus} />
-            </Suspense>
-            <Suspense fallback={<Loader />}>
-                <Objects />
-                {/* <Preload all /> */}
-            </Suspense>
+
+            <Photo focus={focus} />
+            <Globe focus={focus} />
+            <Texts focus={focus} />
+            <Objects />
         </>
     )
 })

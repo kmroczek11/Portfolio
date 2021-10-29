@@ -1,31 +1,75 @@
-import { useFrame, useLoader } from '@react-three/fiber'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { useFrame } from '@react-three/fiber'
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Vector3 } from 'three/src/math/Vector3';
+import Model from '../components/Model';
+import { AppContext } from '../context';
 import { rotateAroundPoint } from '../components/functions';
 
 // const Objects = ({ focus }: { focus: boolean }): JSX.Element => {
 const Objects = (): JSX.Element => {
-    const monitor = useLoader(GLTFLoader, 'models/monitor.glb');
-    const phone = useLoader(GLTFLoader, 'models/phone.glb');
-    const tablet = useLoader(GLTFLoader, 'models/tablet.glb');
+    const desktop = useRef(null);
+    const phone = useRef(null);
+    const tablet = useRef(null);
+    const { state } = useContext(AppContext);
+    const [angle, setAngle] = useState(0);
+    const [radius] = useState(5);
+    const [depth] = useState(6);
 
     useFrame(() => {
-        monitor.scene && rotateAroundPoint(monitor.scene, new Vector3(0, 0, -3), new Vector3(0, 1, 0), 1 * Math.PI / 180, true);
-        phone.scene && rotateAroundPoint(phone.scene, new Vector3(0, 0, -3), new Vector3(0, 1, 0), 1 * Math.PI / 180, true);
-        tablet.scene && rotateAroundPoint(tablet.scene, new Vector3(0, 0, -3), new Vector3(0, 1, 0), 1 * Math.PI / 180, true);
+        if (!desktop.current || !phone.current || !tablet.current) return;
+
+        const d = desktop.current;
+        const p = phone.current;
+        const t = tablet.current;
+
+        d.position.x = Math.cos(angle * Math.PI / 180) * radius;
+        d.position.z = Math.sin(angle * Math.PI / 180) * radius - depth;
+
+        p.position.x = Math.cos((angle + 110) * Math.PI / 180) * radius;
+        p.position.z = Math.sin((angle + 110) * Math.PI / 180) * radius - depth;
+
+        t.position.x = Math.cos((angle + 200) * Math.PI / 180) * radius;
+        t.position.z = Math.sin((angle + 200) * Math.PI / 180) * radius - depth;
+
+        d.rotation.x -= 0.05;
+        d.rotation.z -= 0.05;
+
+        p.rotation.x -= 0.05;
+        p.rotation.z -= 0.05;
+
+        t.rotation.x -= 0.05;
+        t.rotation.z -= 0.05;
+
+        setAngle(prevAngle => prevAngle + 1);
     })
+
+    useEffect(() => {
+        if (!phone.current) return;
+
+        state.scene.gui.add(phone.current.position, 'x', -5, 5)
+        state.scene.gui.add(phone.current.position, 'y', -5, 5)
+        state.scene.gui.add(phone.current.position, 'z', -5, 5)
+        // state.scene.gui.add(phone.current.material.metalness, 'metalness', 0, 5)
+        // state.scene.gui.add(phone.current.material.roughness, 'roughness', 0, 5)
+    }, [])
 
     return (
         <>
-            <mesh position={[-4, 1, 0]}>
-                <primitive object={monitor.scene} />
-            </mesh>
-            <mesh position={[-4, -0.5, 0]}>
-                <primitive object={phone.scene} />
-            </mesh>
-            <mesh position={[4, 1, 0]}>
-                <primitive object={tablet.scene} />
-            </mesh>
+            <Model
+                ref={desktop}
+                path='desktop.glb'
+                position-y={3}
+            />
+            <Model
+                ref={phone}
+                path='phone.glb'
+                position-y={0}
+            />
+            <Model
+                ref={tablet}
+                path='tablet.glb'
+                position-y={-3}
+            />
         </>
     )
 }

@@ -9,16 +9,17 @@ const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
     const { t } = useTranslation();
 
     useEffect(() => {
+        if (!first.current || !second.current) return;
         if (focus) {
-            first.current && gsap.to(first.current.position, { x: -2, y: 0, z: 0.5, duration: 5, ease: 'expo.out' });
-            second.current && gsap.to(second.current.position, { x: 2, y: -1, z: 0.5, duration: 5, ease: 'expo.out' });
-            first.current && gsap.to(first.current, { duration: 5, ease: 'expo.out', fillOpacity: 1 });
-            second.current && gsap.to(second.current, { duration: 5, ease: 'expo.out', fillOpacity: 1 });
+            gsap.to(first.current.position, { x: -2, y: 0, z: 0.5, duration: 5, ease: 'expo.out' });
+            gsap.to(second.current.position, { x: 2, y: -1, z: 0.5, duration: 5, ease: 'expo.out' });
+            gsap.to(first.current, { duration: 5, ease: 'expo.out', fillOpacity: 1 });
+            gsap.to(second.current, { duration: 5, ease: 'expo.out', fillOpacity: 1 });
         } else {
-            first.current && gsap.to(first.current.position, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
-            second.current && gsap.to(second.current.position, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
-            first.current && gsap.to(first.current, { duration: 5, ease: 'expo.out', fillOpacity: 0 });
-            second.current && gsap.to(second.current, { duration: 5, ease: 'expo.out', fillOpacity: 0 });
+            gsap.to(first.current.position, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
+            gsap.to(second.current.position, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
+            gsap.to(first.current, { duration: 5, ease: 'expo.out', fillOpacity: 0 });
+            gsap.to(second.current, { duration: 5, ease: 'expo.out', fillOpacity: 0 });
         }
     }, [focus])
 
@@ -31,7 +32,7 @@ const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
                 fontSize={1}
                 textAlign='center'
                 fillOpacity={0}
-                layers={[1]}
+                layers={1}
             >
                 {t('homeDesc.0')}
             </Text>
@@ -42,7 +43,7 @@ const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
                 fontSize={1}
                 textAlign='center'
                 fillOpacity={0}
-                layers={[1]}
+                layers={1}
             >
                 {t('homeDesc.1')}
             </Text>

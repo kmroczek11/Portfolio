@@ -16,38 +16,53 @@
   "educationDesc": {
     "0": "HERE I WAS TAKING MY FIRST STEPS\nI WAS WRITING BASIC WEBSITES AND PROGRAMS\nI WAS PLANNING MY FUTURE IN IT",
     "1": "HERE I LEARNED MORE SOPHISTICATED\nPROGRAMMING TECHNIQUES\nFAMILIARIZED FIRST FRAMEWORKS\nCREATED MANY VARIOUS PROJECTS",
-    "2": "I AM IN MY FIRST YEAR OF\nPART-TIME IT STUDIES"
+    "2": "I AM IN MY SECOND YEAR OF\nPART-TIME IT STUDIES"
   },
   "projectTitles": {
     "0": "GFE WEBSITE PROJECT",
-    "1": "STALCRAFT WEBSITE PROJECT",
-    "2": "ONLINE SHOP PROJECT",
-    "3": "MARBLES",
-    "4": "MP3 PLAYER",
-    "5": "CORONASTATS",
-    "6": "TASKY",
-    "7": "MY PORTFOLIO"
+    "1": "SHELMO WEBSITE PROJECT",
+    "2": "STALCRAFT WEBSITE PROJECT",
+    "3": "ONLINE SHOP PROJECT",
+    "4": "MARBLES",
+    "5": "MP3 PLAYER",
+    "6": "CORONASTATS",
+    "7": "TASKY",
+    "8": "MY PORTFOLIO"
   },
   "projectDesc": {
     "0": "WEBSITE CREATED ON INTERNSHIP IN MY THIRD YEAR IN THE SECONDARY SCHOOL IN THE BFIRST.TECH COMPANY.",
-    "1": "SIMPLE WEBSITE CREATED FOR THE STALCRAFT COMPANY.",
-    "2": "ONLINE SHOP WITH COMPUTER GAMES PROJECT CREATED IN MY FOURTH YEAR IN THE SECONDARY SCHOOL.",
-    "3": "END YEAR PROJECT CREATED IN MY THIRD YEAR CONSISTING IN CREATING A LOGIC GAME. THE GAME INVOLVES MARBLES TAKING DOWN.",
-    "4": "MP3 PLAYER PROJECT. TRACKS ARE LOADED FROM THE LOCAL FOLDERS.",
-    "5": "MOBILE APP TRACKING THE COVID-19 SPREAD AROUND THE WORLD PROJECT. THE DATA IS FETCHED FROM THE OFFICIAL WHO DATABASE.",
-    "6": "MOBILE APP FOR YOUR EFFECTIVE TASK MANAGEMENT PROJECT. THE APP IS FOR BETTER MANAGEMENT OF OUR TIME.",
-    "7": "MY PORTFOLIO PROJECT."
+    "1": "WEBSITE CREATED FOR THE SHELMO COMPANY USING WORDPRESS.",
+    "2": "SIMPLE WEBSITE CREATED FOR THE STALCRAFT COMPANY.",
+    "3": "ONLINE SHOP WITH COMPUTER GAMES PROJECT CREATED IN MY FOURTH YEAR IN THE SECONDARY SCHOOL.",
+    "4": "END YEAR PROJECT CREATED IN MY THIRD YEAR CONSISTING IN CREATING A LOGIC GAME. THE GAME INVOLVES MARBLES TAKING DOWN.",
+    "5": "MP3 PLAYER PROJECT. TRACKS ARE LOADED FROM THE LOCAL FOLDERS.",
+    "6": "MOBILE APP TRACKING THE COVID-19 SPREAD AROUND THE WORLD PROJECT. THE DATA IS FETCHED FROM THE OFFICIAL WHO DATABASE.",
+    "7": "MOBILE APP FOR YOUR EFFECTIVE TASK MANAGEMENT PROJECT. THE APP IS FOR BETTER MANAGEMENT OF OUR TIME.",
+    "8": "MY PORTFOLIO PROJECT."
   },
   "contact": {
     "0": "Name",
-    "1": "Email",
-    "2": "Phone number",
-    "3": "Media links",
+    "1": "Surname",
+    "2": "Email",
+    "3": "Phone number",
     "4": "Message",
     "5": "Send",
     "6": "*Invalid email address",
     "7": "*Required"
   },
   "loadingMessage": "Wait a minute...\nLoaded {{progress}}%",
-  "exit": "Exit"
+  "exit": "Exit",
+  "mobileDialog": {
+    "0": "Enable full screen mode?",
+    "1": "In order for the page to display correctly, it is necessary to enable the full screen mode.\nThen turn on the device rotation.",
+    "2": "Enable",
+    "3": "Don't enable"
+  },
+  "emailDialog": {
+    "0": "Message was sent",
+    "1": "Thank you for your message.\nI will try to answer as soon as possible.",
+    "2": "OK",
+    "3": "Message was not sent",
+    "4": "Unfortunately, there was an error sending your message."
+  }
 }

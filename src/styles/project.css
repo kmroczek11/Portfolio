@@ -1,0 +1,14 @@
+@font-face {
+  font-family: Oswald;
+  src: url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
+}
+
+a {
+  color: #fff;
+  font-size: 2vw;
+}
+
+a:hover {
+  color: #d4af37;
+}
+/*# sourceMappingURL=project.css.map */

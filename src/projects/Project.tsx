@@ -1,22 +1,28 @@
-import React, { useContext, useRef, useState, useEffect, Suspense, useMemo, Fragment } from 'react';
+import React, { useContext, useRef, useState, useEffect, useMemo, Fragment } from 'react';
+import '../styles/project.css';
 import { AppContext } from '../context';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
-import { RoundedBox, Text } from '@react-three/drei';
+import { RoundedBox, Text, Html } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
 import gsap from 'gsap';
 import { Mesh, PlaneGeometry, ShaderMaterial, Vector2, VideoTexture } from 'three';
 import videoVertexShader from '../shaders/videoVertex.glsl';
 import videoFragmentShader from '../shaders/videoFragment.glsl';
-import { PointerEvent, MouseEvent } from 'react';
 import { ProjectItem } from './Projects';
-import { useThree } from 'react-three-fiber';
-import { Interaction } from 'three.interaction'
+import { ThreeEvent } from '@react-three/fiber';
 
 const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClick }: ProjectItem): JSX.Element => {
     const { state } = useContext(AppContext);
-    const { fullScreen, gui } = state.scene;
+    const { fullScreen } = state.scene;
     const { t } = useTranslation();
     const [hovered, setHovered] = useState<boolean>(false);
+    const project = useRef(null);
+    const projectDescription = useRef(null);
+    const exit = useRef(null);
+    const timeline = gsap.timeline();
+    const [enteredPreviewMode, setEnteredPreviewMode] = useState<boolean>(false);
+    const [visible, setVisible] = useState<boolean>(false);
+
     const [vidPlayer] = useState(() => {
         const vid = document.createElement('video');
         vid.crossOrigin = 'Anonymous';
@@ -24,12 +30,15 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
         vid.controls = true;
         return vid;
     });
+
     const [vidObject] = useMemo(() => {
         const geometry = medium === 'desktop' ? new PlaneGeometry(1.8, 0.8) : new PlaneGeometry(0.8, 1.8);
+
         const uniforms = {
             u_tex: { value: new VideoTexture(vidPlayer) },
             u_adjust_uv: { value: new Vector2(1, 1) }
         }
+
         const material = new ShaderMaterial({
             uniforms: uniforms,
             vertexShader: videoVertexShader,
@@ -37,33 +46,34 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
         });
 
         const video = new Mesh(geometry, material);
+
         return [video];
     }, []);
-    const project = useRef(null);
-    const projectDescription = useRef(null);
-    const exit = useRef(null);
-    const timeline = gsap.timeline();
-    const [enteredPreviewMode, setEnteredPreviewMode] = useState<boolean>(false);
 
     useEffect(() => {
         if (active || !fullScreen) document.body.style.cursor = hovered ? 'pointer' : 'auto';
-        if (!fullScreen) {
-            hovered ?
-                project.current && gsap.to(project.current.scale, { duration: 1, ease: 'expo.out', x: 1.1, y: 1.1 }) :
-                project.current && gsap.to(project.current.scale, { duration: 1, ease: 'expo.out', x: 1, y: 1 });
-        }
+
+        if (fullScreen) return;
+
+        if (!project.current) return;
+
+        hovered ?
+            gsap.to(project.current.scale, { duration: 1, ease: 'expo.out', x: 1.1, y: 1.1 }) :
+            gsap.to(project.current.scale, { duration: 1, ease: 'expo.out', x: 1, y: 1 });
     }, [hovered])
 
     useEffect(() => {
         if (active) {
-            if (vidPlayer) {
-                if (vidPlayer.readyState < 3) {
-                    vidPlayer.src = `videos/${name}.mp4`;
-                    vidPlayer.load();
-                    vidPlayer.onerror = () => console.log(`${name} error ${vidPlayer.error.code}; details: ${vidPlayer.error.message}`);
-                }
-                vidPlayer.play();
+            if (!vidPlayer) return;
+
+            if (vidPlayer.readyState < 3) {
+                vidPlayer.src = `videos/${name}.mp4`;
+                vidPlayer.load();
+                vidPlayer.onerror = () => console.log(`${name} error ${vidPlayer.error.code}; details: ${vidPlayer.error.message}`);
             }
+
+            vidPlayer.play();
+
             if (medium === 'desktop') {
                 timeline.to(project.current.position, { x: 16, y: 0, z: -17.5 });
                 timeline.to(project.current.scale, { x: 2, y: 2, z: 2, duration: 1 });
@@ -71,33 +81,39 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                 timeline.to(project.current.position, { x: 16.5, y: 0, z: -17.5 });
                 timeline.to(project.current.scale, { x: 1.6, y: 1.6, z: 1.6, duration: 1 });
             }
+
             timeline.to(project.current.rotation, {
                 y: -0.2, duration: 1,
             });
-            projectDescription.current.visible = true;
+
             gsap.to(projectDescription.current.children[0].material, { opacity: 0.5, duration: 3 });
+
+            setVisible(true);
         }
+
         if (!active) {
             if (vidPlayer) vidPlayer.pause();
+
             timeline.to(project.current.position, { x: x, y: y, z: -18 })
             timeline.to(project.current.rotation, { y: 0, duration: 1 });
             timeline.to(project.current.scale, { x: 1, y: 1, z: 1, duration: 1 });
-            projectDescription.current.visible = false;
             gsap.to(projectDescription.current.children[0].material, { opacity: 0, duration: 3 });
+
+            setVisible(false);
         }
     }, [active])
 
-    // useEffect(() => {
-    //     if (project.current) {
-    //         if (focus) {
-    //             gsap.to(project.current.position, { duration: 3, ease: 'expo.out', x: x, y: y - 0.1, z: -18 });
-    //             gsap.to(project.current.children[1].material, { duration: 3, ease: 'expo.out', opacity: 1, onComplete: () => project.current.children[0].visible = true });
-    //         } else {
-    //             gsap.to(project.current.position, { duration: 3, ease: 'expo.out', x: rand(x - 2, x + 2), y: rand(y - 2, y + 2), z: -18 });
-    //             gsap.to(project.current.children[1].material, { duration: 3, ease: 'expo.out', opacity: 0, onComplete: () => project.current.children[0].visible = false });
-    //         }
-    //     }
-    // }, [focus])
+    useEffect(() => {
+        if (!project.current) return;
+
+        if (focus) {
+            gsap.to(project.current.position, { duration: 3, ease: 'expo.out', x: x, y: y - 0.1, z: -18 });
+            gsap.to(project.current.children[1].material, { duration: 3, ease: 'expo.out', opacity: 1, onComplete: () => project.current.children[0].visible = true });
+        } else {
+            gsap.to(project.current.position, { duration: 3, ease: 'expo.out', x: rand(x - 2, x + 2), y: rand(y - 2, y + 2), z: -18 });
+            gsap.to(project.current.children[1].material, { duration: 3, ease: 'expo.out', opacity: 0, onComplete: () => project.current.children[0].visible = false });
+        }
+    }, [focus])
 
     const rand = (a: number, b: number) => a + (b - a) * Math.random();
 
@@ -105,8 +121,9 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
         if (timeline.isActive()) timeline.clear();
     }
 
-    const onSelected = (e: MouseEvent) => {
+    const onSelected = (e: ThreeEvent<MouseEvent>) => {
         e.stopPropagation();
+
         if (!fullScreen) {
             preventAnimation();
             setHovered(false);
@@ -120,37 +137,44 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
         onClick(null);
     }
 
-    const onEnterPreviewMode = (e: MouseEvent) => {
+    const onEnterPreviewMode = (e: ThreeEvent<MouseEvent>) => {
+        if (!active) return;
         e.stopPropagation();
-        if (active) {
-            preventAnimation();
-            if (medium === 'desktop')
-                timeline.to(project.current.position, { x: 15, y: 0, z: -16.5 });
-            else
-                timeline.to(project.current.position, { x: 15, y: 0, z: -17.1 });
-            timeline.to(project.current.rotation, {
-                y: 0,
-                duration: 1,
-                onComplete: () => setEnteredPreviewMode(true)
-            });
-            gsap.to(projectDescription.current.children[0].material, { opacity: 0, duration: 3 });
-            projectDescription.current.visible = false;
-        }
+        preventAnimation();
+
+        if (medium === 'desktop')
+            timeline.to(project.current.position, { x: 15, y: 0, z: -16.5 });
+        else
+            timeline.to(project.current.position, { x: 15, y: 0, z: -17.1 });
+
+        timeline.to(project.current.rotation, {
+            y: 0,
+            duration: 1,
+            onComplete: () => setEnteredPreviewMode(true)
+        });
+
+        gsap.to(projectDescription.current.children[0].material, { opacity: 0, duration: 3 });
+
+        setVisible(false);
     }
 
-    const onExitPreviewMode = (e: MouseEvent) => {
+    const onExitPreviewMode = (e: ThreeEvent<MouseEvent>) => {
+        if (!active) return;
+
         e.stopPropagation();
-        if (active) {
-            preventAnimation();
-            setEnteredPreviewMode(false);
-            if (medium === 'desktop')
-                timeline.to(project.current.position, { x: 16, y: 0, z: -17.5 });
-            else
-                timeline.to(project.current.position, { x: 16.5, y: 0, z: -17.5 });
-            timeline.to(project.current.rotation, { y: -0.2, duration: 1 });
-            gsap.to(projectDescription.current.children[0].material, { opacity: 0.5, duration: 3 });
-            projectDescription.current.visible = true;
-        }
+        preventAnimation();
+
+        setEnteredPreviewMode(false);
+
+        if (medium === 'desktop')
+            timeline.to(project.current.position, { x: 16, y: 0, z: -17.5 });
+        else
+            timeline.to(project.current.position, { x: 16.5, y: 0, z: -17.5 });
+
+        timeline.to(project.current.rotation, { y: -0.2, duration: 1 });
+        gsap.to(projectDescription.current.children[0].material, { opacity: 0.5, duration: 3 });
+
+        setVisible(true);
     }
 
     return (
@@ -163,23 +187,23 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                 onPointerOut={enteredPreviewMode ? () => setHovered(true) : () => setHovered(false)}
             >
                 <primitive
-                    // visible={false}
+                    visible={false}
                     object={vidObject}
                     position-z={0.08}
                 />
-                <RoundedBox args={medium == 'desktop' ? [2, 1, 0.1] : [1, 2, 0.1]}>
+                <RoundedBox args={medium === 'desktop' ? [2, 1, 0.1] : [1, 2, 0.1]}>
                     <meshPhongMaterial
-                        attach="material"
-                        color="#000"
-                    // opacity={0}
-                    // transparent={true}
+                        attach='material'
+                        color='#000'
+                        opacity={0}
+                        transparent={true}
                     />
                 </RoundedBox>
             </group>
             <group
                 ref={projectDescription}
                 position={[14.3, 0, -16]}
-                visible={false}
+                visible={visible}
             >
                 <mesh>
                     <planeBufferGeometry args={[1.5, 1.5]} />
@@ -196,7 +220,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                         maxWidth={1.5}
                         textAlign='center'
                         anchorY={-0.7}
-                        layers={[1]}
+                        layers={1}
                     >
                         {t(`projectTitles.${id}`)}
                     </Text>
@@ -208,11 +232,22 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                         textAlign='center'
                         anchorY={-0.5}
                         lineHeight={2}
-                        layers={[1]}
+                        layers={1}
                     >
                         {t(`projectDesc.${id}`)}
                     </Text>
-                    <Text
+                    <Html
+                        center
+                        position-y={-0.3}
+                        style={
+                            {
+                                visibility: visible ? 'visible' : 'hidden',
+                            }
+                        }
+                    >
+                        <a href={preview}>{preview}</a>
+                    </Html>
+                    {/* <Text
                         color='#fff'
                         font='fonts/Oswald.ttf'
                         fontSize={0.06}
@@ -220,10 +255,10 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                         textAlign='center'
                         anchorY={0.3}
                         lineHeight={2}
-                        layers={[1]}
+                        layers={1}
                     >
-                        {preview}
-                    </Text>
+                        
+                    </Text> */}
                 </group>
                 {logos.map((logo: string, index: number) => {
                     const texture = new TextureLoader().load(`images/logos/${logo}.png`);
@@ -250,7 +285,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                     font='fonts/Oswald.ttf'
                     fontSize={0.2}
                     onClick={() => onExit()}
-                    layers={[1]}
+                    layers={1}
                 >
                     {t('exit')}
                 </Text>

@@ -17,10 +17,9 @@ const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
     const globeTexture = useLoader(TextureLoader, 'images/textures/night.jpg');
 
     useFrame(() => {
-        if (globe.current)
-            globe.current.rotation.y -= 0.005;
-        if (globeController.current)
-            gsap.to(globeController.current.rotation, { x: -y * 0.3, y: x * 0.5, duration: 2 })
+        if (!globe.current || !globeController.current) return;
+        globe.current.rotation.y -= 0.005;
+        gsap.to(globeController.current.rotation, { x: -y * 0.3, y: x * 0.5, duration: 2 });
     })
 
     return (

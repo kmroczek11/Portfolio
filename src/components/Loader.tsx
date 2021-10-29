@@ -13,7 +13,7 @@ const Loader = (): JSX.Element => {
         fontSize={0.5}
         textAlign='center'
     >
-        {t('loadingMessage', { progress: progress })}
+        {t('loadingMessage', { progress: Math.round(progress) })}
     </Text>
 }
 

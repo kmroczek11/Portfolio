@@ -124,7 +124,7 @@ const Navbar = memo(({ items }: NavProps) => {
                     <Fragment key={index}>
                         <Item
                             name={t(`navItems.${index}`)}
-                            position={(index + 1) * 1.7}
+                            position={(index + 1) * 1.7 - 1}
                             onClick={() => onNavigationStarted(`${item.name}.to`)}
                         />
                     </Fragment>
@@ -137,7 +137,7 @@ const Navbar = memo(({ items }: NavProps) => {
                             <Language
                                 imageSrc={language.imageSrc}
                                 name={language.name}
-                                position={5.5 + (index + 1) * 0.7}
+                                position={4.5 + (index + 1) * 0.7}
                                 onClick={() => onLanguageChanged(language.name)}
                             />
                         </Suspense>

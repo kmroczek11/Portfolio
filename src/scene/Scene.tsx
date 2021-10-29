@@ -4,33 +4,13 @@ import Education from '../education/Education';
 import Projects from '../projects/Projects';
 import Contact from '../contact/Contact';
 import SceneController from './SceneController';
-import { OrbitControls } from '@react-three/drei/core/OrbitControls';
 import { useRef } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useThree } from '@react-three/fiber';
 import Navbar from '../navigation/Navbar';
-
-// const Skybox = React.memo(() => {
-//     console.log('skybox rendered');
-//     const textures: Array<string> = [
-//         'images/textures/skybox/space_ft.png',
-//         'images/textures/skybox/space_bk.png',
-//         'images/textures/skybox/space_up.png',
-//         'images/textures/skybox/space_dn.png',
-//         'images/textures/skybox/space_rt.png',
-//         'images/textures/skybox/space_lf.png'
-//     ];
-
-//     return <mesh>
-//         <boxBufferGeometry args={[1000, 1000, 1000]} />
-//         {
-//             textures.map((value: string, i: number) => {
-//                 const texture = new TextureLoader().load(value);
-//                 console.log(texture);
-//                 return <meshBasicMaterial key={i} attachArray='material' map={texture} side={BackSide} />;
-//             })
-//         }
-//     </mesh>
-// })
+import { Environment, OrbitControls, Preload, useHelper } from '@react-three/drei';
+import { Suspense } from 'react';
+import Loader from '../components/Loader';
+import { DirectionalLightHelper } from 'three';
 
 const navbar_items: Array<NavbarItem> = [
     { id: 0, name: 'education' },
@@ -45,41 +25,72 @@ export interface NavbarItem {
 
 const Scene = (): JSX.Element => {
     console.log('scene rendered');
-    const light = useRef(null);
+    const keyLight = useRef(null);
+    const fillLight = useRef(null);
+    const frontLight = useRef(null);
     const { camera } = useThree();
+    // useHelper(keyLight, DirectionalLightHelper, 0.5)
+    // useHelper(fillLight, DirectionalLightHelper, 0.5)
+    // useHelper(frontLight, DirectionalLightHelper, 0.5)
 
     useEffect(() => {
-        if (light.current) {
-            light.current.position.set(
-                camera.position.x + 10,
-                camera.position.y + 10,
-                camera.position.z + 10
-            )
-            console.log(light.current.position)
-        }
-    }, [camera.position])
+        if (!keyLight.current || !fillLight.current || !frontLight.current) return;
+
+        const k = keyLight.current;
+        const fi = fillLight.current;
+        const fr = frontLight.current;
+
+        k.position.set(camera.position.x + 2, 1.5, camera.position.z);
+        fi.position.set(camera.position.x - 2, 0.5, camera.position.z);
+        fr.position.set(camera.position.x, -0.5, camera.position.z);
+
+        k.target.position.set(camera.position.x, 0, camera.position.z - 5);
+        fi.target.position.set(camera.position.x, 0, camera.position.z - 5);
+        fr.target.position.set(camera.position.x, 0, camera.position.z - 5);
+
+        k.target.updateMatrixWorld();
+        fi.target.updateMatrixWorld();
+        fr.target.updateMatrixWorld();
+    })
 
     return (
         <>
-            <Navbar items={navbar_items} />
-            <Home />
-            <Education />
-            <Projects />
-            <Contact />
-            {/* <directionalLight position={[0, 1, 1]} intensity={1} color={'#fff'} /> */}
-            <hemisphereLight args={['#fff', '#d4af37', 4]} />
-            <spotLight
-                ref={light}
-                args={['#fff', 2]}
-                castShadow={true}
-                shadow-bias={-0.0001}
-                shadow-mapSize-width={1024 * 4}
-                shadow-mapSize-height={1024 * 4}
-            />
-            <SceneController />
-            {/* <Suspense fallback={null}>
-                <Skybox />
-            </Suspense> */}
+            <Suspense fallback={<Loader />}>
+                <Environment
+                    background={false}
+                    files={['square.png', 'square.png', 'square.png', 'square.png', 'square.png', 'square.png']}
+                    path='/images/textures/'
+                // scene={scene} // adds the ability to pass a custom THREE.Scene
+                />
+                <Navbar items={navbar_items} />
+                <Home />
+                <Education />
+                <Projects />
+                <Contact />
+                <directionalLight
+                    ref={keyLight}
+                    args={['#323232', 0.5]}
+                />
+                <directionalLight
+                    ref={fillLight}
+                    args={['#d4af37', 0.25]}
+                />
+                <directionalLight
+                    ref={frontLight}
+                    args={['#fff', 0.25]}
+                />
+                {/* <hemisphereLight args={['#fff', '#d4af37', 4]} />
+                <spotLight
+                    ref={light}
+                    args={['#fff', 4]}
+                    castShadow={true}
+                    shadow-bias={-0.0001}
+                    shadow-mapSize-width={1024 * 4}
+                    shadow-mapSize-height={1024 * 4}
+                /> */}
+                <SceneController />
+                {/* <Preload all /> */}
+            </Suspense>
             {/* <OrbitControls /> */}
         </>
     )

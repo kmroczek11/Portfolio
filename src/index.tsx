@@ -18,7 +18,7 @@ const customHistory = createBrowserHistory({
 });
 
 ReactDOM.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Router history={customHistory}>
       <Route
         component={({ history }) => {
@@ -33,7 +33,7 @@ ReactDOM.render(
         }}
       />
     </Router>,
-  </React.StrictMode>,
+  // </React.StrictMode>,
   document.getElementById('root')
 );
 
