@@ -7,14 +7,13 @@ import globeVertexShader from '../shaders/globeVertex.glsl';
 import globeFragmentShader from '../shaders/globeFragment.glsl';
 import atmosphereVertexShader from '../shaders/atmosphereVertex.glsl';
 import atmosphereFragmentShader from '../shaders/atmosphereFragment.glsl';
-import { AdditiveBlending, BackSide } from 'three';
+import { AdditiveBlending, BackSide, Texture } from 'three';
 import useMousePosition from '../hooks/useMousePosition';
 
-const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
+const Globe = ({ globeTexture, focus }: { globeTexture: Texture, focus: boolean }): JSX.Element => {
     const globe = useRef(null);
     const globeController = useRef(null);
     const { x, y } = useMousePosition('3D');
-    const globeTexture = useLoader(TextureLoader, 'images/textures/night.jpg');
 
     useFrame(() => {
         if (!globe.current || !globeController.current) return;

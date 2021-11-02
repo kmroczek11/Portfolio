@@ -1,19 +1,18 @@
 import { useFrame } from '@react-three/fiber'
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Vector3 } from 'three/src/math/Vector3';
-import Model from '../components/Model';
+import { Group } from 'three';
 import { AppContext } from '../context';
-import { rotateAroundPoint } from '../components/functions';
+
+const radius = 5;
+const depth = 6;
 
 // const Objects = ({ focus }: { focus: boolean }): JSX.Element => {
-const Objects = (): JSX.Element => {
+const Objects = ({ desktopOBJ, phoneOBJ, tabletOBJ }: { desktopOBJ: Group, phoneOBJ: Group, tabletOBJ: Group }): JSX.Element => {
     const desktop = useRef(null);
     const phone = useRef(null);
     const tablet = useRef(null);
     const { state } = useContext(AppContext);
     const [angle, setAngle] = useState(0);
-    const [radius] = useState(5);
-    const [depth] = useState(6);
 
     useFrame(() => {
         if (!desktop.current || !phone.current || !tablet.current) return;
@@ -55,19 +54,22 @@ const Objects = (): JSX.Element => {
 
     return (
         <>
-            <Model
+            <primitive
                 ref={desktop}
-                path='desktop.glb'
+                object={desktopOBJ}
+                dispose={null}
                 position-y={3}
             />
-            <Model
+            <primitive
                 ref={phone}
-                path='phone.glb'
+                object={phoneOBJ}
+                dispose={null}
                 position-y={0}
             />
-            <Model
+            <primitive
                 ref={tablet}
-                path='tablet.glb'
+                object={tabletOBJ}
+                dispose={null}
                 position-y={-3}
             />
         </>

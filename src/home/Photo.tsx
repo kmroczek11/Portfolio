@@ -4,15 +4,13 @@ import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import gsap from 'gsap';
 import photoVertexShader from '../shaders/photoVertex.glsl';
 import photoFragmentShader from '../shaders/photoFragment.glsl';
-import { DoubleSide } from 'three';
+import { DoubleSide, Texture } from 'three';
 
-const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
+const Photo = ({ photoTexture, maskTexture, focus, }: { photoTexture: Texture, maskTexture: Texture, focus: boolean }): JSX.Element => {
     const photo = useRef(null);
     const row: number = 3;
     const col: number = 4;
     // const particlesNum: number = row * col;
-    const photoTexture = useLoader(TextureLoader, 'images/photo.png');
-    const maskTexture = useLoader(TextureLoader, 'images/mask.png');
 
     const rand = (a: number, b: number) => a + (b - a) * Math.random();
 
