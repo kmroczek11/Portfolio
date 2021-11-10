@@ -99,7 +99,6 @@ const App = (): JSX.Element => {
         //     return items;
         //   }
         // }}
-        shadows
         linear
         style={{
           display: 'block',

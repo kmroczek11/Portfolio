@@ -29,9 +29,9 @@ const Scene = (): JSX.Element => {
     const fillLight = useRef(null);
     const frontLight = useRef(null);
     const { camera } = useThree();
-    // useHelper(keyLight, DirectionalLightHelper, 0.5)
-    // useHelper(fillLight, DirectionalLightHelper, 0.5)
-    // useHelper(frontLight, DirectionalLightHelper, 0.5)
+    useHelper(keyLight, DirectionalLightHelper, 0.5)
+    useHelper(fillLight, DirectionalLightHelper, 0.5)
+    useHelper(frontLight, DirectionalLightHelper, 0.5)
 
     useEffect(() => {
         if (!keyLight.current || !fillLight.current || !frontLight.current) return;
@@ -62,6 +62,7 @@ const Scene = (): JSX.Element => {
                     path='/images/textures/'
                 // scene={scene} // adds the ability to pass a custom THREE.Scene
                 />
+                {/* <fog attach='fog' args={['#fff', camera.near, camera.far]} /> */}
                 <Navbar items={navbar_items} />
                 <Home />
                 <Education />
@@ -89,7 +90,7 @@ const Scene = (): JSX.Element => {
                     shadow-mapSize-height={1024 * 4}
                 /> */}
                 <SceneController />
-                {/* <Preload all /> */}
+                <Preload all />
             </Suspense>
             {/* <OrbitControls /> */}
         </>

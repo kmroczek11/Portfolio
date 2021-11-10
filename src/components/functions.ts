@@ -1,6 +1,24 @@
+import gsap from "gsap";
 import { Shape } from "three/src/extras/core/Shape";
 import { ShapeBufferGeometry } from "three/src/geometries/ShapeGeometry";
 import { Vector3 } from "three/src/math/Vector3";
+
+export const animate = (
+  target: gsap.TweenTarget,
+  values: any,
+  duration: number,
+  ease?: string,
+  onComplete?: () => void,
+  onUpdate?: () => void
+) => {
+  gsap.to(target, {
+    ...values,
+    duration: duration,
+    ease: ease,
+    onUpdate: onUpdate,
+    onComplete: onComplete,
+  });
+};
 
 export const rotateAroundPoint = (
   obj: any,
@@ -37,7 +55,7 @@ export const equals = (v1: Vector3, v2: Vector3, epsilon = Number.EPSILON) => {
 export const RoundedRectangleGeometry = (
   width: number,
   height: number,
-  radius: number,
+  radius: number
 ) => {
   let shape = new Shape();
   let x = 1;
@@ -54,6 +72,6 @@ export const RoundedRectangleGeometry = (
 
   let geometry = new ShapeBufferGeometry(shape);
   geometry.center();
-  
+
   return geometry;
 };

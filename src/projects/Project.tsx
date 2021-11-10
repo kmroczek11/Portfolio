@@ -4,12 +4,13 @@ import { AppContext } from '../context';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { RoundedBox, Text, Html } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
-import gsap from 'gsap';
 import { Mesh, PlaneGeometry, ShaderMaterial, Vector2, VideoTexture } from 'three';
 import videoVertexShader from '../shaders/videoVertex.glsl';
 import videoFragmentShader from '../shaders/videoFragment.glsl';
 import { ProjectItem } from './Projects';
 import { ThreeEvent } from '@react-three/fiber';
+import { animate } from '../components/functions';
+import gsap from 'gsap';
 
 const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClick }: ProjectItem): JSX.Element => {
     const { state } = useContext(AppContext);
@@ -58,8 +59,8 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
         if (!project.current) return;
 
         hovered ?
-            gsap.to(project.current.scale, { duration: 1, ease: 'expo.out', x: 1.1, y: 1.1 }) :
-            gsap.to(project.current.scale, { duration: 1, ease: 'expo.out', x: 1, y: 1 });
+            animate(project.current.scale, { x: 1.1, y: 1.1 }, 1, 'expo.out') :
+            animate(project.current.scale, { x: 1, y: 1 }, 1, 'expo.out');
     }, [hovered])
 
     useEffect(() => {
@@ -86,7 +87,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                 y: -0.2, duration: 1,
             });
 
-            gsap.to(projectDescription.current.children[0].material, { opacity: 0.5, duration: 3 });
+            animate(projectDescription.current.children[0].material, { opacity: 0.5 }, 3);
 
             setVisible(true);
         }
@@ -107,11 +108,11 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
         if (!project.current) return;
 
         if (focus) {
-            gsap.to(project.current.position, { duration: 3, ease: 'expo.out', x: x, y: y - 0.1, z: -18 });
-            gsap.to(project.current.children[1].material, { duration: 3, ease: 'expo.out', opacity: 1, onComplete: () => project.current.children[0].visible = true });
+            animate(project.current.position, { x: x, y: y - 0.1, z: -18 }, 3, 'expo.out');
+            animate(project.current.children[1].material, { opacity: 1 }, 3, 'expo.out', () => project.current.children[0].visible = true);
         } else {
-            gsap.to(project.current.position, { duration: 3, ease: 'expo.out', x: rand(x - 2, x + 2), y: rand(y - 2, y + 2), z: -18 });
-            gsap.to(project.current.children[1].material, { duration: 3, ease: 'expo.out', opacity: 0, onComplete: () => project.current.children[0].visible = false });
+            animate(project.current.position, { x: rand(x - 2, x + 2), y: rand(y - 2, y + 2), z: -18 }, 3, 'expo.out');
+            animate(project.current.children[1].material, { opacity: 0 }, 3, 'expo.out', () => project.current.children[0].visible = false);
         }
     }, [focus])
 
@@ -153,7 +154,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
             onComplete: () => setEnteredPreviewMode(true)
         });
 
-        gsap.to(projectDescription.current.children[0].material, { opacity: 0, duration: 3 });
+        animate(projectDescription.current.children[0].material, { opacity: 0 }, 3);
 
         setVisible(false);
     }
@@ -172,7 +173,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
             timeline.to(project.current.position, { x: 16.5, y: 0, z: -17.5 });
 
         timeline.to(project.current.rotation, { y: -0.2, duration: 1 });
-        gsap.to(projectDescription.current.children[0].material, { opacity: 0.5, duration: 3 });
+        animate(projectDescription.current.children[0].material, { opacity: 0.5 }, 3);
 
         setVisible(true);
     }
@@ -238,7 +239,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                     </Text>
                     <Html
                         center
-                        position-y={-0.3}
+                        position-y={-0.4}
                         style={
                             {
                                 visibility: visible ? 'visible' : 'hidden',

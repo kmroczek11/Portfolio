@@ -1,7 +1,7 @@
 import { Camera, Scene, ShaderMaterial, Vector2 } from "three";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { BloomPass } from "three/examples/jsm/postprocessing/BloomPass";
-// import { FilmPass } from "three/examples/jsm/postprocessing/FilmPass";
+import { LuminosityShader } from "three/examples/jsm/shaders/LuminosityShader";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { DotScreenPass } from "three/examples/jsm/postprocessing/DotScreenPass";
 // import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass";
@@ -19,12 +19,7 @@ export const bloomPass = new BloomPass(
   256 // blur render target resolution
 );
 
-// export const filmPass = new FilmPass(
-//   0.95, // noise intensity
-//   0.35, // scanline intensity
-//   648, // scanline count
-//   false // grayscale
-// );
+export const grayscalePass = new ShaderPass(LuminosityShader);
 
 // export const filmPass = new GlitchPass();
 

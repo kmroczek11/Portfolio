@@ -4,21 +4,31 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Text } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '../context';
-import gsap from 'gsap';
+import { animate } from '../components/functions';
 
 interface InstitutionItem {
     name?: string,
     objSrc: string,
     desc?: string,
-    scale: number,
     x: number,
     y: number,
     focus?: boolean
 }
 
-const Institution = ({ name, objSrc, desc, scale, x, y, focus }: InstitutionItem): JSX.Element => {
+const Institution = ({ name, objSrc, desc, x, y, focus }: InstitutionItem): JSX.Element => {
     const obj = useLoader(GLTFLoader, objSrc);
     const insitution = useRef(null);
+    // const { state } = useContext(AppContext);
+
+    // useEffect(() => {
+    //     if (!insitution.current.children[0]) return;
+
+    //     state.scene.gui.add(insitution.current.children[0].rotation, 'x', -5, 5)
+    //     state.scene.gui.add(insitution.current.children[0].rotation, 'y', -5, 5)
+    //     state.scene.gui.add(insitution.current.children[0].rotation, 'z', -5, 5)
+    //     // state.scene.gui.add(phone.current.material.metalness, 'metalness', 0, 5)
+    //     // state.scene.gui.add(phone.current.material.roughness, 'roughness', 0, 5)
+    // }, [])
 
     useFrame(() => {
         obj.scene.rotation.y += 0.01;
@@ -27,26 +37,31 @@ const Institution = ({ name, objSrc, desc, scale, x, y, focus }: InstitutionItem
     useEffect(() => {
         if (!insitution.current) return;
         focus ?
-            gsap.to(insitution.current.scale, { x: 1, y: 1, z: 1, duration: 5, ease: 'expo.out' }) :
-            gsap.to(insitution.current.scale, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
+            animate(insitution.current.scale, { x: 1, y: 1, z: 1 }, 5, 'expo.out') :
+            animate(insitution.current.scale, { x: 0, y: 0, z: 0 }, 5, 'expo.out');
     }, [focus])
+
+    useEffect(() => {
+        obj.scene.traverse((object) => {
+            object.layers.set(2);
+        });
+    }, [obj])
 
     return (
         <group
             ref={insitution}
             position={[x, y, -18]}
-            scale={[0, 0, 0]}
         >
-            <mesh scale={[scale, scale, scale]}>
+            <mesh rotation-x={1.2}>
                 <primitive object={obj.scene} />
-                <meshBasicMaterial />
+                <meshStandardMaterial />
             </mesh>
             <Text
                 color='#d4af37'
                 font='fonts/Oswald.ttf'
                 fontSize={0.25}
                 textAlign='center'
-                anchorY={0.8}
+                anchorY={1.3}
                 layers={1}
             >
                 {name}
@@ -56,7 +71,7 @@ const Institution = ({ name, objSrc, desc, scale, x, y, focus }: InstitutionItem
                 font='fonts/Oswald.ttf'
                 fontSize={0.12}
                 textAlign='center'
-                anchorY={2}
+                anchorY={2.5}
                 layers={1}
             >
                 {desc}
@@ -68,9 +83,9 @@ const Institution = ({ name, objSrc, desc, scale, x, y, focus }: InstitutionItem
 const Education = memo(() => {
     const [institutionItems] = useState<Array<InstitutionItem>>(
         [
-            { objSrc: 'models/school.glb', scale: 0.1, x: -3, y: 1 },
-            { objSrc: 'models/college.glb', scale: 0.2, x: 0, y: 1 },
-            { objSrc: 'models/uni.glb', scale: 0.2, x: 3, y: 1 },
+            { objSrc: 'models/school.glb', x: -3, y: 1 },
+            { objSrc: 'models/college.glb', x: 0, y: 1 },
+            { objSrc: 'models/uni.glb', x: 3, y: 1 },
         ]
     );
     const { t } = useTranslation();

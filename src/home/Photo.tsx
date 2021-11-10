@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
-import gsap from 'gsap';
+import { animate } from '../components/functions';
 import photoVertexShader from '../shaders/photoVertex.glsl';
 import photoFragmentShader from '../shaders/photoFragment.glsl';
 import { DoubleSide, Texture } from 'three';
@@ -20,9 +20,9 @@ const Photo = ({ photoTexture, maskTexture, focus, }: { photoTexture: Texture, m
         const initialSpeeds: Array<number> = [];
         const initialOffset: Array<number> = [];
 
-        for (let x = 0; x < row; x += 0.002) {
+        for (let x = 0; x < row; x += 0.004) {
             let posX: number = x - row / 2;
-            for (let y = 0; y < col; y += 0.002) {
+            for (let y = 0; y < col; y += 0.004) {
                 let posY: number = y - col / 2;
                 initialPositions.push(posX * 2);
                 initialPositions.push(posY * 2);
@@ -53,9 +53,10 @@ const Photo = ({ photoTexture, maskTexture, focus, }: { photoTexture: Texture, m
 
     useEffect(() => {
         if (!photo.current) return;
+
         focus ?
-            gsap.to(photo.current.material.uniforms.move, { value: 0, duration: 5, ease: 'expo.out', }) :
-            gsap.to(photo.current.material.uniforms.move, { value: 5, duration: 5, ease: 'expo.out', onUpdate: () => photo.current.geometry.verticesNeedUpdate = true, });
+            animate(photo.current.material.uniforms.move, { value: 0 }, 5, 'expo.out') :
+            animate(photo.current.material.uniforms.move, { value: 5 }, 5, 'expo.out', null, () => photo.current.geometry.verticesNeedUpdate = true);
     }, [focus])
 
     // return null

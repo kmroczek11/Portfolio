@@ -4,14 +4,15 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import {
     DEFAULT_LAYER_NUM,
     BLOOM_LAYER_NUM,
-    // FILM_LAYER_NUM,
+    GRAYSCALE_LAYER_NUM,
     // MULTIPASS_LAYER_NUM
 } from '../postprocessing/constant';
-import { createRenderPass, bloomPass, createFinalPass } from "../postprocessing/pass";
+import { createRenderPass, bloomPass, createFinalPass, grayscalePass } from "../postprocessing/pass";
 
 const Effects = (): JSX.Element => {
     const { scene, gl, camera } = useThree()
     const [bloomComposer, setBloomComposer] = useState<EffectComposer>(null);
+    const [grayscaleComposer, setGrayscaleComposer] = useState<EffectComposer>(null);
     const [finalComposer, setFinalComposer] = useState<EffectComposer>(null);
 
     useMemo(() => {
@@ -23,11 +24,11 @@ const Effects = (): JSX.Element => {
         bloomComposer.addPass(renderPass);
         bloomComposer.addPass(bloomPass);
 
-        // setup film composer
-        // const filmComposer = new EffectComposer(gl);
-        // filmComposer.renderToScreen = false;
-        // filmComposer.addPass(renderPass);
-        // filmComposer.addPass(filmPass);
+        // setup grayscale composer
+        const grayscaleComposer = new EffectComposer(gl);
+        grayscaleComposer.renderToScreen = false;
+        grayscaleComposer.addPass(renderPass);
+        grayscaleComposer.addPass(grayscalePass);
 
         // setup composer with multiple passes
         // const multipassComposer = new EffectComposer(gl);
@@ -42,6 +43,7 @@ const Effects = (): JSX.Element => {
         const finalPass = createFinalPass(
             gl.getPixelRatio(),
             bloomComposer,
+            grayscaleComposer
             // filmComposer,
             // multipassComposer
         );
@@ -50,6 +52,7 @@ const Effects = (): JSX.Element => {
         gl.autoClear = false;
 
         setBloomComposer(bloomComposer);
+        setGrayscaleComposer(grayscaleComposer);
         setFinalComposer(finalComposer);
     }, [camera, gl, scene])
 
@@ -59,6 +62,10 @@ const Effects = (): JSX.Element => {
         camera.layers.set(BLOOM_LAYER_NUM);
         bloomComposer.swapBuffers();
         bloomComposer.render();
+
+        camera.layers.set(GRAYSCALE_LAYER_NUM);
+        grayscaleComposer.swapBuffers();
+        grayscaleComposer.render();
 
         camera.layers.set(DEFAULT_LAYER_NUM);
         finalComposer.swapBuffers();

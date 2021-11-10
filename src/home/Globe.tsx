@@ -2,13 +2,13 @@ import { useRef } from 'react';
 import { useFrame, useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { Sphere } from '@react-three/drei';
-import gsap from 'gsap';
 import globeVertexShader from '../shaders/globeVertex.glsl';
 import globeFragmentShader from '../shaders/globeFragment.glsl';
 import atmosphereVertexShader from '../shaders/atmosphereVertex.glsl';
 import atmosphereFragmentShader from '../shaders/atmosphereFragment.glsl';
 import { AdditiveBlending, BackSide, Texture } from 'three';
 import useMousePosition from '../hooks/useMousePosition';
+import { animate } from '../components/functions';
 
 const Globe = ({ globeTexture, focus }: { globeTexture: Texture, focus: boolean }): JSX.Element => {
     const globe = useRef(null);
@@ -17,8 +17,9 @@ const Globe = ({ globeTexture, focus }: { globeTexture: Texture, focus: boolean 
 
     useFrame(() => {
         if (!globe.current || !globeController.current) return;
+
         globe.current.rotation.y -= 0.005;
-        gsap.to(globeController.current.rotation, { x: -y * 0.3, y: x * 0.5, duration: 2 });
+        animate(globeController.current.rotation, { x: -y * 0.3, y: x * 0.5 }, 2);
     })
 
     return (

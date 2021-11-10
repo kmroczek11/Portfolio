@@ -1,8 +1,8 @@
 import { useContext, useEffect } from 'react';
 import { AppContext } from '../context';
-import gsap from 'gsap';
 import { Types } from '../context/reducers';
 import { useThree } from '@react-three/fiber';
+import { animate } from '../components/functions';
 
 const SceneController = (): JSX.Element => {
     const { state, dispatch } = useContext(AppContext);
@@ -21,16 +21,16 @@ const SceneController = (): JSX.Element => {
 
         switch (currentItem) {
             case 'home.to':
-                gsap.to(camera.position, { x: 0, y: 0, z: 5, duration: 3, ease: 'expo.out', onComplete: () => onNavigationEnded('home.end') });
+                animate(camera.position, { x: 0, y: 0, z: 5 }, 3, 'expo.out', () => onNavigationEnded('home.end'));
                 break;
             case 'education.to':
-                gsap.to(camera.position, { x: 0, y: 0, z: -15, duration: 3, ease: 'expo.out', onComplete: () => onNavigationEnded('education.end') });
+                animate(camera.position, { x: 0, y: 0, z: -15 }, 3, 'expo.out', () => onNavigationEnded('education.end'));
                 break;
             case 'projects.to':
-                gsap.to(camera.position, { x: 15, y: 0, z: -15, duration: 3, ease: 'expo.out', onComplete: () => onNavigationEnded('projects.end') });
+                animate(camera.position, { x: 15, y: 0, z: -15 }, 3, 'expo.out', () => onNavigationEnded('projects.end'));
                 break;
             case 'contact.to':
-                gsap.to(camera.position, { x: 15, y: 0, z: 5, duration: 3, ease: 'expo.out', onComplete: () => onNavigationEnded('contact.end') });
+                animate(camera.position, { x: 15, y: 0, z: 5 }, 3, 'expo.out', () => onNavigationEnded('contact.end'));
                 break;
             default:
                 break;
