@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Home from '../home/Home';
 import Education from '../education/Education';
 import Projects from '../projects/Projects';
@@ -11,6 +11,9 @@ import { Environment, OrbitControls, Preload, useHelper } from '@react-three/dre
 import { Suspense } from 'react';
 import Loader from '../components/Loader';
 import { DirectionalLightHelper } from 'three';
+import { AppContext } from '../context';
+import { animate } from '../components/functions';
+import gsap from 'gsap';
 
 const navbar_items: Array<NavbarItem> = [
     { id: 0, name: 'education' },
@@ -29,9 +32,12 @@ const Scene = (): JSX.Element => {
     const fillLight = useRef(null);
     const frontLight = useRef(null);
     const { camera } = useThree();
-    useHelper(keyLight, DirectionalLightHelper, 0.5)
-    useHelper(fillLight, DirectionalLightHelper, 0.5)
-    useHelper(frontLight, DirectionalLightHelper, 0.5)
+    // const { state } = useContext(AppContext);
+    const timeline = gsap.timeline({ repeat: -1, yoyo: true });
+
+    // useHelper(keyLight, DirectionalLightHelper, 0.5)
+    // useHelper(fillLight, DirectionalLightHelper, 0.5)
+    // useHelper(frontLight, DirectionalLightHelper, 0.5)
 
     useEffect(() => {
         if (!keyLight.current || !fillLight.current || !frontLight.current) return;
@@ -40,9 +46,9 @@ const Scene = (): JSX.Element => {
         const fi = fillLight.current;
         const fr = frontLight.current;
 
-        k.position.set(camera.position.x + 2, 1.5, camera.position.z);
-        fi.position.set(camera.position.x - 2, 0.5, camera.position.z);
-        fr.position.set(camera.position.x, -0.5, camera.position.z);
+        k.position.set(camera.position.x + 5, 1, camera.position.z);
+        fi.position.set(camera.position.x - 5, 0.5, camera.position.z);
+        fr.position.set(camera.position.x - 5, -0.5, camera.position.z);
 
         k.target.position.set(camera.position.x, 0, camera.position.z - 5);
         fi.target.position.set(camera.position.x, 0, camera.position.z - 5);
@@ -51,6 +57,46 @@ const Scene = (): JSX.Element => {
         k.target.updateMatrixWorld();
         fi.target.updateMatrixWorld();
         fr.target.updateMatrixWorld();
+    })
+
+    // useEffect(() => {
+    //     if (!keyLight.current || !fillLight.current || !frontLight.current) return;
+
+    //     const k = keyLight.current;
+    //     const fi = fillLight.current;
+    //     const fr = frontLight.current;
+
+    //     state.scene.gui.add(k.position, 'x', 10, 20)
+    //     state.scene.gui.add(k.position, 'y', -5, 5)
+    //     state.scene.gui.add(k.position, 'z', -20, 15)
+
+    //     state.scene.gui.add(fi.position, 'x', 10, 20)
+    //     state.scene.gui.add(fi.position, 'y', -5, 5)
+    //     state.scene.gui.add(fi.position, 'z', -20, 15)
+
+    //     state.scene.gui.add(fr.position, 'x', 10, 20)
+    //     state.scene.gui.add(fr.position, 'y', -5, 5)
+    //     state.scene.gui.add(fr.position, 'z', -20, 15)
+    // }, [fillLight.current])
+
+    useEffect(() => {
+        if (!fillLight.current) return;
+
+        // animate(
+        //     fillLight.current.position,
+        //     { x: camera.position.x + 5, repeat: -1, yoyo: true },
+        //     5,
+        //     'power0'
+        // )
+
+        timeline.to(
+            fillLight.current.position,
+            { x: camera.position.x + 5, duration: 5 },
+        )
+        timeline.to(
+            fillLight.current.position,
+            { x: camera.position.x - 5, duration: 5 },
+        )
     })
 
     return (
@@ -70,15 +116,15 @@ const Scene = (): JSX.Element => {
                 <Contact />
                 <directionalLight
                     ref={keyLight}
-                    args={['#323232', 0.5]}
+                    args={['#fff', 0.5]}
                 />
                 <directionalLight
                     ref={fillLight}
-                    args={['#d4af37', 0.25]}
+                    args={['#d4af37', 0.5]}
                 />
                 <directionalLight
                     ref={frontLight}
-                    args={['#fff', 0.25]}
+                    args={['#fff', 0.5]}
                 />
                 {/* <hemisphereLight args={['#fff', '#d4af37', 4]} />
                 <spotLight

@@ -23,13 +23,16 @@ const ContactForm = (): JSX.Element => {
     }, [currentItem])
 
     return (
-        <RoundedBox
+        <group
             ref={form}
             position={[15, 0, 0]}
-            args={[5, 6, 0.2]}
-            radius={0.1}
         >
-            <meshPhongMaterial attach='material' color='#000' />
+            <RoundedBox
+                args={[5, 6, 0.2]}
+                radius={0.1}
+            >
+                <meshPhongMaterial attach='material' color='#000' />
+            </RoundedBox>
             <Html
                 center
                 zIndexRange={[0, 0]}
@@ -126,7 +129,7 @@ const ContactForm = (): JSX.Element => {
                     />
                 }
             </Html>
-        </RoundedBox>
+        </group>
     )
 }
 

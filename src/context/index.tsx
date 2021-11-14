@@ -16,7 +16,7 @@ type InitialStateType = {
 
 const initialState = {
     scene: {
-        currentItem: 'home.end',
+        currentItem: 'projects.end',
         fullScreen: false,
         gui: new dat.GUI(),
         mode: 'desktop'

@@ -106,7 +106,7 @@ const App = (): JSX.Element => {
           height: '100vh'
         }}
         onCreated={({ camera, gl, raycaster }) => {
-          // camera.position.set(15, 0, -15);
+          camera.position.set(15, 0, -15);
           raycaster.layers.enableAll();
           gl.toneMapping = ACESFilmicToneMapping;
           gl.toneMappingExposure = 1;

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { animate } from '../components/functions';
@@ -6,11 +6,12 @@ import photoVertexShader from '../shaders/photoVertex.glsl';
 import photoFragmentShader from '../shaders/photoFragment.glsl';
 import { DoubleSide, Texture } from 'three';
 
+const row: number = 3;
+const col: number = 4;
+// const particlesNum: number = row * col;
+
 const Photo = ({ photoTexture, maskTexture, focus, }: { photoTexture: Texture, maskTexture: Texture, focus: boolean }): JSX.Element => {
     const photo = useRef(null);
-    const row: number = 3;
-    const col: number = 4;
-    // const particlesNum: number = row * col;
 
     const rand = (a: number, b: number) => a + (b - a) * Math.random();
 

@@ -6,7 +6,7 @@ import { Vector3 } from "three/src/math/Vector3";
 export const animate = (
   target: gsap.TweenTarget,
   values: any,
-  duration: number,
+  duration?: number,
   ease?: string,
   onComplete?: () => void,
   onUpdate?: () => void

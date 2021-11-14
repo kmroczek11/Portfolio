@@ -42,15 +42,15 @@ const Objects = ({ desktopOBJ, phoneOBJ, tabletOBJ }: { desktopOBJ: Group, phone
         setAngle(prevAngle => prevAngle + 1);
     })
 
-    useEffect(() => {
-        if (!phone.current) return;
+    // useEffect(() => {
+    //     if (!phone.current) return;
 
-        state.scene.gui.add(phone.current.position, 'x', -5, 5)
-        state.scene.gui.add(phone.current.position, 'y', -5, 5)
-        state.scene.gui.add(phone.current.position, 'z', -5, 5)
-        // state.scene.gui.add(phone.current.material.metalness, 'metalness', 0, 5)
-        // state.scene.gui.add(phone.current.material.roughness, 'roughness', 0, 5)
-    }, [])
+    //     state.scene.gui.add(phone.current.position, 'x', -5, 5)
+    //     state.scene.gui.add(phone.current.position, 'y', -5, 5)
+    //     state.scene.gui.add(phone.current.position, 'z', -5, 5)
+    //     // state.scene.gui.add(phone.current.material.metalness, 'metalness', 0, 5)
+    //     // state.scene.gui.add(phone.current.material.roughness, 'roughness', 0, 5)
+    // }, [])
 
     return (
         <>
