@@ -248,18 +248,6 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                     >
                         <a href={preview}>{preview}</a>
                     </Html>
-                    {/* <Text
-                        color='#fff'
-                        font='fonts/Oswald.ttf'
-                        fontSize={0.06}
-                        maxWidth={1}
-                        textAlign='center'
-                        anchorY={0.3}
-                        lineHeight={2}
-                        layers={1}
-                    >
-                        
-                    </Text> */}
                 </group>
                 {logos.map((logo: string, index: number) => {
                     const texture = new TextureLoader().load(`images/logos/${logo}.png`);

@@ -1,13 +1,12 @@
 import { GUI } from 'dat.gui';
-import * as dat from 'dat.gui';
+// import * as dat from 'dat.gui';
 import React, { createContext, Dispatch, useReducer } from 'react';
 import { sceneReducer, SceneActions } from './reducers';
 
 export type SceneType = {
     currentItem: string;
     fullScreen: boolean;
-    gui: GUI;
-    mode: string;
+    gui?: GUI;
 }
 
 type InitialStateType = {
@@ -16,9 +15,9 @@ type InitialStateType = {
 
 const initialState = {
     scene: {
-        currentItem: 'projects.end',
+        currentItem: 'home.end',
         fullScreen: false,
-        gui: new dat.GUI(),
+        // gui: new dat.GUI(),
         mode: 'desktop'
     }
 }

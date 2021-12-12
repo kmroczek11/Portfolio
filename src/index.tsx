@@ -3,37 +3,17 @@ import ReactDOM from 'react-dom';
 import App from './main/App';
 import reportWebVitals from './reportWebVitals';
 import { AppProvider } from './context';
-import { createBrowserHistory } from 'history';
-import { Router, Route, } from 'react-router-dom';
 import './internationalization/i18n';
 
-declare global {
-  interface Window {
-    appHistory: any;
-  }
-}
-
-const customHistory = createBrowserHistory({
-  // basename: config.urlBasename || ""
-});
-
 ReactDOM.render(
-  // <React.StrictMode>
-    <Router history={customHistory}>
-      <Route
-        component={({ history }) => {
-          window.appHistory = history;
-          return (
-            <AppProvider>
-              <Suspense fallback={null}>
-                <App />
-              </Suspense>
-            </AppProvider>
-          )
-        }}
-      />
-    </Router>,
-  // </React.StrictMode>,
+  <React.StrictMode>
+    <AppProvider>
+      <Suspense fallback={null}>
+        <App />
+      </Suspense>
+    </AppProvider>
+  </React.StrictMode>
+  ,
   document.getElementById('root')
 );
 

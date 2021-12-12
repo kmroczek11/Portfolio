@@ -6,14 +6,16 @@ import globeVertexShader from '../shaders/globeVertex.glsl';
 import globeFragmentShader from '../shaders/globeFragment.glsl';
 import atmosphereVertexShader from '../shaders/atmosphereVertex.glsl';
 import atmosphereFragmentShader from '../shaders/atmosphereFragment.glsl';
-import { AdditiveBlending, BackSide, Texture } from 'three';
+import { AdditiveBlending, BackSide } from 'three';
 import useMousePosition from '../hooks/useMousePosition';
 import { animate } from '../components/functions';
 
-const Globe = ({ globeTexture, focus }: { globeTexture: Texture, focus: boolean }): JSX.Element => {
+// const Globe = ({ focus }: { focus: boolean }): JSX.Element => {
+const Globe = (): JSX.Element => {
     const globe = useRef(null);
     const globeController = useRef(null);
     const { x, y } = useMousePosition('3D');
+    const globeTexture = useLoader(TextureLoader, 'images/textures/night.jpg');
 
     useFrame(() => {
         if (!globe.current || !globeController.current) return;
@@ -42,7 +44,7 @@ const Globe = ({ globeTexture, focus }: { globeTexture: Texture, focus: boolean 
                                 }
                             }
                         }
-                        attach="material"
+                        attach='material'
                     />
                 </Sphere>
             </group>
@@ -56,7 +58,7 @@ const Globe = ({ globeTexture, focus }: { globeTexture: Texture, focus: boolean 
                     fragmentShader={atmosphereFragmentShader}
                     blending={AdditiveBlending}
                     side={BackSide}
-                    attach="material"
+                    attach='material'
                 />
             </Sphere>
         </>

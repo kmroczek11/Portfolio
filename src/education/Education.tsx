@@ -18,17 +18,6 @@ interface InstitutionItem {
 const Institution = ({ name, objSrc, desc, x, y, focus }: InstitutionItem): JSX.Element => {
     const obj = useLoader(GLTFLoader, objSrc);
     const insitution = useRef(null);
-    // const { state } = useContext(AppContext);
-
-    // useEffect(() => {
-    //     if (!insitution.current.children[0]) return;
-
-    //     state.scene.gui.add(insitution.current.children[0].rotation, 'x', -5, 5)
-    //     state.scene.gui.add(insitution.current.children[0].rotation, 'y', -5, 5)
-    //     state.scene.gui.add(insitution.current.children[0].rotation, 'z', -5, 5)
-    //     // state.scene.gui.add(phone.current.material.metalness, 'metalness', 0, 5)
-    //     // state.scene.gui.add(phone.current.material.roughness, 'roughness', 0, 5)
-    // }, [])
 
     useFrame(() => {
         obj.scene.rotation.y += 0.01;

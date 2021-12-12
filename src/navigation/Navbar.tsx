@@ -33,14 +33,13 @@ const Item = ({ name, position, onClick }: ItemProps): JSX.Element => {
         <Text
             position-x={position}
             material-depthTest={false}
-            // onBeforeRender={(renderer) => renderer.clearDepth()}
             onClick={() => onClick(name)}
             onPointerOver={() => setColor('#d4af37')}
             onPointerOut={() => setColor('#fff')}
             color={color}
             font='fonts/Oswald.ttf'
             fontSize={0.4}
-            layers={[1]}
+            layers={1}
         >
             {name}
         </Text>
@@ -64,7 +63,6 @@ const Language = ({ imageSrc, name, position, onClick }: LanguageItem) => {
 }
 
 const Navbar = memo(({ items }: NavProps) => {
-    console.log('navbar rendered');
     const { state, dispatch } = useContext(AppContext);
     const { currentItem, fullScreen } = state.scene;
     const [languages] = useState<Array<LanguageItem>>([
@@ -104,7 +102,7 @@ const Navbar = memo(({ items }: NavProps) => {
                     font='fonts/Oswald.ttf'
                     fontSize={1}
                     material-depthTest={false}
-                    layers={[1]}
+                    layers={1}
                 >
                     M
                 </Text>
@@ -114,7 +112,7 @@ const Navbar = memo(({ items }: NavProps) => {
                     font='fonts/Oswald.ttf'
                     fontSize={0.5}
                     material-depthTest={false}
-                    layers={[1]}
+                    layers={1}
                 >
                     KAMIL MROCZEK
                 </Text>
@@ -124,7 +122,7 @@ const Navbar = memo(({ items }: NavProps) => {
                     <Fragment key={index}>
                         <Item
                             name={t(`navItems.${index}`)}
-                            position={(index + 1) * 1.7 - 1}
+                            position={++index === 2 ? 2.47 : index * 1.7 - 1}
                             onClick={() => onNavigationStarted(`${item.name}.to`)}
                         />
                     </Fragment>
@@ -137,7 +135,7 @@ const Navbar = memo(({ items }: NavProps) => {
                             <Language
                                 imageSrc={language.imageSrc}
                                 name={language.name}
-                                position={4.5 + (index + 1) * 0.7}
+                                position={4.5 + ++index * 0.7}
                                 onClick={() => onLanguageChanged(language.name)}
                             />
                         </Suspense>

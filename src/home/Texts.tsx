@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Text } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
-import gsap from 'gsap';
+import { animate } from '../components/functions';
 
 const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
     const first = useRef(null);
@@ -10,16 +10,20 @@ const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
 
     useEffect(() => {
         if (!first.current || !second.current) return;
+
+        const f = first.current;
+        const s = second.current;
+
         if (focus) {
-            gsap.to(first.current.position, { x: -2, y: 0, z: 0.5, duration: 5, ease: 'expo.out' });
-            gsap.to(second.current.position, { x: 2, y: -1, z: 0.5, duration: 5, ease: 'expo.out' });
-            gsap.to(first.current, { duration: 5, ease: 'expo.out', fillOpacity: 1 });
-            gsap.to(second.current, { duration: 5, ease: 'expo.out', fillOpacity: 1 });
+            animate(f.position, { x: -2, y: 0, z: 0.5 }, 5, 'expo.out');
+            animate(s.position, { x: 2, y: -1, z: 0.5 }, 5, 'expo.out');
+            animate(f, { fillOpacity: 1 }, 5, 'expo.out');
+            animate(s, { fillOpacity: 1 }, 5, 'expo.out');
         } else {
-            gsap.to(first.current.position, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
-            gsap.to(second.current.position, { x: 0, y: 0, z: 0, duration: 5, ease: 'expo.out' });
-            gsap.to(first.current, { duration: 5, ease: 'expo.out', fillOpacity: 0 });
-            gsap.to(second.current, { duration: 5, ease: 'expo.out', fillOpacity: 0 });
+            animate(f.position, { x: 0, y: 0, z: 0 }, 5, 'expo.out');
+            animate(s.position, { x: 0, y: 0, z: 0 }, 5, 'expo.out');
+            animate(f, { fillOpacity: 0 }, 5, 'expo.out');
+            animate(s, { fillOpacity: 0 }, 5, 'expo.out');
         }
     }, [focus])
 

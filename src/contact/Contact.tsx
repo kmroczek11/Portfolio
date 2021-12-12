@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import '../styles/contact.css';
 import { Html, RoundedBox } from '@react-three/drei';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { AppContext } from '../context';
 import emailjs, { init } from 'emailjs-com';
 import DialogBox from '../components/DialogBox';
+import gsap from 'gsap';
 
 const ContactForm = (): JSX.Element => {
     const form = useRef(null);
@@ -15,6 +16,7 @@ const ContactForm = (): JSX.Element => {
     const { currentItem } = state.scene;
     const [focus, setFocus] = useState<boolean>(false);
     const [msgStatus, setMsgStatus] = useState<string>('unsent');
+    const timeline = gsap.timeline();
 
     useEffect(() => init(process.env.REACT_APP_USER_ID), [])
 
@@ -22,11 +24,16 @@ const ContactForm = (): JSX.Element => {
         currentItem === 'contact.end' ? setFocus(true) : setFocus(false);
     }, [currentItem])
 
+    useLayoutEffect(() => {
+        if (!form.current) return;
+
+        focus ?
+            [...form.current.children].forEach((c: HTMLDivElement) => timeline.to(c, { x: 0, opacity: 1, duration: 0.3 })) :
+            [...form.current.children].forEach((c: HTMLDivElement) => timeline.to(c, { x: -50, opacity: 0, duration: 0.3 }))
+    }, [focus])
+
     return (
-        <group
-            ref={form}
-            position={[15, 0, 0]}
-        >
+        <group position={[15, 0, 0]}>
             <RoundedBox
                 args={[5, 6, 0.2]}
                 radius={0.1}
@@ -36,11 +43,6 @@ const ContactForm = (): JSX.Element => {
             <Html
                 center
                 zIndexRange={[0, 0]}
-                style={{
-                    transition: 'all 0.5s',
-                    opacity: focus ? 1 : 0,
-                    transform: `translate(-50%, -50%) scale(${focus ? 1 : 0.5})`
-                }}
             >
                 {msgStatus === 'processing' ?
                     <img
@@ -80,7 +82,10 @@ const ContactForm = (): JSX.Element => {
                         }}
                     >
                         {({ isSubmitting }) => (
-                            <Form className='contact-form'>
+                            <Form
+                                ref={form}
+                                className='contact-form'
+                            >
                                 <div className='firstname'>
                                     <Icon>person</Icon>
                                     <Field type='text' name='firstname' placeholder={t('contact.0')} />
@@ -134,8 +139,6 @@ const ContactForm = (): JSX.Element => {
 }
 
 const Contact = (): JSX.Element => {
-    console.log('contact rendered');
-
     return <ContactForm />
 }
 

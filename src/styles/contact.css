@@ -74,6 +74,7 @@
 }
 
 .contact-form button {
+  opacity: 0;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -101,24 +102,24 @@
   }
   .contact-form span {
     margin: 1vw;
-    font-size: 1.5em !important;
+    font-size: 8vw !important;
   }
   .contact-form input {
     width: 20vw !important;
     height: 3vh !important;
-    font-size: 4vw !important;
+    font-size: 3vw !important;
   }
   .contact-form textarea {
     width: 30vw !important;
     height: 5vh !important;
-    font-size: 4vw !important;
+    font-size: 2vw !important;
   }
   .contact-form button {
-    font-size: 4vw !important;
+    font-size: 3vw !important;
     padding: 2vw !important;
   }
   .contact-form .error {
-    font-size: 4vw !important;
+    font-size: 3vw !important;
   }
 }
 /*# sourceMappingURL=contact.css.map */

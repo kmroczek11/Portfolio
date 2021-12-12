@@ -1,17 +1,18 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { animate } from '../components/functions';
 import photoVertexShader from '../shaders/photoVertex.glsl';
 import photoFragmentShader from '../shaders/photoFragment.glsl';
-import { DoubleSide, Texture } from 'three';
+import { DoubleSide } from 'three';
 
 const row: number = 3;
 const col: number = 4;
-// const particlesNum: number = row * col;
 
-const Photo = ({ photoTexture, maskTexture, focus, }: { photoTexture: Texture, maskTexture: Texture, focus: boolean }): JSX.Element => {
+const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
     const photo = useRef(null);
+    const photoTexture = useLoader(TextureLoader, 'images/photo.png');
+    const maskTexture = useLoader(TextureLoader, 'images/mask.png');
 
     const rand = (a: number, b: number) => a + (b - a) * Math.random();
 
@@ -21,9 +22,9 @@ const Photo = ({ photoTexture, maskTexture, focus, }: { photoTexture: Texture, m
         const initialSpeeds: Array<number> = [];
         const initialOffset: Array<number> = [];
 
-        for (let x = 0; x < row; x += 0.004) {
+        for (let x = 0; x < row; x += 0.003) {
             let posX: number = x - row / 2;
-            for (let y = 0; y < col; y += 0.004) {
+            for (let y = 0; y < col; y += 0.003) {
                 let posY: number = y - col / 2;
                 initialPositions.push(posX * 2);
                 initialPositions.push(posY * 2);
@@ -59,8 +60,6 @@ const Photo = ({ photoTexture, maskTexture, focus, }: { photoTexture: Texture, m
             animate(photo.current.material.uniforms.move, { value: 0 }, 5, 'expo.out') :
             animate(photo.current.material.uniforms.move, { value: 5 }, 5, 'expo.out', null, () => photo.current.geometry.verticesNeedUpdate = true);
     }, [focus])
-
-    // return null
 
     return (
         <points

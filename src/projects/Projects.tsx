@@ -17,7 +17,6 @@ export interface ProjectItem {
 }
 
 const Projects = React.memo(() => {
-    console.log('projects rendered');
     const { state, dispatch } = useContext(AppContext);
     const { currentItem } = state.scene;
     const [projectItems, setProjectItems] = useState<Array<ProjectItem>>([

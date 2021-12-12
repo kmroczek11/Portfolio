@@ -11,4 +11,16 @@ a {
 a:hover {
   color: #d4af37;
 }
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  a {
+    position: absolute;
+    top: -48vh;
+    left: -10vw;
+    -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
+    font-size: 3vw;
+  }
+}
 /*# sourceMappingURL=project.css.map */

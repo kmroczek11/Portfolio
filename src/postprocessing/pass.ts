@@ -1,13 +1,11 @@
-import { Camera, Scene, ShaderMaterial, Vector2 } from "three";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { BloomPass } from "three/examples/jsm/postprocessing/BloomPass";
-import { LuminosityShader } from "three/examples/jsm/shaders/LuminosityShader";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
-import { DotScreenPass } from "three/examples/jsm/postprocessing/DotScreenPass";
-// import { GlitchPass } from "three/examples/jsm/postprocessing/GlitchPass";
-import postVertexShader from "../shaders/postVertex.glsl";
-import postFragmentShader from "../shaders/postFragment.glsl";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+import { Camera, Scene, ShaderMaterial } from 'three';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass';
+import { LuminosityShader } from 'three/examples/jsm/shaders/LuminosityShader';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import postVertexShader from '../shaders/postVertex.glsl';
+import postFragmentShader from '../shaders/postFragment.glsl';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 
 export const createRenderPass = (scene: Scene, camera: Camera) =>
   new RenderPass(scene, camera);
@@ -20,13 +18,6 @@ export const bloomPass = new BloomPass(
 );
 
 export const grayscalePass = new ShaderPass(LuminosityShader);
-
-// export const filmPass = new GlitchPass();
-
-const center = new Vector2(0, 0);
-const angle = 0;
-const scale = 0.75;
-export const filmPass = new DotScreenPass(center, angle, scale);
 
 export const createFinalPass = (
   pixelRatio: number,
@@ -58,7 +49,7 @@ export const createFinalPass = (
       fragmentShader: postFragmentShader,
       defines: {},
     }),
-    "baseTexture"
+    'baseTexture'
   );
   finalPass.renderToScreen = true;
 

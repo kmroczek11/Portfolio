@@ -51,6 +51,7 @@
   }
 
   button {
+    opacity: 0;
     display: flex;
     border-radius: 20px;
     font-size: 1.5vw;
@@ -67,7 +68,6 @@
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
   .contact-form {
-    // overflow-x: hidden;
     width: 70vw !important;
     height: 30vh !important;
     position: absolute;
@@ -77,28 +77,28 @@
 
     span {
       margin: 1vw;
-      font-size: 1.5em !important;
+      font-size: 8vw !important;
     }
 
     input {
       width: 20vw !important;
       height: 3vh !important;
-      font-size: 4vw !important;
+      font-size: 3vw !important;
     }
 
     textarea {
       width: 30vw !important;
       height: 5vh !important;
-      font-size: 4vw !important;
+      font-size: 2vw !important;
     }
 
     button {
-      font-size: 4vw !important;
+      font-size: 3vw !important;
       padding: 2vw !important;
     }
 
     .error {
-      font-size: 4vw !important;
+      font-size: 3vw !important;
     }
   }
 }

@@ -1,17 +1,15 @@
 import { useFrame } from '@react-three/fiber'
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Group } from 'three';
-import { AppContext } from '../context';
+import React, { useRef, useState } from 'react';
+import Model from '../components/Model';
 
 const radius = 5;
 const depth = 6;
 
 // const Objects = ({ focus }: { focus: boolean }): JSX.Element => {
-const Objects = ({ desktopOBJ, phoneOBJ, tabletOBJ }: { desktopOBJ: Group, phoneOBJ: Group, tabletOBJ: Group }): JSX.Element => {
+const Objects = (): JSX.Element => {
     const desktop = useRef(null);
     const phone = useRef(null);
     const tablet = useRef(null);
-    const { state } = useContext(AppContext);
     const [angle, setAngle] = useState(0);
 
     useFrame(() => {
@@ -42,34 +40,21 @@ const Objects = ({ desktopOBJ, phoneOBJ, tabletOBJ }: { desktopOBJ: Group, phone
         setAngle(prevAngle => prevAngle + 1);
     })
 
-    // useEffect(() => {
-    //     if (!phone.current) return;
-
-    //     state.scene.gui.add(phone.current.position, 'x', -5, 5)
-    //     state.scene.gui.add(phone.current.position, 'y', -5, 5)
-    //     state.scene.gui.add(phone.current.position, 'z', -5, 5)
-    //     // state.scene.gui.add(phone.current.material.metalness, 'metalness', 0, 5)
-    //     // state.scene.gui.add(phone.current.material.roughness, 'roughness', 0, 5)
-    // }, [])
-
     return (
         <>
-            <primitive
+            <Model
                 ref={desktop}
-                object={desktopOBJ}
-                dispose={null}
+                path='desktop.glb'
                 position-y={3}
             />
-            <primitive
+            <Model
                 ref={phone}
-                object={phoneOBJ}
-                dispose={null}
+                path='phone.glb'
                 position-y={0}
             />
-            <primitive
+            <Model
                 ref={tablet}
-                object={tabletOBJ}
-                dispose={null}
+                path='tablet.glb'
                 position-y={-3}
             />
         </>

@@ -7,14 +7,16 @@ const Loader = (): JSX.Element => {
     const { t } = useTranslation();
     // console.log(progress);
 
-    return <Text
-        color='#d4af37'
-        font='fonts/Oswald.ttf'
-        fontSize={0.5}
-        textAlign='center'
-    >
-        {t('loadingMessage', { progress: Math.round(progress) })}
-    </Text>
+    return (
+        <Text
+            color='#d4af37'
+            font='fonts/Oswald.ttf'
+            fontSize={0.5}
+            textAlign='center'
+        >
+            {t('loadingMessage', { progress: Math.round(progress) })}
+        </Text>
+    )
 }
 
 export default Loader;

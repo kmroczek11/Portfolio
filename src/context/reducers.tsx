@@ -14,13 +14,11 @@ type ActionMap<M extends { [index: string]: any }> = {
 export enum Types {
     SetCurrentItem = 'SET_CURRENT_ELEMENT',
     SetFullScreen = 'SET_FULL_SCREEN',
-    SetMode = 'SET_MODE',
 }
 
 type ScenePayload = {
     [Types.SetCurrentItem]: string;
     [Types.SetFullScreen]: boolean;
-    [Types.SetMode]: string;
 }
 
 export type SceneActions = ActionMap<ScenePayload>[keyof ActionMap<ScenePayload>];
@@ -31,8 +29,6 @@ export const sceneReducer = (state: SceneType, action: SceneActions) => {
             return { ...state, currentItem: action.payload };
         case Types.SetFullScreen:
             return { ...state, fullScreen: action.payload };
-        case Types.SetMode:
-            return { ...state, mode: action.payload };
         default:
             return state;
     }

@@ -1,5 +1,6 @@
 varying vec2 vertexUV;
 varying vec2 vCoordinates;
+varying float vDepth;
 attribute vec3 aCoordinates;
 attribute float aSpeed;
 attribute float aOffset;
@@ -15,4 +16,5 @@ void main() {
   // gl_PointSize = 5.0;
   gl_Position = projectionMatrix * mvPosition;
   vCoordinates = aCoordinates.xy;
+  vDepth = pos.z;
 }
