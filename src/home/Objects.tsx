@@ -37,7 +37,7 @@ const Objects = (): JSX.Element => {
         t.rotation.x -= 0.05;
         t.rotation.z -= 0.05;
 
-        setAngle(prevAngle => prevAngle + 1);
+        setAngle(angle + 1);
     })
 
     return (

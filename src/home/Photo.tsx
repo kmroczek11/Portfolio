@@ -22,9 +22,9 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
         const initialSpeeds: Array<number> = [];
         const initialOffset: Array<number> = [];
 
-        for (let x = 0; x < row; x += 0.003) {
+        for (let x = 0; x < row; x += 0.002) {
             let posX: number = x - row / 2;
-            for (let y = 0; y < col; y += 0.003) {
+            for (let y = 0; y < col; y += 0.002) {
                 let posY: number = y - col / 2;
                 initialPositions.push(posX * 2);
                 initialPositions.push(posY * 2);

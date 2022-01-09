@@ -1,9 +1,10 @@
-import { memo, useContext, useEffect, useState } from 'react';
+import { memo, useContext, useEffect, useState, lazy } from 'react';
 import { AppContext } from '../context';
-import Photo from './Photo'
 import Globe from './Globe'
 import Texts from './Texts'
 import Objects from './Objects'
+
+const Photo = lazy(() => import('./Photo'))
 
 const Home = memo(() => {
     const { state } = useContext(AppContext);

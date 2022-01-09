@@ -12,7 +12,7 @@ import { ThreeEvent } from '@react-three/fiber';
 import { animate } from '../components/functions';
 import gsap from 'gsap';
 
-const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClick }: ProjectItem): JSX.Element => {
+const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus, onClick }: ProjectItem): JSX.Element => {
     const { state } = useContext(AppContext);
     const { fullScreen } = state.scene;
     const { t } = useTranslation();
@@ -217,7 +217,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                     <Text
                         color='#d4af37'
                         font='fonts/Oswald.ttf'
-                        fontSize={0.1}
+                        fontSize={0.08}
                         maxWidth={1.5}
                         textAlign='center'
                         anchorY={-0.7}
@@ -228,7 +228,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                     <Text
                         color='#fff'
                         font='fonts/Oswald.ttf'
-                        fontSize={0.08}
+                        fontSize={0.06}
                         maxWidth={1}
                         textAlign='center'
                         anchorY={-0.5}
@@ -239,14 +239,15 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                     </Text>
                     <Html
                         center
-                        position-y={-0.4}
+                        position-y={-0.3}
                         style={
                             {
                                 visibility: visible ? 'visible' : 'hidden',
                             }
                         }
                     >
-                        <a href={preview}>{preview}</a>
+                        <p>GitHub: <a href={github}>{github}</a></p>
+                        <p>Live: <a href={preview}>{preview}</a></p>
                     </Html>
                 </group>
                 {logos.map((logo: string, index: number) => {
@@ -258,7 +259,7 @@ const Project = ({ id, name, logos, medium, preview, x, y, active, focus, onClic
                                 position-x={0.5 * (index % 3) - 0.5}
                                 position-y={index < 3 ? -0.5 : -0.7}
                             >
-                                <planeBufferGeometry args={[0.2, 0.1]} />
+                                <planeBufferGeometry args={[0.25, 0.1]} />
                                 <meshStandardMaterial map={texture} transparent />
                             </mesh>
                         </Fragment>

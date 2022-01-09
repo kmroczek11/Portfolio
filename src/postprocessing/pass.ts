@@ -1,11 +1,12 @@
-import { Camera, Scene, ShaderMaterial } from 'three';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass';
-import { LuminosityShader } from 'three/examples/jsm/shaders/LuminosityShader';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-import postVertexShader from '../shaders/postVertex.glsl';
-import postFragmentShader from '../shaders/postFragment.glsl';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { Camera, Scene, ShaderMaterial } from "three";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
+import { BloomPass } from "three/examples/jsm/postprocessing/BloomPass";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
+import postVertexShader from "../shaders/postVertex.glsl";
+import postFragmentShader from "../shaders/postFragment.glsl";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+import luminosityVertexShader from "../shaders/luminosityVertex.glsl";
+import luminosityFragmentShader from "../shaders/luminosityFragment.glsl";
 
 export const createRenderPass = (scene: Scene, camera: Camera) =>
   new RenderPass(scene, camera);
@@ -17,7 +18,14 @@ export const bloomPass = new BloomPass(
   256 // blur render target resolution
 );
 
-export const grayscalePass = new ShaderPass(LuminosityShader);
+export const grayscalePass = new ShaderPass({
+  uniforms: {
+    tDiffuse: { value: null },
+    amount: { value: 2.2 },
+  },
+  vertexShader: luminosityVertexShader,
+  fragmentShader: luminosityFragmentShader,
+});
 
 export const createFinalPass = (
   pixelRatio: number,
@@ -49,7 +57,7 @@ export const createFinalPass = (
       fragmentShader: postFragmentShader,
       defines: {},
     }),
-    'baseTexture'
+    "baseTexture"
   );
   finalPass.renderToScreen = true;
 

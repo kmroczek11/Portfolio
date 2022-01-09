@@ -3,9 +3,14 @@
   src: url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
 }
 
+p,
 a {
   color: #fff;
   font-size: 2vw;
+}
+
+p {
+  white-space: nowrap;
 }
 
 a:hover {
@@ -14,7 +19,7 @@ a:hover {
 
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
-  a {
+  p {
     position: absolute;
     top: -48vh;
     left: -10vw;
