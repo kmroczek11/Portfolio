@@ -18,7 +18,7 @@ const App = (): JSX.Element => {
     let width = canvas.clientWidth;
     let height = canvas.clientHeight;
 
-    if (width == 0) return;
+    if (width === 0) return;
 
     if (width < 768)
       // swap width and height on mobile

@@ -19,13 +19,13 @@ a:hover {
 
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
-  p {
+  .links {
     position: absolute;
-    top: -48vh;
+    top: -60vh;
     left: -10vw;
     -webkit-transform: rotate(90deg);
             transform: rotate(90deg);
-    font-size: 3vw;
+    font-size: 5vh;
   }
 }
 /*# sourceMappingURL=project.css.map */

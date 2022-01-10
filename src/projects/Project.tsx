@@ -246,8 +246,11 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
                             }
                         }
                     >
-                        <p>GitHub: <a href={github}>{github}</a></p>
-                        <p>Live: <a href={preview}>{preview}</a></p>
+                        <section className='links'>
+                            <p>GitHub: <a href={github}>{github}</a></p>
+                            <p>Live: <a href={preview}>{preview}</a></p>
+                        </section>
+
                     </Html>
                 </group>
                 {logos.map((logo: string, index: number) => {
