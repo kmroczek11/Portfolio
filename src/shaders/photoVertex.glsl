@@ -12,7 +12,7 @@ void main() {
   vec3 pos = position;
   pos.z = move * aSpeed * aOffset;
   vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-  gl_PointSize = 10.0 * (1.0 / -mvPosition.z);
+  gl_PointSize = 13.0 * (1.0 / -mvPosition.z);
   // gl_PointSize = 5.0;
   gl_Position = projectionMatrix * mvPosition;
   vCoordinates = aCoordinates.xy;

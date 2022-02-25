@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLoader } from '@react-three/fiber'
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { animate } from '../components/functions';
@@ -13,6 +13,7 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
     const photo = useRef(null);
     const photoTexture = useLoader(TextureLoader, 'images/photo.png');
     const maskTexture = useLoader(TextureLoader, 'images/mask.png');
+    const [isActive, setIsActive] = useState<boolean>(focus);
 
     const rand = (a: number, b: number) => a + (b - a) * Math.random();
 
@@ -22,9 +23,9 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
         const initialSpeeds: Array<number> = [];
         const initialOffset: Array<number> = [];
 
-        for (let x = 0; x < row; x += 0.002) {
+        for (let x = 0; x < row; x += 0.01) {
             let posX: number = x - row / 2;
-            for (let y = 0; y < col; y += 0.002) {
+            for (let y = 0; y < col; y += 0.01) {
                 let posY: number = y - col / 2;
                 initialPositions.push(posX * 2);
                 initialPositions.push(posY * 2);
@@ -49,56 +50,65 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
         progress: { value: 0 },
         photo: { value: photoTexture },
         mask: { value: maskTexture },
-        move: { value: 5 },
+        move: { value: 0 },
         time: { value: 0 }
     }), [photoTexture, maskTexture])
 
     useEffect(() => {
         if (!photo.current) return;
 
+        setIsActive(true);
+
         focus ?
-            animate(photo.current.material.uniforms.move, { value: 0 }, 5, 'expo.out') :
-            animate(photo.current.material.uniforms.move, { value: 5 }, 5, 'expo.out', null, () => photo.current.geometry.verticesNeedUpdate = true);
+            animate(photo.current.material.uniforms.move, { value: 0 }, 5, 'expo.out', () => setIsActive(false)) :
+            animate(photo.current.material.uniforms.move, { value: 5 }, 5, 'expo.out', () => focus && setIsActive(false));
     }, [focus])
 
     return (
-        <points
-            ref={photo}
-        >
-            <bufferGeometry>
-                <bufferAttribute
-                    attachObject={["attributes", "position"]}
-                    count={positions.length / 3}
-                    array={positions}
-                    itemSize={3}
+        <>
+            <points
+                ref={photo}
+                visible={isActive}
+            >
+                <bufferGeometry>
+                    <bufferAttribute
+                        attachObject={["attributes", "position"]}
+                        count={positions.length / 3}
+                        array={positions}
+                        itemSize={3}
+                    />
+                    <bufferAttribute
+                        attachObject={["attributes", "aCoordinates"]}
+                        count={coordinates.length / 3}
+                        array={coordinates}
+                        itemSize={3}
+                    />
+                    <bufferAttribute
+                        attachObject={["attributes", "aSpeed"]}
+                        count={speeds.length}
+                        array={speeds}
+                        itemSize={1}
+                    />
+                    <bufferAttribute
+                        attachObject={["attributes", "aOffset"]}
+                        count={offset.length}
+                        array={offset}
+                        itemSize={1}
+                    />
+                </bufferGeometry>
+                <shaderMaterial
+                    vertexShader={photoVertexShader}
+                    fragmentShader={photoFragmentShader}
+                    uniforms={uniforms}
+                    side={DoubleSide}
+                    transparent={true}
                 />
-                <bufferAttribute
-                    attachObject={["attributes", "aCoordinates"]}
-                    count={coordinates.length / 3}
-                    array={coordinates}
-                    itemSize={3}
-                />
-                <bufferAttribute
-                    attachObject={["attributes", "aSpeed"]}
-                    count={speeds.length}
-                    array={speeds}
-                    itemSize={1}
-                />
-                <bufferAttribute
-                    attachObject={["attributes", "aOffset"]}
-                    count={offset.length}
-                    array={offset}
-                    itemSize={1}
-                />
-            </bufferGeometry>
-            <shaderMaterial
-                vertexShader={photoVertexShader}
-                fragmentShader={photoFragmentShader}
-                uniforms={uniforms}
-                side={DoubleSide}
-                transparent={true}
-            />
-        </points>
+            </points>
+            <mesh visible={focus && !isActive}>
+                <planeBufferGeometry attach='geometry' args={[row * 2, col * 2]} />
+                <meshBasicMaterial attach='material' map={photoTexture} transparent />
+            </mesh>
+        </>
     )
 }
 

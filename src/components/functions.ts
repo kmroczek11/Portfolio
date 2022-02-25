@@ -1,4 +1,4 @@
-import gsap from 'gsap';
+import gsap from "gsap";
 
 export const animate = (
   target: gsap.TweenTarget,
@@ -12,7 +12,7 @@ export const animate = (
     ...values,
     duration: duration,
     ease: ease,
-    onUpdate: onUpdate,
     onComplete: onComplete,
+    onUpdate: onUpdate,
   });
 };

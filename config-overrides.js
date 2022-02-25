@@ -1,3 +1,21 @@
+const webpack = require("webpack");
+
+class PrintChunksPlugin {
+  apply(compiler) {
+    compiler.plugin("compilation", (compilation) => {
+      compilation.plugin("after-optimize-chunk-assets", (chunks) => {
+        console.log(
+          chunks.map((chunk) => ({
+            id: chunk.id,
+            name: chunk.name,
+            modules: Array.from(chunk._modules).map((module) => module.id),
+          }))
+        );
+      });
+    });
+  }
+}
+
 module.exports = function override(config, env) {
   config.watchOptions = {
     ignored: /node_modules/,
@@ -29,6 +47,23 @@ module.exports = function override(config, env) {
   if (process.env.NODE_ENV === "development") {
     config.resolve.plugins = [];
   }
+
+  config.plugins = [
+    ...config.plugins,
+    new webpack.NormalModuleReplacementPlugin(/.*/, function (request) {
+      if (request.resource?.includes("@react-three-fiber.esm.js"))
+        console.log(request.resource);
+      // request.resource = "./react-three-fiber.esm.js";
+    }),
+    new webpack.NormalModuleReplacementPlugin(
+      /\.\/node_modules\/\@react-three\/fiber\/dist\/react-three-fiber\.esm\.js/,
+      "./react-three-fiber.esm.js"
+      // function (request) {
+      //   console.log("found ", request.resource);
+      // }
+    ),
+    // new PrintChunksPlugin(),
+  ];
 
   return config;
 };

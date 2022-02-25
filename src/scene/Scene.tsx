@@ -7,7 +7,7 @@ import SceneController from './SceneController';
 import { useRef } from 'react';
 import { useThree } from '@react-three/fiber';
 import Navbar from '../navigation/Navbar';
-import { Environment, Preload } from '@react-three/drei';
+import { Environment, OrbitControls, Preload } from '@react-three/drei';
 import { Suspense } from 'react';
 import Loader from '../components/Loader';
 import gsap from 'gsap';
@@ -91,6 +91,7 @@ const Scene = (): JSX.Element => {
                 <SceneController />
                 <Preload all />
             </Suspense>
+            {/* <OrbitControls/> */}
         </>
     )
 }
