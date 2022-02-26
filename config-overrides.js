@@ -1,20 +1,7 @@
 const webpack = require("webpack");
-
-class PrintChunksPlugin {
-  apply(compiler) {
-    compiler.plugin("compilation", (compilation) => {
-      compilation.plugin("after-optimize-chunk-assets", (chunks) => {
-        console.log(
-          chunks.map((chunk) => ({
-            id: chunk.id,
-            name: chunk.name,
-            modules: Array.from(chunk._modules).map((module) => module.id),
-          }))
-        );
-      });
-    });
-  }
-}
+const ESLintPlugin = require("eslint-webpack-plugin");
+const fs = require("fs");
+const { resolve } = require("path");
 
 module.exports = function override(config, env) {
   config.watchOptions = {
@@ -33,6 +20,25 @@ module.exports = function override(config, env) {
             test: /\.(glsl|vs|fs)$/,
             loader: "ts-shader-loader",
           },
+          {
+            test: /\.js$/,
+            loader: "file-replace-loader",
+            options: {
+              condition: "always", // <-- Note that the rule applies for all files! But you can use other conditions too
+              replacement(resourcePath) {
+                const mapping = {
+                  [resolve(
+                    "./node_modules/@react-three/fiber/dist/react-three-fiber.esm.js"
+                  )]: resolve("./react-three-fiber.esm.js"),
+                  [resolve(
+                    "./node_modules/@react-three/fiber/dist/react-three-fiber.cjs.prod.js"
+                  )]: resolve("./react-three-fiber.cjs.prod.js"),
+                };
+                return mapping[resourcePath];
+              },
+              async: true,
+            },
+          },
           ...rule.oneOf,
         ],
       };
@@ -48,22 +54,29 @@ module.exports = function override(config, env) {
     config.resolve.plugins = [];
   }
 
-  config.plugins = [
-    ...config.plugins,
-    new webpack.NormalModuleReplacementPlugin(/.*/, function (request) {
-      if (request.resource?.includes("@react-three-fiber.esm.js"))
-        console.log(request.resource);
-      // request.resource = "./react-three-fiber.esm.js";
-    }),
-    new webpack.NormalModuleReplacementPlugin(
-      /\.\/node_modules\/\@react-three\/fiber\/dist\/react-three-fiber\.esm\.js/,
-      "./react-three-fiber.esm.js"
-      // function (request) {
-      //   console.log("found ", request.resource);
-      // }
-    ),
-    // new PrintChunksPlugin(),
-  ];
+  config.plugins.unshift(
+    new ESLintPlugin({
+      // Plugin options
+      extensions: ["js", "mjs", "jsx", "ts", "tsx"],
+      formatter: require.resolve("react-dev-utils/eslintFormatter"),
+      eslintPath: require.resolve("eslint"),
+      context: "./src",
+      cache: true,
+
+      // Setting threads to false boost compiling speed back to previous levels
+      threads: false,
+
+      // ESLint class options
+      cwd: fs.realpathSync(process.cwd()),
+      resolvePluginsRelativeTo: __dirname,
+      baseConfig: {
+        extends: [require.resolve("eslint-config-react-app/base")],
+        rules: {
+          "react/react-in-jsx-scope": "off",
+        },
+      },
+    })
+  );
 
   return config;
 };
