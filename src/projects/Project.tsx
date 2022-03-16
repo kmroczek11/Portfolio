@@ -23,6 +23,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
     const timeline = gsap.timeline();
     const [enteredPreviewMode, setEnteredPreviewMode] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>(false);
+    const [clickable, setClickable] = useState<boolean>(false);
 
     const [vidPlayer] = useState(() => {
         const vid = document.createElement('video');
@@ -64,9 +65,9 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
     }, [hovered])
 
     useEffect(() => {
-        if (active) {
-            if (!vidPlayer) return;
+        if (!vidPlayer) return;
 
+        if (active) {
             if (vidPlayer.readyState < 3) {
                 vidPlayer.src = `videos/${name}.mp4`;
                 vidPlayer.load();
@@ -90,10 +91,8 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
             animate(projectDescription.current.children[0].material, { opacity: 0.5 }, 3);
 
             setVisible(true);
-        }
-
-        if (!active) {
-            if (vidPlayer) vidPlayer.pause();
+        } else {
+            vidPlayer.pause();
 
             timeline.to(project.current.position, { x: x, y: y, z: -18 })
             timeline.to(project.current.rotation, { y: 0, duration: 1 });
@@ -109,10 +108,10 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
 
         if (focus) {
             animate(project.current.position, { x: x, y: y - 0.1, z: -18 }, 3, 'expo.out');
-            animate(project.current.children[1].material, { opacity: 1 }, 3, 'expo.out', () => project.current.children[0].visible = true);
+            animate(project.current.children[1].material, { opacity: 1 }, 3, 'expo.out', () => { project.current.children[0].visible = true; setClickable(true) });
         } else {
             animate(project.current.position, { x: rand(x - 2, x + 2), y: rand(y - 2, y + 2), z: -18 }, 3, 'expo.out');
-            animate(project.current.children[1].material, { opacity: 0 }, 3, 'expo.out', () => project.current.children[0].visible = false);
+            animate(project.current.children[1].material, { opacity: 0 }, 3, 'expo.out', () => project.current.children[0].visible = false, null, () => setClickable(false));
         }
     }, [focus])
 
@@ -123,13 +122,12 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
     }
 
     const onSelected = (e: ThreeEvent<MouseEvent>) => {
-        e.stopPropagation();
+        if (fullScreen || !clickable) return;
 
-        if (!fullScreen) {
-            preventAnimation();
-            setHovered(false);
-            onClick(id);
-        }
+        e.stopPropagation();
+        preventAnimation();
+        setHovered(false);
+        onClick(id);
     }
 
     const onExit = () => {
@@ -140,6 +138,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
 
     const onEnterPreviewMode = (e: ThreeEvent<MouseEvent>) => {
         if (!active) return;
+
         e.stopPropagation();
         preventAnimation();
 

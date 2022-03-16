@@ -20,5 +20,9 @@ body {
     -webkit-transform: translate(50%, 50%) rotate(90deg);
             transform: translate(50%, 50%) rotate(90deg);
   }
+  .MuiPaper-root {
+    -webkit-transform: rotate(90deg);
+            transform: rotate(90deg);
+  }
 }
 /*# sourceMappingURL=app.css.map */

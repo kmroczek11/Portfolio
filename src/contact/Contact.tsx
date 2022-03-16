@@ -33,16 +33,17 @@ const ContactForm = (): JSX.Element => {
     }, [focus])
 
     return (
-        <group position={[15, 0, 0]}>
-            <RoundedBox
-                args={[5, 6, 0.2]}
-                radius={0.1}
-            >
-                <meshPhongMaterial attach='material' color='#000' />
-            </RoundedBox>
+        <RoundedBox
+            position={[15, 0, 0]}
+            args={[5, 6, 0.2]}
+            radius={0.1}
+        >
+            <meshPhongMaterial attach='material' color='#000' />
             <Html
                 center
                 zIndexRange={[0, 0]}
+                transform
+                distanceFactor={4}
             >
                 {msgStatus === 'processing' ?
                     <img
@@ -134,7 +135,7 @@ const ContactForm = (): JSX.Element => {
                     />
                 }
             </Html>
-        </group>
+        </RoundedBox>
     )
 }
 

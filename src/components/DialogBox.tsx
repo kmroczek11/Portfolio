@@ -50,7 +50,11 @@ const DialogBox = ({ title, content, agreeTxt, classes, disagreeTxt, onAgreed, }
         >
             <DialogTitle className={`${classes.container} ${classes.text}`} id='alert-dialog-title'>{title}</DialogTitle>
             <DialogContent className={classes.container}>
-                <DialogContentText className={classes.text} id='alert-dialog-description'>
+                <DialogContentText
+                    className={classes.text}
+                    id='alert-dialog-description'
+                    style={{ whiteSpace: 'pre-wrap' }}
+                >
                     {content}
                 </DialogContentText>
             </DialogContent>

@@ -1,4 +1,7 @@
+import { Html } from '@react-three/drei';
 import React, { useContext, useState, useEffect, Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
+import DialogBox from '../components/DialogBox';
 import { AppContext } from '../context';
 import { Types } from '../context/reducers';
 import Project from './Project';
@@ -32,6 +35,8 @@ const Projects = React.memo(() => {
     ]);
     const [selected, setSelected] = useState<number>(null);
     const [focus, setFocus] = useState<boolean>(false);
+    const [visited, setVisited] = useState<boolean>(false);
+    const { t } = useTranslation();
 
     useEffect(() => {
         currentItem === 'projects.end' ? setFocus(true) : setFocus(false);
@@ -70,6 +75,17 @@ const Projects = React.memo(() => {
                             />
                         </Fragment>
                 )
+            }
+            {
+                focus && !visited &&
+                <Html center>
+                    <DialogBox
+                        title={t('projectsDialog.0')}
+                        content={t('projectsDialog.1')}
+                        agreeTxt={t('projectsDialog.2')}
+                        onAgreed={() => setVisited(true)}
+                    />
+                </Html>
             }
         </>
     )

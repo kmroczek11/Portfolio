@@ -6,7 +6,8 @@ export const animate = (
   duration?: number,
   ease?: string,
   onComplete?: () => void,
-  onUpdate?: () => void
+  onUpdate?: () => void,
+  onStart?: () => void
 ) => {
   gsap.to(target, {
     ...values,
@@ -14,5 +15,6 @@ export const animate = (
     ease: ease,
     onComplete: onComplete,
     onUpdate: onUpdate,
+    onStart: onStart
   });
 };

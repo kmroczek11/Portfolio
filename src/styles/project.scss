@@ -3,7 +3,7 @@
 p,
 a {
   color: $white;
-  font-size: 2vw;
+  font-size: 2rem;
 }
 
 p {
@@ -18,9 +18,12 @@ a:hover {
   /* For mobile phones: */
   .links {
     position: absolute;
-    top: -60vh;
+    top: -45vh;
     left: -10vw;
     transform: rotate(90deg);
-    font-size: 5vh;
+
+    p, a{
+      font-size: 1rem;
+    }
   }
 }

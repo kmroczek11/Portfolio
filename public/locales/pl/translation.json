@@ -64,5 +64,10 @@
     "2": "OK",
     "3": "Wiadomość nie została wysłana",
     "4": "Niestety, wystąpił błąd podczas przesyłania wiadomości."
+  },
+  "projectsDialog":{
+    "0": "Interakcje",
+    "1": "Kliknij kafelek, aby wyświetlić projekt.\nKliknij go po raz drugi, aby przybliżyć.\nAby go oddalić, kliknij poza nim.\nW celu opuszczenia projektu kliknij przycisk w prawym dolnym rogu ekranu.",
+    "2": "Rozumiem!"
   }
 }

@@ -88,12 +88,11 @@ const Navbar = memo(({ items }: NavProps) => {
         i18n.changeLanguage(language);
     };
 
-    return (
+    return !fullScreen && !currentItem.endsWith('to') && (
         <group
             position={[camera.position.x, 3, camera.position.z - 5]}
             onPointerOver={() => setHovered(true)}
             onPointerOut={() => setHovered(false)}
-            visible={!fullScreen && !currentItem.endsWith('to')}
         >
             <group onClick={() => onNavigationStarted('home.to')}>
                 <Text
