@@ -1,3 +1,2 @@
 # My portfolio project
-Project created in React TypeScript and React Three Fiber.
-Work in progress...
+Project created in TypeScript React and React Three Fiber.
