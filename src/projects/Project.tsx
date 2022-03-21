@@ -8,7 +8,7 @@ import { Mesh, PlaneGeometry, ShaderMaterial, Vector2, VideoTexture } from 'thre
 import videoVertexShader from '../shaders/videoVertex.glsl';
 import videoFragmentShader from '../shaders/videoFragment.glsl';
 import { ProjectItem } from './Projects';
-import { ThreeEvent } from '@react-three/fiber';
+import { ThreeEvent, useLoader } from '@react-three/fiber';
 import { animate } from '../components/functions';
 import gsap from 'gsap';
 
@@ -19,6 +19,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
     const [hovered, setHovered] = useState<boolean>(false);
     const project = useRef(null);
     const projectDescription = useRef(null);
+    const coverTexture = useLoader(TextureLoader, `images/covers/${name}.png`);
     const exit = useRef(null);
     const timeline = gsap.timeline();
     const [enteredPreviewMode, setEnteredPreviewMode] = useState<boolean>(false);
@@ -30,6 +31,11 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
         vid.crossOrigin = 'Anonymous';
         vid.loop = true;
         vid.controls = true;
+        const source = document.createElement('source');
+        source.src = `videos/${name}.mp4`
+        source.type = 'video/mp4';
+        source.onerror = () => console.log(`${name} error ${vidPlayer.error.code}; details: ${vidPlayer.error.message}`);
+        vid.appendChild(source);
         return vid;
     });
 
@@ -68,12 +74,6 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
         if (!vidPlayer) return;
 
         if (active) {
-            if (vidPlayer.readyState < 3) {
-                vidPlayer.src = `videos/${name}.mp4`;
-                vidPlayer.load();
-                vidPlayer.onerror = () => console.log(`${name} error ${vidPlayer.error.code}; details: ${vidPlayer.error.message}`);
-            }
-
             vidPlayer.play();
 
             if (medium === 'desktop') {
@@ -111,7 +111,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
             animate(project.current.children[1].material, { opacity: 1 }, 3, 'expo.out', () => { project.current.children[0].visible = true; setClickable(true) });
         } else {
             animate(project.current.position, { x: rand(x - 2, x + 2), y: rand(y - 2, y + 2), z: -18 }, 3, 'expo.out');
-            animate(project.current.children[1].material, { opacity: 0 }, 3, 'expo.out', () => project.current.children[0].visible = false, null, () => setClickable(false));
+            animate(project.current.children[1].material, { opacity: 0 }, 3, 'expo.out', null, null, () => { project.current.children[0].visible = false; setClickable(false) });
         }
     }, [focus])
 
@@ -186,11 +186,18 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
                 onPointerOver={enteredPreviewMode ? () => setHovered(false) : () => setHovered(true)}
                 onPointerOut={enteredPreviewMode ? () => setHovered(true) : () => setHovered(false)}
             >
-                <primitive
-                    visible={false}
-                    object={vidObject}
-                    position-z={0.08}
-                />
+                <group position-z={0.08}>
+                    <primitive
+                        visible={active}
+                        object={vidObject}
+                    />
+                    <mesh visible={!active}>
+                        <meshStandardMaterial map={coverTexture} />
+                        <planeGeometry args={medium == 'desktop' ? [1.8, 0.8] : [0.8, 1.8]} >
+                        </planeGeometry>
+                    </mesh>
+                </group>
+
                 <RoundedBox args={medium === 'desktop' ? [2, 1, 0.1] : [1, 2, 0.1]}>
                     <meshPhongMaterial
                         attach='material'
@@ -249,7 +256,6 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
                             <p>GitHub: <a href={github}>{github}</a></p>
                             <p>Live: <a href={preview}>{preview}</a></p>
                         </section>
-
                     </Html>
                 </group>
                 {logos.map((logo: string, index: number) => {
