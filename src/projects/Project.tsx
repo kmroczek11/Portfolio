@@ -197,7 +197,6 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
                         </planeGeometry>
                     </mesh>
                 </group>
-
                 <RoundedBox args={medium === 'desktop' ? [2, 1, 0.1] : [1, 2, 0.1]}>
                     <meshPhongMaterial
                         attach='material'
