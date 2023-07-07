@@ -24,7 +24,7 @@ const Projects = React.memo(() => {
     const { state, dispatch } = useContext(AppContext);
     const { currentItem } = state.scene;
     const [projectItems, setProjectItems] = useState<Array<ProjectItem>>([
-        { id: 0, name: 'protricks', logos: ['typescriptreact', 'reactquery', 'nest', 'postgresql', 'graphql', 'typeorm'], medium: 'desktop', github: '', preview: '', x: 11.8, y: 1, active: false },
+        { id: 0, name: 'protricks', logos: ['typescriptreact', 'mui', 'nest', 'postgresql', 'graphql', 'typeorm'], medium: 'desktop', github: '', preview: 'https://protricks-2411a7446093.herokuapp.com/', x: 11.8, y: 1, active: false },
         { id: 1, name: 'gfe', logos: ['vue', 'uikit', 'firebase'], medium: 'desktop', github: '', preview: 'http://www.gfe.agh.edu.pl', x: 14, y: 1, active: false },
         { id: 2, name: 'shelmo', logos: ['avada'], medium: 'desktop', github: '', preview: 'https://www.shelmo.pl', x: 16.2, y: 1, active: false },
         { id: 3, name: 'stalcraft', logos: ['angular', 'node', 'jquery'], medium: 'desktop', github: 'https://github.com/kmroczek11/Stalcraft', preview: 'https://stalcraft-page.herokuapp.com', x: 18.4, y: 1, active: false },
