@@ -67,7 +67,7 @@
   },
   "projectsDialog":{
     "0": "Interactions",
-    "1": "Click on a tile to view the project.\nClick on it one more time to zoom.\nTo dismiss, click outside of it.\nTo exit the project, click the button in the lower right corner of the screen.",
+    "1": "Click on a tile to view the project.\nClick on it one more time to zoom.\nTo dismiss, click outside of it.\nTo exit the project, click the button in the lower right corner of the screen.\nGolden star means a commercial project.\nWhite star means a non-commercial project.",
     "2": "Got it!"
   }
 }

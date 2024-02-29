@@ -67,7 +67,7 @@
   },
   "projectsDialog":{
     "0": "Interakcje",
-    "1": "Kliknij kafelek, aby wyświetlić projekt.\nKliknij go po raz drugi, aby przybliżyć.\nAby go oddalić, kliknij poza nim.\nW celu opuszczenia projektu kliknij przycisk w prawym dolnym rogu ekranu.",
+    "1": "Kliknij kafelek, aby wyświetlić projekt.\nKliknij go po raz drugi, aby przybliżyć.\nAby go oddalić, kliknij poza nim.\nW celu opuszczenia projektu kliknij przycisk w prawym dolnym rogu ekranu.\nZłota gwiazdka oznacza projekt komercyjny.\nBiała gwiazdka oznacza projekt niekomercyjny.",
     "2": "Rozumiem!"
   }
 }

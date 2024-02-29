@@ -12,7 +12,7 @@ import { ThreeEvent, useLoader } from '@react-three/fiber';
 import { animate } from '../components/functions';
 import gsap from 'gsap';
 
-const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus, onClick }: ProjectItem): JSX.Element => {
+const Project = ({ id, name, logos, medium, github, preview, x, y, active, commercial, focus, onClick }: ProjectItem): JSX.Element => {
     const { state } = useContext(AppContext);
     const { fullScreen } = state.scene;
     const { t } = useTranslation();
@@ -25,6 +25,8 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
     const [enteredPreviewMode, setEnteredPreviewMode] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [clickable, setClickable] = useState<boolean>(false);
+    const commercialStarTexture = useLoader(TextureLoader, `images/stars/commercial.png`);
+    const noncommercialStarTexture = useLoader(TextureLoader, `images/stars/noncommercial.png`);
 
     const [vidPlayer] = useState(() => {
         const vid = document.createElement('video');
@@ -211,6 +213,22 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, focus
                 position={[14.3, 0, -16]}
                 visible={visible}
             >
+                {commercial ?
+                    <mesh
+                        position={[-0.45, 0.58, 0.1]}
+                        layers={1}
+                    >
+                        <planeBufferGeometry args={[0.2, 0.2]} />
+                        <meshStandardMaterial map={commercialStarTexture} transparent />
+                    </mesh>
+                    :
+                    <mesh
+                        position={[-0.45, 0.58, 0.1]}
+                        layers={1}
+                    >
+                        <planeBufferGeometry args={[0.2, 0.2]} />
+                        <meshStandardMaterial map={noncommercialStarTexture} transparent />
+                    </mesh>}
                 <mesh>
                     <planeBufferGeometry args={[1.5, 1.5]} />
                     <meshStandardMaterial
