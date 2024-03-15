@@ -67,7 +67,7 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
 
     return (
         <>
-            <points
+            {/* <points
                 ref={photo}
                 visible={isActive}
             >
@@ -108,11 +108,11 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
             <mesh visible={focus && !isActive}>
                 <planeBufferGeometry attach='geometry' args={[ROW * 2, COL * 2]} />
                 <meshBasicMaterial attach='material' map={photoTexture} transparent />
-            </mesh>
-            {/* <mesh>
+            </mesh> */}
+            <mesh>
                 <planeBufferGeometry attach='geometry' args={[ROW * 2, COL * 2]} />
                 <meshBasicMaterial attach='material' map={photoTexture} transparent />
-            </mesh>  */}
+            </mesh> 
         </>
     )
 }
