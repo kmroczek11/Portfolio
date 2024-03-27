@@ -12,7 +12,7 @@ import { ThreeEvent, useLoader } from '@react-three/fiber';
 import { animate } from '../components/functions';
 import gsap from 'gsap';
 
-const Project = ({ id, name, logos, medium, github, preview, x, y, active, commercial, focus, onClick }: ProjectItem): JSX.Element => {
+const Project = ({ id, name, logos, medium, github, preview, x, y, active, commercial, focus, onClick }: ProjectItem) => {
     const { state } = useContext(AppContext);
     const { fullScreen } = state.scene;
     const { t } = useTranslation();
@@ -73,6 +73,10 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
     }, [hovered])
 
     useEffect(() => {
+        if (!project.current) return;
+
+        if (!projectDescription.current) return;
+
         if (!vidPlayer) return;
 
         if (active) {
@@ -179,7 +183,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
         setVisible(true);
     }
 
-    return (
+    return focus ? (
         <>
             <group
                 ref={project}
@@ -306,7 +310,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
                 </Text>
             }
         </>
-    )
+    ) : null
 }
 
 export default Project;

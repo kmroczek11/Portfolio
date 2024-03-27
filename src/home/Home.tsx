@@ -20,7 +20,7 @@ const Home = memo(() => {
             <Photo focus={focus} />
             <Globe />
             <Texts focus={focus} />
-            {/* <Objects /> */}
+            <Objects />
         </>
     )
 })
