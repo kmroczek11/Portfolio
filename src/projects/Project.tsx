@@ -183,7 +183,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
         setVisible(true);
     }
 
-    return focus ? (
+    return (
         <>
             <group
                 ref={project}
@@ -310,7 +310,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
                 </Text>
             }
         </>
-    ) : null
+    )
 }
 
 export default Project;
