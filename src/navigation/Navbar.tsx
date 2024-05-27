@@ -1,5 +1,4 @@
 import { Fragment, memo, Suspense, useContext, useEffect, useState } from 'react';
-import '../styles/navbar.css';
 import { NavbarItem } from '../scene/Scene';
 import { AppContext } from '../context';
 import { Types } from '../context/reducers';

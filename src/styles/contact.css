@@ -2,88 +2,56 @@
   font-family: Oswald;
   src: url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
 }
-
 .contact-form {
-  width: 30vw;
-  height: 70vh;
-  display: -webkit-box;
-  display: -ms-flexbox;
+  width: 500px;
+  height: 500px;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+  justify-content: center;
+  flex-wrap: wrap;
   font-family: "Oswald", sans-serif;
 }
-
 .contact-form div {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-flex: 1;
-      -ms-flex: 1 0 40%;
-          flex: 1 0 40%;
-  margin: 0.5vw;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 40%;
   border-radius: 20px;
 }
-
 .contact-form div span {
-  margin: 1vw;
-  font-size: 3em;
+  margin: 10px;
+  font-size: 30px;
   color: #fff;
 }
-
 .contact-form div input {
-  width: 10vw;
-  height: 5vh;
+  width: 200px;
+  height: 50px;
   border-radius: 20px;
-  font-size: 1vw;
+  font-size: 20px;
 }
-
 .contact-form div textarea {
-  width: 25vw;
-  height: 10vh;
+  width: 300px;
+  height: 100px;
   border-radius: 20px;
-  font-size: 1vw;
+  font-size: 20px;
 }
-
 .contact-form div .error {
   color: #d4af37;
   margin: 0;
-  font-size: 1vw;
+  font-size: 20px;
 }
-
 .contact-form .break {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -ms-flex-preferred-size: 100%;
-      flex-basis: 100%;
+  flex-basis: 100%;
   height: 0;
 }
-
 .contact-form button {
   opacity: 0;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
   border-radius: 20px;
-  font-size: 1.5vw;
+  font-size: 20px;
   border: 0;
-  padding: 0.5vw;
+  padding: 10px;
 }
-
 .contact-form button:hover {
   background: #d4af37;
   cursor: pointer;
@@ -92,34 +60,32 @@
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
   .contact-form {
-    width: 70vw !important;
-    height: 30vh !important;
+    width: 220px !important;
+    height: 300px !important;
     position: absolute;
     bottom: 50%;
     right: 50%;
-    -webkit-transform: translate(50%, 50%) rotate(90deg);
-            transform: translate(50%, 50%) rotate(90deg);
+    transform: translate(50%, 50%) rotate(90deg);
   }
-  .contact-form span {
-    margin: 1vw;
-    font-size: 8vw !important;
+  .contact-form div span {
+    font-size: 15px !important;
   }
-  .contact-form input {
-    width: 20vw !important;
-    height: 3vh !important;
-    font-size: 3vw !important;
+  .contact-form div input {
+    width: 50px !important;
+    height: 15px !important;
+    font-size: 10px !important;
   }
-  .contact-form textarea {
-    width: 30vw !important;
-    height: 5vh !important;
-    font-size: 2vw !important;
+  .contact-form div textarea {
+    width: 100px !important;
+    height: 20px !important;
+    font-size: 10px !important;
+  }
+  .contact-form div .error {
+    font-size: 10px !important;
   }
   .contact-form button {
-    font-size: 3vw !important;
-    padding: 2vw !important;
+    border-radius: 15px !important;
+    font-size: 10px !important;
+    padding: 5px !important;
   }
-  .contact-form .error {
-    font-size: 3vw !important;
-  }
-}
-/*# sourceMappingURL=contact.css.map */
+}/*# sourceMappingURL=contact.css.map */

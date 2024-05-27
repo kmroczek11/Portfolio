@@ -3,7 +3,7 @@
 p,
 a {
   color: $white;
-  font-size: 2rem;
+  font-size: 30px;
 }
 
 p {
@@ -23,7 +23,7 @@ a:hover {
     transform: rotate(90deg);
 
     p, a{
-      font-size: 1rem;
+      font-size: 20px;
     }
   }
 }

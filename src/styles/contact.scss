@@ -1,8 +1,8 @@
 @import "./variables";
 
 .contact-form {
-  width: 30vw;
-  height: 70vh;
+  width: 500px;
+  height: 500px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -14,33 +14,32 @@
     justify-content: center;
     align-items: center;
     flex: 1 0 40%;
-    margin: 0.5vw;
     border-radius: 20px;
 
     span {
-      margin: 1vw;
-      font-size: 3em;
+      margin: 10px;
+      font-size: 30px;
       color: $white;
     }
 
     input {
-      width: 10vw;
-      height: 5vh;
+      width: 200px;
+      height: 50px;
       border-radius: 20px;
-      font-size: 1vw;
+      font-size: 20px;
     }
 
     textarea {
-      width: 25vw;
-      height: 10vh;
+      width: 300px;
+      height: 100px;
       border-radius: 20px;
-      font-size: 1vw;
+      font-size: 20px;
     }
 
     .error {
       color: $primary;
       margin: 0;
-      font-size: 1vw;
+      font-size: 20px;
     }
   }
 
@@ -52,11 +51,10 @@
 
   button {
     opacity: 0;
-    display: flex;
     border-radius: 20px;
-    font-size: 1.5vw;
+    font-size: 20px;
     border: 0;
-    padding: 0.5vw;
+    padding: 10px;
 
     &:hover {
       background: $primary;
@@ -66,39 +64,43 @@
 }
 
 @media only screen and (max-width: 768px) {
+
   /* For mobile phones: */
   .contact-form {
-    width: 70vw !important;
-    height: 30vh !important;
+    width: 220px !important;
+    height: 300px !important;
     position: absolute;
     bottom: 50%;
     right: 50%;
     transform: translate(50%, 50%) rotate(90deg);
 
-    span {
-      margin: 1vw;
-      font-size: 8vw !important;
-    }
+    div {
+      span {
+        font-size: 15px !important;
+      }
 
-    input {
-      width: 20vw !important;
-      height: 3vh !important;
-      font-size: 3vw !important;
-    }
+      input {
+        width: 50px !important;
+        height: 15px !important;
+        font-size: 10px !important;
+      }
 
-    textarea {
-      width: 30vw !important;
-      height: 5vh !important;
-      font-size: 2vw !important;
+      textarea {
+        width: 100px !important;
+        height: 20px !important;
+        font-size: 10px !important;
+      }
+
+      .error {
+        font-size: 10px !important;
+      }
     }
 
     button {
-      font-size: 3vw !important;
-      padding: 2vw !important;
+      border-radius: 15px !important;
+      font-size: 10px !important;
+      padding: 5px !important;
     }
 
-    .error {
-      font-size: 3vw !important;
-    }
   }
 }

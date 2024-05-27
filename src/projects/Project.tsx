@@ -2,11 +2,8 @@ import React, { useContext, useRef, useState, useEffect, useMemo, Fragment } fro
 import '../styles/project.css';
 import { AppContext } from '../context';
 import { TextureLoader } from 'three/src/loaders/TextureLoader';
-import { RoundedBox, Text, Html } from '@react-three/drei';
+import { RoundedBox, Text, Html, useTexture } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
-import { Mesh, PlaneGeometry, ShaderMaterial, Vector2, VideoTexture } from 'three';
-import videoVertexShader from '../shaders/videoVertex.glsl';
-import videoFragmentShader from '../shaders/videoFragment.glsl';
 import { ProjectItem } from './Projects';
 import { ThreeEvent, useLoader } from '@react-three/fiber';
 import { animate } from '../components/functions';
@@ -19,46 +16,24 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
     const [hovered, setHovered] = useState<boolean>(false);
     const project = useRef(null);
     const projectDescription = useRef(null);
-    const coverTexture = useLoader(TextureLoader, `images/covers/${name}.png`);
+    const coverTexture = useTexture(`images/covers/${name}.png`);
     const exit = useRef(null);
     const timeline = gsap.timeline();
     const [enteredPreviewMode, setEnteredPreviewMode] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [clickable, setClickable] = useState<boolean>(false);
-    const commercialStarTexture = useLoader(TextureLoader, `images/stars/commercial.png`);
-    const noncommercialStarTexture = useLoader(TextureLoader, `images/stars/noncommercial.png`);
+    const commercialStarTexture = useTexture('images/stars/commercial.png');
+    const noncommercialStarTexture = useTexture('images/stars/noncommercial.png');
 
-    const [vidPlayer] = useState(() => {
-        const vid = document.createElement('video');
-        vid.crossOrigin = 'Anonymous';
+    const [video] = useState(() => {
+        const vid = document.createElement("video");
+
+        vid.src = `videos/${name}.mp4`;
+        vid.crossOrigin = "Anonymous";
         vid.loop = true;
-        vid.controls = true;
-        const source = document.createElement('source');
-        source.src = `videos/${name}.mp4`
-        source.type = 'video/mp4';
-        source.onerror = () => console.log(`${name} error ${vidPlayer.error.code}; details: ${vidPlayer.error.message}`);
-        vid.appendChild(source);
+
         return vid;
     });
-
-    const [vidObject] = useMemo(() => {
-        const geometry = medium === 'desktop' ? new PlaneGeometry(1.8, 0.8) : new PlaneGeometry(0.8, 1.8);
-
-        const uniforms = {
-            u_tex: { value: new VideoTexture(vidPlayer) },
-            u_adjust_uv: { value: new Vector2(1, 1) }
-        }
-
-        const material = new ShaderMaterial({
-            uniforms: uniforms,
-            vertexShader: videoVertexShader,
-            fragmentShader: videoFragmentShader,
-        });
-
-        const video = new Mesh(geometry, material);
-
-        return [video];
-    }, []);
 
     useEffect(() => {
         if (active || !fullScreen) document.body.style.cursor = hovered ? 'pointer' : 'auto';
@@ -77,10 +52,10 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
 
         if (!projectDescription.current) return;
 
-        if (!vidPlayer) return;
+        if (!video) return;
 
         if (active) {
-            vidPlayer.play();
+            video.play();
 
             if (medium === 'desktop') {
                 timeline.to(project.current.position, { x: 16, y: 0, z: -17.5 });
@@ -98,7 +73,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
 
             setVisible(true);
         } else {
-            vidPlayer.pause();
+            video.pause();
 
             timeline.to(project.current.position, { x: x, y: y, z: -18 })
             timeline.to(project.current.rotation, { y: 0, duration: 1 });
@@ -193,14 +168,15 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
                 onPointerOut={enteredPreviewMode ? () => setHovered(true) : () => setHovered(false)}
             >
                 <group position-z={0.08}>
-                    <primitive
-                        visible={active}
-                        object={vidObject}
-                    />
+                    <mesh>
+                        <meshBasicMaterial>
+                            <videoTexture attach="map" args={[video]} />
+                        </meshBasicMaterial>
+                        <planeGeometry args={medium == 'desktop' ? [1.8, 0.8] : [0.8, 1.8]} />
+                    </mesh>
                     <mesh visible={!active}>
-                        <meshStandardMaterial map={coverTexture} />
-                        <planeGeometry args={medium == 'desktop' ? [1.8, 0.8] : [0.8, 1.8]} >
-                        </planeGeometry>
+                        <meshBasicMaterial map={coverTexture} />
+                        <planeGeometry args={medium == 'desktop' ? [1.8, 0.8] : [0.8, 1.8]} />
                     </mesh>
                 </group>
                 <RoundedBox args={medium === 'desktop' ? [2, 1, 0.1] : [1, 2, 0.1]}>
