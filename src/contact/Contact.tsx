@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 
 import '../styles/contact.css';
 import { Html, RoundedBox } from '@react-three/drei';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import Icon from '@material-ui/core/Icon';
 import { useTranslation } from 'react-i18next';
 import { AppContext } from '../context';
-import emailjs, { init } from 'emailjs-com';
+import emailjs, { init } from '@emailjs/browser';
 import DialogBox from '../components/DialogBox';
 import gsap from 'gsap';
+import Icon from '@mui/material/Icon';
 
 const ContactForm = (): JSX.Element => {
     const form = useRef(null);

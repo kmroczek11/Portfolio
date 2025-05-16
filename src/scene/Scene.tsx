@@ -11,7 +11,6 @@ import { Environment, OrbitControls, Preload } from '@react-three/drei';
 import { Suspense } from 'react';
 import Loader from '../components/Loader';
 import gsap from 'gsap';
-import BrowserAlert from '../components/BrowserAlert';
 
 const navbar_items: Array<NavbarItem> = [
     { id: 0, name: 'education' },
@@ -23,8 +22,6 @@ export interface NavbarItem {
     id: number,
     name: string,
 }
-
-const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
 const Scene = (): JSX.Element => {
     const keyLight = useRef(null);
@@ -66,7 +63,7 @@ const Scene = (): JSX.Element => {
         )
     })
 
-    return isFirefox ? (
+    return (
         <>
             <Suspense fallback={<Loader />}>
                 <Environment
@@ -85,7 +82,7 @@ const Scene = (): JSX.Element => {
                 />
                 <directionalLight
                     ref={fillLight}
-                    args={['#d4af37', 1]}
+                    args={['#e6cd7e', 1]}
                 />
                 <directionalLight
                     ref={frontLight}
@@ -96,7 +93,7 @@ const Scene = (): JSX.Element => {
             </Suspense>
             {/* <OrbitControls/> */}
         </>
-    ) : <BrowserAlert />
+    )
 }
 
 export default Scene;

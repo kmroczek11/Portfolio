@@ -6,7 +6,7 @@ import { AppContext } from '../context';
 import { Types } from '../context/reducers';
 import Project from './Project';
 
-export interface ProjectItem {
+interface ProjectItem {
     id: number,
     name: string,
     logos: Array<string>,
@@ -17,15 +17,13 @@ export interface ProjectItem {
     y: number,
     active: boolean,
     commercial: boolean,
-    focus?: boolean,
-    onClick?: (id: number) => void,
 }
 
 const Projects = React.memo(() => {
     const { state, dispatch } = useContext(AppContext);
     const { currentItem } = state.scene;
     const [projectItems, setProjectItems] = useState<Array<ProjectItem>>([
-        { id: 0, name: 'webapp-playground', logos: ['qwik','tailwind','viem'], medium: 'desktop', github: 'https://github.com/kmroczek11/webapp-playground', preview: '', x: 11.8, y: 1, active: false, commercial: false },
+        { id: 0, name: 'webapp-playground', logos: ['qwik', 'tailwind', 'viem'], medium: 'desktop', github: 'https://github.com/kmroczek11/webapp-playground', preview: '', x: 11.8, y: 1, active: false, commercial: false },
         { id: 1, name: 'protricks', logos: ['typescriptreact', 'mui', 'nest', 'postgresql', 'graphql', 'typeorm'], medium: 'desktop', github: '', preview: 'https://protricks-2411a7446093.herokuapp.com/', x: 14, y: 1, active: false, commercial: true },
         { id: 2, name: 'gfe', logos: ['vue', 'uikit', 'firebase'], medium: 'desktop', github: '', preview: 'http://www.gfe.agh.edu.pl', x: 16.2, y: 1, active: false, commercial: true },
         { id: 3, name: 'shelmo', logos: ['avada'], medium: 'desktop', github: '', preview: 'https://www.shelmo.pl', x: 18.4, y: 1, active: false, commercial: true },
@@ -38,6 +36,7 @@ const Projects = React.memo(() => {
     const [selected, setSelected] = useState<number>(null);
     const [focus, setFocus] = useState<boolean>(false);
     const [visited, setVisited] = useState<boolean>(false);
+    const [lastLoadedIndex, setLastLoadedIndex] = useState<number>(-1);
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -64,18 +63,33 @@ const Projects = React.memo(() => {
             });
     }, [projectItems, dispatch])
 
+    useEffect(() => {
+        if (focus) {
+            setLastLoadedIndex(-1);
+        }
+    }, [focus]);
+
+    const handleCoverLoaded = (index: number) => {
+        setLastLoadedIndex(index);
+    };
+
     return (
         <>
             {
                 projectItems.map(
-                    (project: ProjectItem, index: number) =>
-                        <Fragment key={index}>
-                            <Project
-                                {...project}
-                                focus={focus}
-                                onClick={setSelected}
-                            />
-                        </Fragment>
+                    (project: ProjectItem, index: number) => {
+                        return (
+                            <Fragment key={index}>
+                                <Project
+                                    {...project}
+                                    focus={focus}
+                                    shouldLoad={focus && index === lastLoadedIndex + 1}
+                                    onCoverLoaded={() => handleCoverLoaded(index)}
+                                    onClick={setSelected}
+                                />
+                            </Fragment>
+                        )
+                    }
                 )
             }
             {

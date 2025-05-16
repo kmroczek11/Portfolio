@@ -33,7 +33,7 @@ const Item = ({ name, position, onClick }: ItemProps): JSX.Element => {
             position-x={position}
             material-depthTest={false}
             onClick={() => onClick(name)}
-            onPointerOver={() => setColor('#d4af37')}
+            onPointerOver={() => setColor('#e6cd7e')}
             onPointerOut={() => setColor('#fff')}
             color={color}
             font='fonts/Oswald.ttf'
@@ -50,7 +50,7 @@ const Language = ({ imageSrc, name, position, onClick }: LanguageItem) => {
 
     return (
         <mesh position-x={position} onClick={() => onClick(name)}>
-            <planeBufferGeometry attach='geometry' args={[0.6, 0.6]} />
+            <planeGeometry attach='geometry' args={[0.6, 0.6]} />
             <meshBasicMaterial
                 attach='material'
                 map={texture}
@@ -96,7 +96,7 @@ const Navbar = memo(({ items }: NavProps) => {
             <group onClick={() => onNavigationStarted('home.to')}>
                 <Text
                     position-x={-5}
-                    color='#d4af37'
+                    color='#e6cd7e'
                     font='fonts/Oswald.ttf'
                     fontSize={1}
                     material-depthTest={false}

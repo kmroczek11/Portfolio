@@ -1,10 +1,10 @@
+import React from "react"
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLoader } from '@react-three/fiber'
-import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { animate } from '../components/functions';
 import photoVertexShader from '../shaders/photoVertex.glsl';
 import photoFragmentShader from '../shaders/photoFragment.glsl';
-import { DoubleSide } from 'three';
+import { DoubleSide, Points, ShaderMaterial, TextureLoader } from 'three';
 
 const ROW: number = 3;
 const COL: number = 4;
@@ -12,7 +12,7 @@ const STEP: number = 0.01;
 
 const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
     const photoTexture = useLoader(TextureLoader, 'images/photo.png');
-    const photo = useRef(null);
+    const photo = useRef<Points>(null);
     const maskTexture = useLoader(TextureLoader, 'images/mask.png');
     const [isActive, setIsActive] = useState<boolean>(focus);
 
@@ -60,9 +60,11 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
 
         setIsActive(true);
 
+        const material = photo.current.material as ShaderMaterial;
+
         focus ?
-            animate(photo.current.material.uniforms.move, { value: 0 }, 5, 'expo.out', () => setIsActive(false)) :
-            animate(photo.current.material.uniforms.move, { value: 5 }, 5, 'expo.out', () => focus && setIsActive(false));
+            animate(material.uniforms.move, { value: 0 }, 5, 'expo.out', () => setIsActive(false)) :
+            animate(material.uniforms.move, { value: 5 }, 5, 'expo.out', () => focus && setIsActive(false));
     }, [focus])
 
     return (
@@ -73,25 +75,25 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
             >
                 <bufferGeometry>
                     <bufferAttribute
-                        attachObject={["attributes", "position"]}
+                        attach="attributes-position"
                         count={positions.length / 3}
                         array={positions}
                         itemSize={3}
                     />
                     <bufferAttribute
-                        attachObject={["attributes", "aCoordinates"]}
+                        attach="attributes-aCoordinates"
                         count={coordinates.length / 3}
                         array={coordinates}
                         itemSize={3}
                     />
                     <bufferAttribute
-                        attachObject={["attributes", "aSpeed"]}
+                        attach="attributes-aSpeed"
                         count={speeds.length}
                         array={speeds}
                         itemSize={1}
                     />
                     <bufferAttribute
-                        attachObject={["attributes", "aOffset"]}
+                        attach="attributes-aOffset"
                         count={offset.length}
                         array={offset}
                         itemSize={1}
@@ -106,11 +108,11 @@ const Photo = ({ focus }: { focus: boolean }): JSX.Element => {
                 />
             </points>
             <mesh visible={focus && !isActive}>
-                <planeBufferGeometry attach='geometry' args={[ROW * 2, COL * 2]} />
+                <planeGeometry attach='geometry' args={[ROW * 2, COL * 2]} />
                 <meshBasicMaterial attach='material' map={photoTexture} transparent />
             </mesh>
             {/* <mesh>
-                <planeBufferGeometry attach='geometry' args={[ROW * 2, COL * 2]} />
+                <planeGeometry attach='geometry' args={[ROW * 2, COL * 2]} />
                 <meshBasicMaterial attach='material' map={photoTexture} transparent />
             </mesh>  */}
         </>

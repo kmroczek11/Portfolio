@@ -9,7 +9,7 @@ const Loader = (): JSX.Element => {
 
     return (
         <Text
-            color='#d4af37'
+            color='#e6cd7e'
             font='fonts/Oswald.ttf'
             fontSize={0.5}
             textAlign='center'

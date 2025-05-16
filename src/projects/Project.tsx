@@ -1,22 +1,37 @@
 import React, { useContext, useRef, useState, useEffect, useMemo, Fragment } from 'react';
 import '../styles/project.css';
 import { AppContext } from '../context';
-import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { RoundedBox, Text, Html, useTexture } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
-import { ProjectItem } from './Projects';
 import { ThreeEvent, useLoader } from '@react-three/fiber';
 import { animate } from '../components/functions';
 import gsap from 'gsap';
+import { Texture, TextureLoader } from 'three';
 
-const Project = ({ id, name, logos, medium, github, preview, x, y, active, commercial, focus, onClick }: ProjectItem) => {
+interface ProjectProps {
+    id: number,
+    name: string,
+    logos: Array<string>,
+    medium: string,
+    github: string,
+    preview: string,
+    x: number,
+    y: number,
+    active: boolean,
+    commercial: boolean,
+    focus: boolean,
+    shouldLoad: boolean,
+    onCoverLoaded: () => void,
+    onClick: (id: number) => void,
+}
+
+const Project = ({ id, name, logos, medium, github, preview, x, y, active, commercial, focus, shouldLoad, onCoverLoaded, onClick }: ProjectProps) => {
     const { state } = useContext(AppContext);
     const { fullScreen } = state.scene;
     const { t } = useTranslation();
     const [hovered, setHovered] = useState<boolean>(false);
     const project = useRef(null);
     const projectDescription = useRef(null);
-    const coverTexture = useTexture(`images/covers/${name}.png`);
     const exit = useRef(null);
     const timeline = gsap.timeline();
     const [enteredPreviewMode, setEnteredPreviewMode] = useState<boolean>(false);
@@ -34,6 +49,26 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
 
         return vid;
     });
+
+    const [coverTexture, setCoverTexture] = useState<Texture | null>(null);
+
+    useEffect(() => {
+        if (!shouldLoad) return;
+
+        const loader = new TextureLoader();
+        loader.load(
+            `images/covers/${name}.png`,
+            (texture) => {
+                setCoverTexture(texture);
+                onCoverLoaded();
+            },
+            undefined,
+            (err) => {
+                console.error(`Error loading cover texture for project ${name}`, err);
+                onCoverLoaded();
+            }
+        );
+    }, [shouldLoad, name, onCoverLoaded]);
 
     useEffect(() => {
         if (active || !fullScreen) document.body.style.cursor = hovered ? 'pointer' : 'auto';
@@ -198,7 +233,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
                         position={[-0.45, 0.58, 0.1]}
                         layers={1}
                     >
-                        <planeBufferGeometry args={[0.2, 0.2]} />
+                        <planeGeometry args={[0.2, 0.2]} />
                         <meshStandardMaterial map={commercialStarTexture} transparent />
                     </mesh>
                     :
@@ -206,11 +241,11 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
                         position={[-0.45, 0.58, 0.1]}
                         layers={1}
                     >
-                        <planeBufferGeometry args={[0.2, 0.2]} />
+                        <planeGeometry args={[0.2, 0.2]} />
                         <meshStandardMaterial map={noncommercialStarTexture} transparent />
                     </mesh>}
                 <mesh>
-                    <planeBufferGeometry args={[1.5, 1.5]} />
+                    <planeGeometry args={[1.5, 1.5]} />
                     <meshStandardMaterial
                         color='#000'
                         transparent
@@ -218,7 +253,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
                 </mesh>
                 <group>
                     <Text
-                        color='#d4af37'
+                        color='#e6cd7e'
                         font='fonts/Oswald.ttf'
                         fontSize={0.08}
                         maxWidth={1.5}
@@ -264,7 +299,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
                                 position-x={0.5 * (index % 3) - 0.5}
                                 position-y={index < 3 ? -0.5 : -0.7}
                             >
-                                <planeBufferGeometry args={[0.25, 0.1]} />
+                                <planeGeometry args={[0.25, 0.1]} />
                                 <meshStandardMaterial map={texture} transparent />
                             </mesh>
                         </Fragment>
@@ -276,7 +311,7 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
                 <Text
                     ref={exit}
                     position={[16.8, -1, -16.5]}
-                    color='#d4af37'
+                    color='#e6cd7e'
                     font='fonts/Oswald.ttf'
                     fontSize={0.2}
                     onClick={() => onExit()}

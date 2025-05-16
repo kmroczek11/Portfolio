@@ -42,7 +42,7 @@ const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
             </Text>
             <Text
                 ref={second}
-                color='#d4af37'
+                color='#e6cd7e'
                 font='fonts/Oswald.ttf'
                 fontSize={1}
                 textAlign='center'
@@ -51,28 +51,6 @@ const Texts = ({ focus }: { focus: boolean }): JSX.Element => {
             >
                 {t('homeDesc.1')}
             </Text>
-            {/* <Text
-                ref={first}
-                position={[-2, 0, 0.5]}
-                color='#fff'
-                font='fonts/Oswald.ttf'
-                fontSize={1}
-                textAlign='center'
-                layers={1}
-            >
-                {t('homeDesc.0')}
-            </Text>
-            <Text
-                ref={second}
-                position={[2, -1, 0.5]}
-                color='#d4af37'
-                font='fonts/Oswald.ttf'
-                fontSize={1}
-                textAlign='center'
-                layers={1}
-            >
-                {t('homeDesc.1')}
-            </Text> */}
         </>
     )
 }

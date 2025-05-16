@@ -4,7 +4,7 @@ import { AppContext } from '../context';
 import Scene from '../scene/Scene';
 import { Stats, useContextBridge } from '@react-three/drei';
 import Effects from '../components/Effects';
-import { ACESFilmicToneMapping, sRGBEncoding } from 'three';
+import { ACESFilmicToneMapping, SRGBColorSpace } from 'three';
 import { Canvas } from '@react-three/fiber';
 
 const App = (): JSX.Element => {
@@ -14,9 +14,8 @@ const App = (): JSX.Element => {
     <>
       <Canvas
         gl={{
+          outputEncoding: SRGBColorSpace,
           antialias: true,
-          physicallyCorrectLights: true,
-          outputEncoding: sRGBEncoding
         }}
         dpr={window.devicePixelRatio}
         camera={{ far: 20 }}
@@ -28,7 +27,9 @@ const App = (): JSX.Element => {
         }}
         onCreated={({ gl, raycaster }) => {
           raycaster.layers.enableAll();
-          gl.toneMapping = ACESFilmicToneMapping;
+          gl.physicallyCorrectLights = true
+          gl.toneMapping = ACESFilmicToneMapping
+          gl.useLegacyLights = false
         }}
       >
         <ContextBridge>

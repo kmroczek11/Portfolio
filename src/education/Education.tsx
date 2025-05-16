@@ -46,7 +46,7 @@ const Institution = ({ name, objSrc, desc, x, y, focus }: InstitutionItem): JSX.
                 <meshStandardMaterial />
             </mesh>
             <Text
-                color='#d4af37'
+                color='#e6cd7e'
                 font='fonts/Oswald.ttf'
                 fontSize={0.25}
                 textAlign='center'

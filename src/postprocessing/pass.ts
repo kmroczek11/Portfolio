@@ -15,13 +15,12 @@ export const bloomPass = new BloomPass(
   1.5, // strength
   27, // kernel size
   5, // sigma ?
-  256 // blur render target resolution
 );
 
 export const grayscalePass = new ShaderPass({
   uniforms: {
     tDiffuse: { value: null },
-    amount: { value: 2.2 },
+    amount: { value: 5 },
   },
   vertexShader: luminosityVertexShader,
   fragmentShader: luminosityFragmentShader,
