@@ -33,11 +33,19 @@ const Projects = React.memo(() => {
         { id: 7, name: 'coronastats', logos: ['reactnative', 'redux'], medium: 'mobile', github: 'https://github.com/kmroczek11/Coronastats', preview: '', x: 17.8, y: -1, active: false, commercial: false },
         { id: 8, name: 'tasky', logos: ['flutter', 'rive', 'firebase'], medium: 'mobile', github: 'https://github.com/kmroczek11/Tasky', preview: '', x: 18.9, y: -1, active: false, commercial: false },
     ]);
-    const [selected, setSelected] = useState<number>(null);
+    const [selected, setSelected] = useState<number | null>(null);
     const [focus, setFocus] = useState<boolean>(false);
     const [visited, setVisited] = useState<boolean>(false);
-    const [lastLoadedIndex, setLastLoadedIndex] = useState<number>(-1);
+    const [loadedCount, setLoadedCount] = useState(0);
     const { t } = useTranslation();
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setLoadedCount((prev) => Math.min(prev + 1, projectItems.length));
+        }, 100); // tune delay
+
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         currentItem === 'projects.end' ? setFocus(true) : setFocus(false);
@@ -63,35 +71,19 @@ const Projects = React.memo(() => {
             });
     }, [projectItems, dispatch])
 
-    useEffect(() => {
-        if (focus) {
-            setLastLoadedIndex(-1);
-        }
-    }, [focus]);
-
-    const handleCoverLoaded = (index: number) => {
-        setLastLoadedIndex(index);
-    };
-
     return (
         <>
-            {
-                projectItems.map(
-                    (project: ProjectItem, index: number) => {
-                        return (
-                            <Fragment key={index}>
-                                <Project
-                                    {...project}
-                                    focus={focus}
-                                    shouldLoad={focus && index === lastLoadedIndex + 1}
-                                    onCoverLoaded={() => handleCoverLoaded(index)}
-                                    onClick={setSelected}
-                                />
-                            </Fragment>
-                        )
-                    }
-                )
-            }
+            {projectItems.slice(0, loadedCount).map(project => (
+                <Project
+                    key={project.id}
+                    {...project}
+                    shouldLoad={true}
+                    focus={focus}
+                    coverSrc={`images/covers/${project.name}.png`}
+                    videoSrc={`videos/${project.name}.mp4`}
+                    onClick={setSelected}
+                />
+            ))}
             {
                 focus && !visited &&
                 <Html center>

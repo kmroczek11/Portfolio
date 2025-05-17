@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import '../styles/app.css';
 import { AppContext } from '../context';
 import Scene from '../scene/Scene';

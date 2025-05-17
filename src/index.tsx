@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './main/App';
 import { AppProvider } from './context';
@@ -10,9 +10,7 @@ const root = ReactDOM.createRoot(container!);  // Note the non-null assertion (!
 root.render(
   <React.StrictMode>
     <AppProvider>
-      <Suspense fallback={null}>
         <App />
-      </Suspense>
     </AppProvider>
   </React.StrictMode>
 );

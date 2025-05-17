@@ -65,32 +65,31 @@ const Scene = (): JSX.Element => {
 
     return (
         <>
+            <Environment
+                background={false}
+                files={['square.png', 'square.png', 'square.png', 'square.png', 'square.png', 'square.png']}
+                path='/images/textures/'
+            />
+            <Navbar items={navbar_items} />
             <Suspense fallback={<Loader />}>
-                <Environment
-                    background={false}
-                    files={['square.png', 'square.png', 'square.png', 'square.png', 'square.png', 'square.png']}
-                    path='/images/textures/'
-                />
-                <Navbar items={navbar_items} />
                 <Home />
                 <Education />
                 <Projects />
-                <Contact />
-                <directionalLight
-                    ref={keyLight}
-                    args={['#fff', 1]}
-                />
-                <directionalLight
-                    ref={fillLight}
-                    args={['#e6cd7e', 1]}
-                />
-                <directionalLight
-                    ref={frontLight}
-                    args={['#fff', 1]}
-                />
-                <SceneController />
-                <Preload all />
             </Suspense>
+            <Contact />
+            <directionalLight
+                ref={keyLight}
+                args={['#fff', 1]}
+            />
+            <directionalLight
+                ref={fillLight}
+                args={['#e6cd7e', 1]}
+            />
+            <directionalLight
+                ref={frontLight}
+                args={['#fff', 1]}
+            />
+            <SceneController />
             {/* <OrbitControls/> */}
         </>
     )

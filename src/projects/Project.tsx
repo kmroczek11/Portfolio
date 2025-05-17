@@ -3,10 +3,11 @@ import '../styles/project.css';
 import { AppContext } from '../context';
 import { RoundedBox, Text, Html, useTexture } from '@react-three/drei';
 import { useTranslation } from 'react-i18next';
-import { ThreeEvent, useLoader } from '@react-three/fiber';
+import { ThreeEvent } from '@react-three/fiber';
 import { animate } from '../components/functions';
 import gsap from 'gsap';
-import { Texture, TextureLoader } from 'three';
+import { Group, Texture, VideoTexture } from 'three';
+import useConditionalTextures from '../hooks/useConditionalTextures';
 
 interface ProjectProps {
     id: number,
@@ -19,56 +20,39 @@ interface ProjectProps {
     y: number,
     active: boolean,
     commercial: boolean,
-    focus: boolean,
     shouldLoad: boolean,
-    onCoverLoaded: () => void,
-    onClick: (id: number) => void,
+    focus: boolean,
+    coverSrc: string,
+    videoSrc: string,
+    onClick: (id: number | null) => void,
 }
 
-const Project = ({ id, name, logos, medium, github, preview, x, y, active, commercial, focus, shouldLoad, onCoverLoaded, onClick }: ProjectProps) => {
+const Project = ({ id, name, logos, medium, github, preview, x, y, active, commercial, shouldLoad, focus, coverSrc, videoSrc, onClick }: ProjectProps) => {
     const { state } = useContext(AppContext);
     const { fullScreen } = state.scene;
     const { t } = useTranslation();
     const [hovered, setHovered] = useState<boolean>(false);
-    const project = useRef(null);
-    const projectDescription = useRef(null);
+    const project = useRef<Group | null>(null);
+    const projectDescription = useRef<Group | null>(null);
     const exit = useRef(null);
-    const timeline = gsap.timeline();
+    const timelineRef = useRef<gsap.core.Timeline | null>(null);
     const [enteredPreviewMode, setEnteredPreviewMode] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [clickable, setClickable] = useState<boolean>(false);
     const commercialStarTexture = useTexture('images/stars/commercial.png');
     const noncommercialStarTexture = useTexture('images/stars/noncommercial.png');
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const [videoTexture, setVideoTexture] = useState<VideoTexture | null>(null);
 
-    const [video] = useState(() => {
-        const vid = document.createElement("video");
+    const logoTextures = useConditionalTextures(
+        logos.map(logo => `images/logos/${logo}.png`),
+        shouldLoad
+    );
 
-        vid.src = `videos/${name}.mp4`;
-        vid.crossOrigin = "Anonymous";
-        vid.loop = true;
-
-        return vid;
-    });
-
-    const [coverTexture, setCoverTexture] = useState<Texture | null>(null);
-
-    useEffect(() => {
-        if (!shouldLoad) return;
-
-        const loader = new TextureLoader();
-        loader.load(
-            `images/covers/${name}.png`,
-            (texture) => {
-                setCoverTexture(texture);
-                onCoverLoaded();
-            },
-            undefined,
-            (err) => {
-                console.error(`Error loading cover texture for project ${name}`, err);
-                onCoverLoaded();
-            }
-        );
-    }, [shouldLoad, name, onCoverLoaded]);
+    const [coverTexture] = useConditionalTextures(
+        [coverSrc],
+        shouldLoad
+    );
 
     useEffect(() => {
         if (active || !fullScreen) document.body.style.cursor = hovered ? 'pointer' : 'auto';
@@ -83,37 +67,63 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
     }, [hovered])
 
     useEffect(() => {
-        if (!project.current) return;
+        if (active) {
+            if (!videoRef.current) {
+                const vid = document.createElement('video');
+                vid.src = videoSrc;
+                vid.crossOrigin = 'anonymous';
+                vid.loop = true;
 
-        if (!projectDescription.current) return;
+                const handleLoaded = () => {
+                    videoRef.current = vid;
+                    setVideoTexture(new VideoTexture(vid));
+                    vid.play();
+                };
 
-        if (!video) return;
+                vid.addEventListener('loadeddata', handleLoaded);
+                vid.load();
+            } else {
+                videoRef.current.play();
+            }
+        } else {
+            videoRef.current?.pause();
+        }
+    }, [active, videoSrc]);
+
+    useEffect(() => {
+        if (!project.current || !projectDescription.current) return;
+
+        const mesh = projectDescription.current.children[0] as THREE.Mesh;
+
+        timelineRef.current?.clear();
+
+        const tl = gsap.timeline();
+        timelineRef.current = tl;
 
         if (active) {
-            video.play();
+            const tl = gsap.timeline();
+            timelineRef.current = tl;
 
             if (medium === 'desktop') {
-                timeline.to(project.current.position, { x: 16, y: 0, z: -17.5 });
-                timeline.to(project.current.scale, { x: 2, y: 2, z: 2, duration: 1 });
+                tl.to(project.current.position, { x: 16, y: 0, z: -17.5 });
+                tl.to(project.current.scale, { x: 2, y: 2, z: 2, duration: 1 });
             } else {
-                timeline.to(project.current.position, { x: 16.5, y: 0, z: -17.5 });
-                timeline.to(project.current.scale, { x: 1.6, y: 1.6, z: 1.6, duration: 1 });
+                tl.to(project.current.position, { x: 16.5, y: 0, z: -17.5 });
+                tl.to(project.current.scale, { x: 1.6, y: 1.6, z: 1.6, duration: 1 });
             }
 
-            timeline.to(project.current.rotation, {
+            tl.to(project.current.rotation, {
                 y: -0.2, duration: 1,
             });
 
-            animate(projectDescription.current.children[0].material, { opacity: 0.5 }, 3);
+            animate(mesh.material, { opacity: 0.5 }, 3);
 
             setVisible(true);
         } else {
-            video.pause();
-
-            timeline.to(project.current.position, { x: x, y: y, z: -18 })
-            timeline.to(project.current.rotation, { y: 0, duration: 1 });
-            timeline.to(project.current.scale, { x: 1, y: 1, z: 1, duration: 1 });
-            gsap.to(projectDescription.current.children[0].material, { opacity: 0, duration: 3 });
+            tl.to(project.current.position, { x: x, y: y, z: -18 })
+            tl.to(project.current.rotation, { y: 0, duration: 1 });
+            tl.to(project.current.scale, { x: 1, y: 1, z: 1, duration: 1 });
+            gsap.to(mesh.material, { opacity: 0, duration: 3 });
 
             setVisible(false);
         }
@@ -122,20 +132,26 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
     useEffect(() => {
         if (!project.current) return;
 
+        const firstMesh = project.current.children[0] as THREE.Mesh;
+        const secondMesh = project.current.children[1] as THREE.Mesh;
+
         if (focus) {
             animate(project.current.position, { x: x, y: y - 0.1, z: -18 }, 3, 'expo.out');
-            animate(project.current.children[1].material, { opacity: 1 }, 3, 'expo.out', () => { project.current.children[0].visible = true; setClickable(true) });
+            animate(secondMesh.material, { opacity: 1 }, 3, 'expo.out', () => { firstMesh.visible = true; setClickable(true) });
         } else {
             animate(project.current.position, { x: rand(x - 2, x + 2), y: rand(y - 2, y + 2), z: -18 }, 3, 'expo.out');
-            animate(project.current.children[1].material, { opacity: 0 }, 3, 'expo.out', null, null, () => { project.current.children[0].visible = false; setClickable(false) });
+            animate(secondMesh.material, { opacity: 0 }, 3, 'expo.out', () => { }, () => { }, () => { firstMesh.visible = false; setClickable(false) });
         }
     }, [focus])
 
     const rand = (a: number, b: number) => a + (b - a) * Math.random();
 
     const preventAnimation = () => {
-        if (timeline.isActive()) timeline.clear();
-    }
+        if (timelineRef.current) {
+            timelineRef.current.kill();
+            timelineRef.current = null;
+        }
+    };
 
     const onSelected = (e: ThreeEvent<MouseEvent>) => {
         if (fullScreen || !clickable) return;
@@ -153,42 +169,52 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
     }
 
     const onEnterPreviewMode = (e: ThreeEvent<MouseEvent>) => {
-        if (!active) return;
+        if (!active || !project.current || !projectDescription.current) return;
+
+        const mesh = projectDescription.current.children[0] as THREE.Mesh;
 
         e.stopPropagation();
         preventAnimation();
 
-        if (medium === 'desktop')
-            timeline.to(project.current.position, { x: 15, y: 0, z: -16.5 });
-        else
-            timeline.to(project.current.position, { x: 15, y: 0, z: -17.1 });
+        timelineRef.current = gsap.timeline();
+        const tl = timelineRef.current;
 
-        timeline.to(project.current.rotation, {
+        if (medium === 'desktop')
+            tl.to(project.current.position, { x: 15, y: 0, z: -16.5 });
+        else
+            tl.to(project.current.position, { x: 15, y: 0, z: -17.1 });
+
+        tl.to(project.current.rotation, {
             y: 0,
             duration: 1,
             onComplete: () => setEnteredPreviewMode(true)
         });
 
-        animate(projectDescription.current.children[0].material, { opacity: 0 }, 3);
+        animate(mesh.material, { opacity: 0 }, 3);
 
         setVisible(false);
     }
 
-    const onExitPreviewMode = (e: ThreeEvent<MouseEvent>) => {
-        if (!active) return;
+    const onExitPreviewMode = (e: MouseEvent) => {
+        if (!active || !project.current || !projectDescription.current) return;
+
+        const mesh = projectDescription.current.children[0] as THREE.Mesh;
 
         e.stopPropagation();
         preventAnimation();
 
         setEnteredPreviewMode(false);
 
-        if (medium === 'desktop')
-            timeline.to(project.current.position, { x: 16, y: 0, z: -17.5 });
-        else
-            timeline.to(project.current.position, { x: 16.5, y: 0, z: -17.5 });
+        timelineRef.current = gsap.timeline();
+        const tl = timelineRef.current;
 
-        timeline.to(project.current.rotation, { y: -0.2, duration: 1 });
-        animate(projectDescription.current.children[0].material, { opacity: 0.5 }, 3);
+        if (medium === 'desktop')
+            tl.to(project.current.position, { x: 16, y: 0, z: -17.5 });
+        else
+            tl.to(project.current.position, { x: 16.5, y: 0, z: -17.5 });
+
+        tl.to(project.current.rotation, { y: -0.2, duration: 1 });
+        animate(mesh.material, { opacity: 0.5 }, 3);
 
         setVisible(true);
     }
@@ -198,21 +224,24 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
             <group
                 ref={project}
                 onClick={fullScreen ? (e) => onEnterPreviewMode(e) : (e) => onSelected(e)}
-                onPointerMissed={fullScreen ? (e) => onExitPreviewMode(e) : null}
+                onPointerMissed={fullScreen ? (e) => onExitPreviewMode(e) : undefined}
                 onPointerOver={enteredPreviewMode ? () => setHovered(false) : () => setHovered(true)}
                 onPointerOut={enteredPreviewMode ? () => setHovered(true) : () => setHovered(false)}
             >
                 <group position-z={0.08}>
-                    <mesh>
-                        <meshBasicMaterial>
-                            <videoTexture attach="map" args={[video]} />
-                        </meshBasicMaterial>
-                        <planeGeometry args={medium == 'desktop' ? [1.8, 0.8] : [0.8, 1.8]} />
-                    </mesh>
-                    <mesh visible={!active}>
-                        <meshBasicMaterial map={coverTexture} />
-                        <planeGeometry args={medium == 'desktop' ? [1.8, 0.8] : [0.8, 1.8]} />
-                    </mesh>
+                    {videoTexture && (
+                        <mesh>
+                            <meshBasicMaterial map={videoTexture} toneMapped={false} />
+                            <planeGeometry args={medium === 'desktop' ? [1.8, 0.8] : [0.8, 1.8]} />
+                        </mesh>
+                    )}
+
+                    {coverTexture && (
+                        <mesh visible={!active}>
+                            <meshBasicMaterial map={coverTexture} />
+                            <planeGeometry args={medium == 'desktop' ? [1.8, 0.8] : [0.8, 1.8]} />
+                        </mesh>
+                    )}
                 </group>
                 <RoundedBox args={medium === 'desktop' ? [2, 1, 0.1] : [1, 2, 0.1]}>
                     <meshPhongMaterial
@@ -290,20 +319,17 @@ const Project = ({ id, name, logos, medium, github, preview, x, y, active, comme
                         </section>
                     </Html>
                 </group>
-                {logos.map((logo: string, index: number) => {
-                    const texture = new TextureLoader().load(`images/logos/${logo}.png`);
-
+                {logoTextures.map((logo: Texture | null, index: number) => {
+                    if (!logo) return null;
                     return (
-                        <Fragment key={index}>
-                            <mesh
-                                position-x={0.5 * (index % 3) - 0.5}
-                                position-y={index < 3 ? -0.5 : -0.7}
-                            >
-                                <planeGeometry args={[0.25, 0.1]} />
-                                <meshStandardMaterial map={texture} transparent />
-                            </mesh>
-                        </Fragment>
-                    )
+                        <mesh key={index}
+                            position-x={0.5 * (index % 3) - 0.5}
+                            position-y={index < 3 ? -0.5 : -0.7}
+                        >
+                            <planeGeometry args={[0.25, 0.1]} />
+                            <meshStandardMaterial map={logo} transparent />
+                        </mesh>
+                    );
                 })}
             </group>
             {
